@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
-import { Roboto } from 'next/font/google'
-
-import { Navbar } from '@/components/Header/components'
+import { Nunito } from 'next/font/google'
 
 import './globals.css'
-import { Header } from '@/components'
+import { Header, LeftMenu } from '@/widgets'
+import { Navbar } from '@/shared'
 
-const font = Roboto({
+// todo: шрифт vk
+const font = Nunito({
 	subsets: ['latin']
 })
 
@@ -24,7 +24,9 @@ export default function RootLayout({
 		<html suppressHydrationWarning={true} lang='ru'>
 			<body className={`${font.className} antialiased`}>
 				<Header />
-				<main>{children}</main>
+				<main className='container flex min-h-screen items-start gap-4 mt-10'>
+					<LeftMenu />
+					{children}</main>
 				<Navbar isMobile={true} />
 			</body>
 		</html>

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
 
-import { navbarItems } from '@/data'
+import { navbarItems } from '@/shared/data'
 
 interface Props {
 	isMobile?: boolean

@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Navbar, Search } from './components'
+import { Navbar } from '@/shared'
+import { Search } from '@/features'
 
 export const Header = () => {
 	return (
