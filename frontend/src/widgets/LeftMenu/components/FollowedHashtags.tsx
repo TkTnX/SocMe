@@ -1,4 +1,6 @@
+import { Block } from '@/shared/components'
 import { PlusSquareIcon } from 'lucide-react'
+
 
 const TEMP_HASHTAGS = [
 	'#работа',
@@ -12,7 +14,7 @@ const TEMP_HASHTAGS = [
 
 export const FollowedHashtags = () => {
 	return (
-		<div className='rounded-2xl bg-white px-5 py-6'>
+		<Block>
 			<div className='flex items-center justify-between border-b pb-1'>
 				<h4 className='uppercase'>Любимые хэштеги</h4>
 				<button className='hover:opacity-80'>
@@ -27,6 +29,6 @@ export const FollowedHashtags = () => {
 					</p>
 				))}
 			</div>
-		</div>
+		</Block>
 	)
 }

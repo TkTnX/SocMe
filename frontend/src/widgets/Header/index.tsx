@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Navbar } from '@/shared'
 import { Search } from '@/features'
+import { Navbar } from '@/shared/components'
 
 export const Header = () => {
 	return (
@@ -14,7 +14,7 @@ export const Header = () => {
 				>
 					<Image src={'/images/logo.svg'} alt='Soc Me' fill />
 				</Link>
-				<Navbar />
+				<Navbar/>
 				<Search />
 			</div>
 		</header>

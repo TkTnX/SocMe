@@ -1,11 +1,12 @@
+import { Block } from '@/shared/components'
+import { SIDE_NAVBAR } from '@/shared/data'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { SIDE_NAVBAR } from '@/shared'
 
 export const SideNavbar = () => {
 	return (
-		<nav className='bg-white px-5 py-6 rounded-2xl'>
+		<Block>
 			<ul className='flex flex-col gap-6'>
 				{SIDE_NAVBAR.map((item, index) => (
 					<li key={index}>
@@ -24,6 +25,6 @@ export const SideNavbar = () => {
 					</li>
 				))}
 			</ul>
-		</nav>
+		</Block>
 	)
 }

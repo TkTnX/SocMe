@@ -1,7 +1,11 @@
+import { AddPostForm } from '@/features'
+import { PostsList } from '@/widgets'
 
 export default function Home() {
-  return (
-    <>
-    </>
-  );
+	return (
+		<div className='flex-1'>
+			<AddPostForm />
+			<PostsList />
+		</div>
+	)
 }

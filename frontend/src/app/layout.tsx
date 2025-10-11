@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 
 import './globals.css'
-import { Header, LeftMenu } from '@/widgets'
-import { Navbar } from '@/shared'
+import { Header, LeftMenu, RightMenu } from '@/widgets'
+import { Navbar } from '@/shared/components'
 
 // todo: шрифт vk
 const font = Nunito({
@@ -24,9 +24,11 @@ export default function RootLayout({
 		<html suppressHydrationWarning={true} lang='ru'>
 			<body className={`${font.className} antialiased`}>
 				<Header />
-				<main className='container flex min-h-screen items-start gap-4 mt-10'>
+				<main className='container mt-10 flex min-h-screen items-start gap-4'>
 					<LeftMenu />
-					{children}</main>
+					{children}
+					<RightMenu />
+				</main>
 				<Navbar isMobile={true} />
 			</body>
 		</html>
