@@ -135,3 +135,11 @@ body {
 button {
 	@apply cursor-pointer;
 }
+
+.gradient-violet-bg {
+	background: linear-gradient(
+		180deg,
+		rgba(0, 172, 255, 0.46) 50%,
+		rgba(189, 0, 255, 0.46) 100%
+	);
+}

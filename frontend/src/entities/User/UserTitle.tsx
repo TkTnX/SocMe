@@ -10,10 +10,11 @@ import Link from "next/link";
 const isPremium = true
 
 interface Props {
-    userImageClassName?: string
+	userImageClassName?: string
+	user: any
 }
 
-export const UserTitle = ({userImageClassName}: Props) => {
+export const UserTitle = ({userImageClassName, user}: Props) => {
 	return (
 		<div className='flex items-start gap-2'>
 			{' '}
