@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -9,6 +8,91 @@ datasource db {
   url      = env("POSTGRES_URI")
 }
 
-model Test {
-  id String @unique @default(uuid())
+model User {
+  id String @id @default(uuid())
+
+  name     String
+  email    String @unique
+  password String?
+
+  bio      String?
+  websites String[]
+  hobby    String?
+  avatar   String?
+
+  likes     Like[]
+  favorites  Favorite[]
+  follower  Follower[] @relation("follower")
+  following Follower[] @relation("following")
+
+  createdAt DateTime   @default(now())
+}
+
+model Follower {
+  id String @id @default(uuid())
+
+  followingTo   User   @relation(fields: [followingToId], references: [id], name: "following")
+  followingToId String @unique
+
+  follower   User   @relation(fields: [followerId], references: [id], name: "follower")
+  followerId String @unique
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  text  String
+  image String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  comments  Comment[]
+  likes     Like[]
+  favorites Favorite[]
+}
+
+model Comment {
+  id String @id @default(uuid())
+
+  text  String
+  image String?
+  likes Like[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    String? @unique
+}
+
+model Like {
+  id String @id @default(uuid())
+
+  type    ELikeType
+  likedId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  createdAt DateTime @default(now())
+
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    String? @unique
+  Comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId String? @unique
+}
+
+model Favorite {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String @unique
+}
+
+enum ELikeType {
+  POST
+  COMMENT
 }
