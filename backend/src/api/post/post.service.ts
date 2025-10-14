@@ -1,10 +1,12 @@
-import { BadGatewayException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { PostDto } from 'src/api/post/dto';
-import { PrismaService } from 'src/api/prisma/prisma.service';
-
-
-
-
+import {
+	BadGatewayException,
+	Injectable,
+	Logger,
+	NotFoundException,
+	UnauthorizedException
+} from '@nestjs/common'
+import { PostDto } from 'src/api/post/dto'
+import { PrismaService } from 'src/api/prisma/prisma.service'
 
 @Injectable()
 export class PostService {
@@ -16,7 +18,13 @@ export class PostService {
 		const newPost = await this.prismaService.post.create({
 			data: {
 				...dto,
-				userId
+				userId,
+				hashtags: {
+					connectOrCreate: dto.hashtags.map(tag => ({
+						where: { name: tag },
+						create: { name: tag }
+					}))
+				}
 			}
 		})
 
@@ -28,25 +36,32 @@ export class PostService {
 		return newPost
 	}
 
-    // Редактирование постов
-    public async edit(dto: PostDto, postId: string, userId: string) {
-        const post = await this.getPostById(postId)
+	// Редактирование постов
+	public async edit(dto: PostDto, postId: string, userId: string) {
+		const post = await this.getPostById(postId)
 
-        if (post.userId !== userId)
+		if (post.userId !== userId)
 			throw new UnauthorizedException('Вы не можете изменить этот пост!')
-    
-        const updatedPost = await this.prismaService.post.update({
+
+		const updatedPost = await this.prismaService.post.update({
 			where: {
 				id: post.id
 			},
 			data: {
-                ...dto,
-                updatedAt: new Date()
+				...dto,
+				updatedAt: new Date(),
+				hashtags: {
+					set: [],
+					connectOrCreate: dto.hashtags.map(tag => ({
+						where: { name: tag },
+						create: { name: tag }
+					}))
+				}
 			}
 		})
 
-        return updatedPost
-    }
+		return updatedPost
+	}
 
 	// Удаление постов
 	public async delete(postId: string, userId: string) {

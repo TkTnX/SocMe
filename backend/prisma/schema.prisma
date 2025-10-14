@@ -25,6 +25,7 @@ model User {
   follower  Follower[] @relation("follower")
   following Follower[] @relation("following")
   posts     Post[]
+  hashtags  Hashtag[]
 
   createdAt DateTime @default(now())
 }
@@ -33,10 +34,10 @@ model Follower {
   id String @id @default(uuid())
 
   followingTo   User   @relation(fields: [followingToId], references: [id], name: "following")
-  followingToId String @unique
+  followingToId String
 
   follower   User   @relation(fields: [followerId], references: [id], name: "follower")
-  followerId String @unique
+  followerId String 
 }
 
 model Post {
@@ -46,11 +47,12 @@ model Post {
   image String?
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
+  userId String 
 
   comments  Comment[]
   likes     Like[]
   favorites Favorite[]
+  hashtags  Hashtag[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime?
@@ -66,7 +68,7 @@ model Comment {
   createdAt DateTime  @default(now())
   updatedAt DateTime?
   Post      Post?     @relation(fields: [postId], references: [id])
-  postId    String?   @unique
+  postId    String?  
 }
 
 model Like {
@@ -76,27 +78,37 @@ model Like {
   likedId String
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
+  userId String
 
   createdAt DateTime @default(now())
 
   Post      Post?    @relation(fields: [postId], references: [id])
-  postId    String?  @unique
+  postId    String? 
   Comment   Comment? @relation(fields: [commentId], references: [id])
-  commentId String?  @unique
+  commentId String? 
 }
 
 model Favorite {
   id String @id @default(uuid())
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
+  userId String 
 
   post   Post   @relation(fields: [postId], references: [id])
-  postId String @unique
+  postId String
+}
+
+model Hashtag {
+  id String @id @default(uuid())
+
+  name  String @unique
+  
+  posts Post[]
+  user User[]
 }
 
 enum ELikeType {
   POST
   COMMENT
+  HASHTAG
 }
