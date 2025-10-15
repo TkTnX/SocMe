@@ -4,3 +4,5 @@ export * from './Label'
 export * from './Block'
 export * from "./Input"
 export * from "./Textarea"
+export * from "./Skeleton"
+export * from "./StyledInput"

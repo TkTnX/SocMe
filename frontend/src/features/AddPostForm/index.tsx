@@ -15,14 +15,18 @@ import {
 	Textarea
 } from '@/shared/components'
 import { PostSchema, postSchema } from '@/shared/schemas'
+import { usePosts } from '@/api/hooks'
 
 export const AddPostForm = () => {
+	const {createPostMutation} = usePosts()
 	const form = useForm<PostSchema>({
 		resolver: zodResolver(postSchema)
 	})
 
-	const onSubmit = (values: PostSchema) => {
-		console.log(values)
+	const onSubmit = async (values: PostSchema) => {
+		const response = await createPostMutation.mutate(values)
+		
+		console.log(response)
 	}
 
 	return (

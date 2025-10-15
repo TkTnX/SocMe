@@ -75,7 +75,15 @@ export class PostService {
 
 	// TODO: В будущем получать только посты тех, на кого подписан
 	public async getPosts() {
-		return await this.prismaService.post.findMany()
+		return await this.prismaService.post.findMany({
+			include: {
+				user: true,
+				hashtags: true,
+				likes: true,
+				comments: true,
+				favorites: true
+			}
+		})
 	}
 
 	private async getPostById(id: string) {
