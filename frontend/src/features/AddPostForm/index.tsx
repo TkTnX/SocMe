@@ -1,10 +1,12 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { Send } from 'lucide-react'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 
+import { usePosts, useUser } from '@/api/hooks'
 import {
 	Block,
 	Form,
@@ -15,19 +17,24 @@ import {
 	Textarea
 } from '@/shared/components'
 import { PostSchema, postSchema } from '@/shared/schemas'
-import { usePosts } from '@/api/hooks'
 
 export const AddPostForm = () => {
-	const {createPostMutation} = usePosts()
+	const { user } = useUser()
+	const queryClient = useQueryClient()
+	const { createPostMutation } = usePosts()
+
 	const form = useForm<PostSchema>({
 		resolver: zodResolver(postSchema)
 	})
 
-	const onSubmit = async (values: PostSchema) => {
-		const response = await createPostMutation.mutate(values)
-		
-		console.log(response)
-	}
+	const { mutate, isPending } = createPostMutation({
+		onSuccess: () => {
+			form.reset({ text: '' })
+			queryClient.invalidateQueries({ queryKey: ['posts'] })
+		}
+	})
+
+	const onSubmit = (values: PostSchema) => mutate(values)
 
 	return (
 		<Block className='p-0'>
@@ -35,8 +42,8 @@ export const AddPostForm = () => {
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className='flex w-full items-start gap-4 px-6 py-4'>
 						<Image
-							src={'/images/temp/userPhoto.jpg'}
-							alt='User avatar'
+							src={user?.avatar || '/images/icons/no-avatar.svg'}
+							alt={user?.name || ''}
 							className='rounded-2xl'
 							width={40}
 							height={40}
@@ -48,9 +55,10 @@ export const AddPostForm = () => {
 								<FormItem className='flex-1'>
 									<FormControl>
 										<Textarea
+											disabled={isPending}
 											{...field}
 											placeholder='Рассказать что-то...'
-											className='h-full w-full resize-none border-none shadow-none'
+											className='h-full w-full resize-none border-none shadow-none disabled:pointer-events-none disabled:opacity-50'
 										/>
 									</FormControl>
 									<FormMessage />
@@ -88,7 +96,10 @@ export const AddPostForm = () => {
 							/>
 							<span className='hidden lg:inline'>Событие</span>
 						</button>
-						<button className='flex h-full w-full max-w-[70px] items-center justify-center bg-[#c7edff] p-6 hover:opacity-80'>
+						<button
+							disabled={isPending}
+							className='flex h-full w-full max-w-[70px] items-center justify-center bg-[#c7edff] p-6 hover:opacity-80 disabled:pointer-events-none disabled:opacity-50'
+						>
 							<Send size={24} color='var(--color-text)' />
 						</button>
 					</div>

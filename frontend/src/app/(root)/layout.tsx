@@ -6,12 +6,10 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<>
+		<div className='container mt-10 flex min-h-screen items-start gap-4'>
 			<LeftMenu />
-			<main className='container mt-10 flex min-h-screen items-start gap-4'>
-				{children}
-			</main>
+			<main className='flex-1'>{children}</main>
 			<RightMenu />
-		</>
+		</div>
 	)
 }

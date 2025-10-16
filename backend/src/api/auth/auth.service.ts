@@ -1,22 +1,30 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import * as argon from 'argon2';
-import { User } from 'generated/prisma';
-import { SignInDto, SignUpDto } from 'src/api/auth/dto';
-import { UserService } from 'src/api/user/user.service';
-
-
-
-
+import {
+	BadRequestException,
+	Injectable,
+	NotFoundException,
+	UnauthorizedException
+} from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { JwtService } from '@nestjs/jwt'
+import * as argon from 'argon2'
+import { Request, Response } from 'express'
+import { User } from 'generated/prisma'
+import { SignInDto, SignUpDto } from 'src/api/auth/dto'
+import { PrismaService } from 'src/api/prisma/prisma.service'
+import { UserService } from 'src/api/user/user.service'
+import { isDev } from 'src/common/helpers'
+import { IPayload } from 'src/common/types'
 
 @Injectable()
 export class AuthService {
 	public constructor(
 		private readonly userService: UserService,
-		private readonly jwtService: JwtService
+		private readonly jwtService: JwtService,
+		private readonly configService: ConfigService,
+		private readonly prismaService: PrismaService
 	) {}
 
-	public async signUp(dto: SignUpDto) {
+	public async signUp(res: Response, dto: SignUpDto) {
 		const user = await this.userService.findUserByEmail(dto.email)
 
 		if (user) throw new BadRequestException('Почта уже занята!')
@@ -28,30 +36,100 @@ export class AuthService {
 			password: hashedPassword
 		})
 
-		return await this.generateToken(newUser)
+		return await this.auth(res, newUser)
 	}
 
-	public async signIn(dto: SignInDto) {
+	public async signIn(res: Response, dto: SignInDto) {
 		const { email, password } = dto
 
-        const user = await this.userService.findUserByEmail(email)
+		const user = await this.userService.findUserByEmail(email)
 
-        if(!user) throw new NotFoundException("Пользователь с такой почтой не найден!")
-        
-        const verified = await argon.verify(user.password!, password)
+		if (!user)
+			throw new NotFoundException(
+				'Пользователь с такой почтой не найден!'
+			)
 
-        if (!verified) throw new UnauthorizedException("Неверные почта или пароль")
-        
-        
-        return await this.generateToken(user)
+		const verified = await argon.verify(user.password!, password)
 
+		if (!verified)
+			throw new UnauthorizedException('Неверные почта или пароль')
+
+		return await this.auth(res, user)
 	}
 
+	public async getMe(userPayload: IPayload) {
+		const {userId} = userPayload
+	
+		const user = await this.prismaService.user.findUnique({
+			where: {
+				id: userId
+			}
+		})
+
+		if(!user) throw new NotFoundException("Пользователь не найден")
+
+		return user
+	}
+
+	// Генерация токенов с помощью jwtService
 	private async generateToken(user: User) {
 		const payload = { sub: user.id, email: user.email }
 
 		return {
-			access_token: await this.jwtService.signAsync(payload)
+			access_token: await this.jwtService.signAsync(payload, {
+				expiresIn: this.configService.getOrThrow('JWT_ACCESS_TOKEN_TTL')
+			}),
+			refresh_token: await this.jwtService.signAsync(payload, {
+				expiresIn: this.configService.getOrThrow(
+					'JWT_REFRESH_TOKEN_TTL'
+				)
+			})
+		}
+	}
+
+	// Добавление refreshToken в cookie
+	private setCookie(res: Response, value: string, expires: Date) {
+		res.cookie('refreshToken', value, {
+			httpOnly: true,
+			domain: this.configService.getOrThrow('COOKIE_DOMAIN'),
+			expires,
+			secure: !isDev(this.configService),
+			sameSite: isDev(this.configService) ? 'none' : 'lax'
+		})
+	}
+
+	// Метод для возвращения access_token и установки refreshToken
+	private async auth(res: Response, user: User) {
+		const { access_token, refresh_token } = await this.generateToken(user)
+
+		this.setCookie(
+			res,
+			refresh_token,
+			new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+		)
+
+		return access_token
+	}
+
+	// Рефреш токена
+	public async refresh(req: Request, res: Response) {
+		const refreshToken = req.cookies['refreshToken']
+
+		if (!refreshToken)
+			throw new UnauthorizedException('Недействительный refresh token')
+
+		const payload = await this.jwtService.verifyAsync(refreshToken)
+
+		if (payload) {
+			const user = await this.prismaService.user.findUnique({
+				where: {
+					id: payload.userId
+				}
+			})
+
+			if (!user) throw new NotFoundException('Пользователь не найден!')
+
+			return await this.auth(res, user)
 		}
 	}
 }

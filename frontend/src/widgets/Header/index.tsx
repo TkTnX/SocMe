@@ -5,6 +5,7 @@ import { Search } from '@/features'
 import { Navbar } from '@/shared/components'
 
 export const Header = () => {
+	
 	return (
 		<header className='flex h-[76px] bg-white'>
 			<div className='container flex items-center justify-between'>
@@ -14,7 +15,7 @@ export const Header = () => {
 				>
 					<Image src={'/images/logo.svg'} alt='Soc Me' fill />
 				</Link>
-				<Navbar/>
+				<Navbar />
 				<Search />
 			</div>
 		</header>

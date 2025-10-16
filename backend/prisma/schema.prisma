@@ -19,6 +19,7 @@ model User {
   websites String[]
   hobby    String?
   avatar   String?
+  cover String?
 
   provider EProviders @default(CREDENTIALS)
 

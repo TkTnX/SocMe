@@ -38,7 +38,7 @@ export const Post = ({ post }: Props) => {
 			</div>
 
 			<PostControls />
-			<AddComment />
+			<AddComment  />
 		</Block>
 	)
 }

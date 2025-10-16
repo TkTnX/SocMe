@@ -1,36 +1,50 @@
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image'
+import Link from 'next/link'
 
+import { cn } from '@/lib/utils'
 
-
-
+import { IUser } from '@/api/types'
+import { Skeleton } from '@/shared/components'
 
 // TODO: TEMP
 const isPremium = true
 
 interface Props {
 	userImageClassName?: string
-	user: any
+	user: IUser | undefined
+	isUserPending?: boolean
 }
 
-export const UserTitle = ({userImageClassName, user}: Props) => {
+export const UserTitle = ({
+	userImageClassName,
+	user,
+	isUserPending
+}: Props) => {
 	return (
 		<div className='flex items-start gap-2'>
 			{' '}
+			<Link href={'/profile'}>
 			<Image
-				className={cn('relative  rounded-2xl', userImageClassName)}
-				src={'/images/temp/userPhoto.jpg'}
-				alt='user avatar'
+				className={cn(
+					'relative rounded-2xl bg-white',
+					userImageClassName
+				)}
+				src={user?.avatar || '/images/icons/no-avatar.svg'}
+				alt={user?.name || ''}
 				width={44}
 				height={44}
-			/>
+				/>
+				</Link>
 			<div>
 				<Link
 					href={'/profile'}
 					className='flex items-center gap-1 text-sm'
 				>
-					John Doe{' '}
+					{user?.name
+						? user.name
+						: isUserPending && (
+								<Skeleton className='h-4 w-full rounded-sm' />
+							)}{' '}
 					{isPremium && (
 						<Image
 							src={'/images/icons/premium-icon.svg'}
@@ -40,7 +54,9 @@ export const UserTitle = ({userImageClassName, user}: Props) => {
 						/>
 					)}
 				</Link>
-				<p className='text-xs text-black/40'>UI/UX Designer</p>
+				<p className='text-xs text-black/40'>
+					{user?.hobby || 'Пользователь'}
+				</p>
 			</div>
 		</div>
 	)

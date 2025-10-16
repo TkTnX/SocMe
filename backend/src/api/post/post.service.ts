@@ -20,7 +20,7 @@ export class PostService {
 				...dto,
 				userId,
 				hashtags: {
-					connectOrCreate: dto.hashtags.map(tag => ({
+					connectOrCreate: dto.hashtags?.map(tag => ({
 						where: { name: tag },
 						create: { name: tag }
 					}))

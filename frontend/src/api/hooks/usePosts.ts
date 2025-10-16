@@ -1,7 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query'
 
 import { createPost, getPosts } from '@/api/requests'
 import { IPostRequest } from '@/api/types'
+import { PostSchema } from '@/shared/schemas'
 
 export function usePosts() {
 	const {
@@ -9,14 +10,16 @@ export function usePosts() {
 		isLoading,
 		error
 	} = useQuery({
-		queryKey: ['get posts'],
+		queryKey: ['posts'],
 		queryFn: () => getPosts()
 	})
 
-	const createPostMutation = useMutation({
-		mutationKey: ['create posts'],
-		mutationFn: async (values: IPostRequest) =>await createPost(values)
-	})
+	const createPostMutation = (options?: Omit<UseMutationOptions<PostSchema, unknown, PostSchema>, "mutationKey" | "mutationFn">) =>
+		useMutation({
+			mutationKey: ['create posts'],
+			mutationFn: async (values: IPostRequest) => await createPost(values),
+			...options
+		})
 
 	return {
 		posts,

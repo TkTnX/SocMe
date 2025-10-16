@@ -1,10 +1,15 @@
-import Image from 'next/image'
-import Link from 'next/link'
+'use client'
 
+import Image from 'next/image'
+
+import { useUser } from '@/api/hooks'
 import { UserTitle } from '@/entities'
 import { Block } from '@/shared/components'
 
 export const UserInfo = () => {
+	const { user, isUserPending, userError } = useUser()
+
+	if (userError) return <Block>{userError.message}</Block>
 	return (
 		<div className='overflow-hidden rounded-2xl bg-white'>
 			<div className='relative h-20 w-full'>
@@ -15,7 +20,7 @@ export const UserInfo = () => {
 				/>
 			</div>
 			<Block className='overflow-visible rounded-t-none px-3 py-1'>
-				<UserTitle userImageClassName='-mt-6' />
+				<UserTitle isUserPending={isUserPending} user={user} userImageClassName='-mt-6' />
 			</Block>
 		</div>
 	)
