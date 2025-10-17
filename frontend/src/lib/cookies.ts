@@ -12,7 +12,6 @@ export const getAccessToken = () => {
 }
 
 export const saveToken = (accessToken: string) => {
-    console.log(accessToken)
 	Cookie.set(EnumTokens.ACCESS_TOKEN, accessToken, {
 		domain: process.env.NEXT_PUBLIC_COOKIES_DOMAIN,
 		sameSite: 'strict',

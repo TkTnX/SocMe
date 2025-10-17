@@ -1,17 +1,21 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Response, UseGuards } from '@nestjs/common';
-import { Response as ResponseType } from 'express';
-import { User } from 'generated/prisma';
-import { SignInDto, SignUpDto } from 'src/api/auth/dto';
-import { Authorized, Protected } from 'src/common/decorators';
+import {
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Post,
+	Req,
+	Res,
+	Response
+} from '@nestjs/common'
+import { Request, Response as ResponseType } from 'express'
+import { User } from 'generated/prisma'
+import { SignInDto, SignUpDto } from 'src/api/auth/dto'
+import { Authorized, Protected } from 'src/common/decorators'
+import { IPayload } from 'src/common/types'
 
-
-
-import { AuthService } from './auth.service';
-import { IPayload } from 'src/common/types';
-
-
-
-
+import { AuthService } from './auth.service'
 
 @Controller('auth')
 export class AuthController {
@@ -35,9 +39,15 @@ export class AuthController {
 		return await this.authService.signIn(res, dto)
 	}
 
+	@Get('refresh')
+	public async refresh(@Req() req: Request) {
+		return await this.authService.refresh(req)
+	}
+
 	@Protected()
 	@Get('@me')
 	public async getProfile(@Authorized() user: IPayload) {
+		console.log(user)
 		return await this.authService.getMe(user)
 	}
 }

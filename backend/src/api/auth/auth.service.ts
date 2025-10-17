@@ -58,23 +58,22 @@ export class AuthService {
 	}
 
 	public async getMe(userPayload: IPayload) {
-		const {userId} = userPayload
-	
+		const { userId } = userPayload
+
 		const user = await this.prismaService.user.findUnique({
 			where: {
 				id: userId
 			}
 		})
 
-		if(!user) throw new NotFoundException("Пользователь не найден")
+		if (!user) throw new NotFoundException('Пользователь не найден')
 
 		return user
 	}
 
 	// Генерация токенов с помощью jwtService
 	private async generateToken(user: User) {
-		const payload = { sub: user.id, email: user.email }
-
+		const payload: IPayload = { userId: user.id, email: user.email }
 		return {
 			access_token: await this.jwtService.signAsync(payload, {
 				expiresIn: this.configService.getOrThrow('JWT_ACCESS_TOKEN_TTL')
@@ -89,12 +88,15 @@ export class AuthService {
 
 	// Добавление refreshToken в cookie
 	private setCookie(res: Response, value: string, expires: Date) {
+		const isDevEnv = isDev(this.configService)
+
 		res.cookie('refreshToken', value, {
 			httpOnly: true,
+			path: '/',
 			domain: this.configService.getOrThrow('COOKIE_DOMAIN'),
 			expires,
-			secure: !isDev(this.configService),
-			sameSite: isDev(this.configService) ? 'none' : 'lax'
+			secure: !isDevEnv,
+			sameSite: isDevEnv ? undefined : 'none'
 		})
 	}
 
@@ -112,9 +114,8 @@ export class AuthService {
 	}
 
 	// Рефреш токена
-	public async refresh(req: Request, res: Response) {
+	public async refresh(req: Request) {
 		const refreshToken = req.cookies['refreshToken']
-
 		if (!refreshToken)
 			throw new UnauthorizedException('Недействительный refresh token')
 
@@ -129,7 +130,8 @@ export class AuthService {
 
 			if (!user) throw new NotFoundException('Пользователь не найден!')
 
-			return await this.auth(res, user)
+			const { access_token } = await this.generateToken(user)
+			return { access_token }
 		}
 	}
 }
