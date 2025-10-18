@@ -15,7 +15,7 @@ export const SignUpForm = () => {
 
 	const { mutate, isPending } = signUpMutation({
 		onSuccess: () => {
-			router.push('/profile')
+			router.push('/')
 			toast.success('Успешная регистрация!')
 		},
 		onError: error => {
@@ -25,7 +25,6 @@ export const SignUpForm = () => {
 				statusCode: number
 			}>
 
-			console.log(err.response)
 			toast.error(err.response?.data.message)
 		}
 	})
@@ -62,6 +61,7 @@ export const SignUpForm = () => {
 					placeholder='tonystark@example.com'
 				/>
 				<FormInput
+					type="password"
 					form={form}
 					label='Пароль'
 					name='password'

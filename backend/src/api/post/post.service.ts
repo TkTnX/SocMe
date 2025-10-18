@@ -52,7 +52,7 @@ export class PostService {
 				updatedAt: new Date(),
 				hashtags: {
 					set: [],
-					connectOrCreate: dto.hashtags.map(tag => ({
+					connectOrCreate: dto?.hashtags?.map(tag => ({
 						where: { name: tag },
 						create: { name: tag }
 					}))
@@ -82,6 +82,9 @@ export class PostService {
 				likes: true,
 				comments: true,
 				favorites: true
+			},
+			orderBy: {
+				createdAt: "desc"
 			}
 		})
 	}

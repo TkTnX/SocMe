@@ -16,3 +16,15 @@ export const createPost = async (values: IPostRequest) => {
     
     return data
 }
+
+export const editPost = async (values: IPostRequest, postId: string) => {
+    const { data } = await axiosInstance.patch<IPost>(`/posts/${postId}`, values)
+    
+    return data
+}
+
+export const deletePost = async (postId: string) => {
+    const { data } = await axiosInstance.delete(`/posts/${postId}`)
+    
+    return data
+}

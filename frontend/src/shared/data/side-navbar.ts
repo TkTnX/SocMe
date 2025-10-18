@@ -1,12 +1,12 @@
 export const SIDE_NAVBAR = [
 	{
-		icon: '/images/icons/user.svg',
+		icon: '/images/icons/navbar/06.svg',
 		href: '/profile',
 		name: 'Профиль'
 	},
 	{
 		icon: '/images/icons/addUser.svg',
-		href: '/people',
+	href: '/people',
 		name: 'Найти людей'
 	},
 	{

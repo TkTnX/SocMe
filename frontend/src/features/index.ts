@@ -1,3 +1,5 @@
 export * from "./Search"
 export * from "./AddPostForm"
 export * from "./AddComment"
+export * from "./DeletePost"
+export * from "./EditPost"

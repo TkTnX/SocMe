@@ -9,9 +9,7 @@ import { Block, Button } from '@/shared/components'
 
 export const UserInfo = () => {
 	const { user, isUserPending, userError } = useUser()
-
-	if (userError) return <Block>{userError.message}</Block>
-	if (!user)
+	if (!user || userError)
 		return (
 			<Block>
 				<Button className='w-full' asChild>

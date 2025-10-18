@@ -11,7 +11,7 @@ const isPremium = true
 
 interface Props {
 	userImageClassName?: string
-	user: IUser | undefined
+	user: IUser
 	isUserPending?: boolean
 }
 
@@ -23,21 +23,21 @@ export const UserTitle = ({
 	return (
 		<div className='flex items-start gap-2'>
 			{' '}
-			<Link href={'/profile'}>
-			<Image
-				className={cn(
-					'relative rounded-2xl bg-white',
-					userImageClassName
-				)}
-				src={user?.avatar || '/images/icons/no-avatar.svg'}
-				alt={user?.name || ''}
-				width={44}
-				height={44}
+			<Link href={`/profile/${user.id}`}>
+				<Image
+					className={cn(
+						'relative rounded-2xl bg-white',
+						userImageClassName
+					)}
+					src={user.avatar || '/images/icons/no-avatar.svg'}
+					alt={user.name || ''}
+					width={44}
+					height={44}
 				/>
-				</Link>
+			</Link>
 			<div>
 				<Link
-					href={'/profile'}
+					href={`/profile/${user.id}`}
 					className='flex items-center gap-1 text-sm'
 				>
 					{user?.name

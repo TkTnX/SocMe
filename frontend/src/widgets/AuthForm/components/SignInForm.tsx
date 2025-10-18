@@ -14,7 +14,7 @@ export const SignInForm = () => {
 	const { mutate, isPending } = signInMutation({
 		onSuccess: () => {
 			toast.success('Успешный вход в аккаунт!')
-			router.push('/profile')
+			router.push('/')
 		}
 	})
 	const form = useForm<SignInSchema>({
@@ -42,6 +42,7 @@ export const SignInForm = () => {
 					placeholder='tonystark@example.com'
 				/>
 				<FormInput
+					type='password'
 					form={form}
 					label='Пароль'
 					name='password'

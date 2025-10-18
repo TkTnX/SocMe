@@ -47,7 +47,6 @@ export class AuthController {
 	@Protected()
 	@Get('@me')
 	public async getProfile(@Authorized() user: IPayload) {
-		console.log(user)
 		return await this.authService.getMe(user)
 	}
 }

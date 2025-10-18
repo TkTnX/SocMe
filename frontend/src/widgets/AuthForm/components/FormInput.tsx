@@ -1,26 +1,25 @@
-import { FieldPath, UseFormReturn } from 'react-hook-form'
+import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import {
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-	StyledInput
-} from '@/shared/components'
 
-interface Props<T extends Record<string, any>> {
+
+import { FormControl, FormField, FormItem, FormLabel, FormMessage, StyledInput } from '@/shared/components';
+
+
+
+
+
+interface Props<T extends Record<string, any>>
+	extends Omit<React.ComponentProps<'input'>, 'form'> {
 	form: UseFormReturn<T>
 	label: string
 	name: FieldPath<T>
-	placeholder: string
 }
 
 export const FormInput = <T extends Record<string, any>>({
 	form,
 	label,
 	name,
-	placeholder
+	...props
 }: Props<T>) => {
 	return (
 		<FormField
@@ -30,7 +29,7 @@ export const FormInput = <T extends Record<string, any>>({
 				<FormItem>
 					<FormLabel>{label}</FormLabel>
 					<FormControl>
-						<StyledInput placeholder={placeholder} {...field} />
+						<StyledInput placeholder={props.placeholder} {...field} {...props} />
 					</FormControl>
 					<FormMessage />
 				</FormItem>

@@ -1,53 +1,88 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useQueryClient } from '@tanstack/react-query'
-import { Send } from 'lucide-react'
-import Image from 'next/image'
-import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { Send } from 'lucide-react';
+import Image from 'next/image';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-import { usePosts, useUser } from '@/api/hooks'
-import {
-	Block,
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormMessage,
-	Textarea
-} from '@/shared/components'
-import { PostSchema, postSchema } from '@/shared/schemas'
 
-export const AddPostForm = () => {
+
+import { usePosts, useUser } from '@/api/hooks';
+import { IPost } from '@/api/types';
+import { Block, Form, FormControl, FormField, FormItem, FormMessage, Textarea } from '@/shared/components';
+import { PostSchema, postSchema } from '@/shared/schemas';
+
+
+
+
+
+interface Props {
+	post?: IPost | null
+	onSuccess?: () => void
+}
+
+export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 	const { user } = useUser()
 	const queryClient = useQueryClient()
-	const { createPostMutation } = usePosts()
+	const { createPostMutation, editPostMutation } = usePosts()
 
 	const form = useForm<PostSchema>({
-		resolver: zodResolver(postSchema)
-	})
-
-	const { mutate, isPending } = createPostMutation({
-		onSuccess: () => {
-			form.reset({ text: '' })
-			queryClient.invalidateQueries({ queryKey: ['posts'] })
+		resolver: zodResolver(postSchema),
+		defaultValues: {
+			text: post ? post.text : ''
 		}
 	})
 
-	const onSubmit = (values: PostSchema) => mutate(values)
+		const getMutationHandlers = (
+			successMessage: string,
+			onSuccess?: () => void
+		) => ({
+			onSuccess: () => {
+				form.reset({ text: '' })
+				queryClient.invalidateQueries({ queryKey: ['posts'] })
+				toast.success(successMessage)
+				onSuccess?.()
+			},
+			onError: (error: unknown) => {
+				const err = error as AxiosError<{
+					message: string
+					error: string
+					statusCode: number
+				}>
+				toast.error(err?.response?.data.message[0])
+			}
+		})
+
+	const { mutate: create, isPending: isCreatePending } = createPostMutation(getMutationHandlers("Успешное создание поста!"))
+
+	const { mutate: edit, isPending: isEditPending } = editPostMutation(
+		post?.id!,
+		getMutationHandlers('Пост успешно изменён!', onSuccess)
+	)
+
+	const onSubmit = (values: PostSchema) =>
+		post ? edit(values) : create(values)
 
 	return (
 		<Block className='p-0'>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className='flex w-full items-start gap-4 px-6 py-4'>
-						<Image
-							src={user?.avatar || '/images/icons/no-avatar.svg'}
-							alt={user?.name || ''}
-							className='rounded-2xl'
-							width={40}
-							height={40}
-						/>
+						{!post && (
+							<Image
+								src={
+									user?.avatar ||
+									'/images/icons/no-avatar.svg'
+								}
+								alt={user?.name || ''}
+								className='rounded-2xl'
+								width={40}
+								height={40}
+							/>
+						)}
 						<FormField
 							control={form.control}
 							name='text'
@@ -55,7 +90,9 @@ export const AddPostForm = () => {
 								<FormItem className='flex-1'>
 									<FormControl>
 										<Textarea
-											disabled={isPending}
+											disabled={
+												isCreatePending || isEditPending
+											}
 											{...field}
 											placeholder='Рассказать что-то...'
 											className='h-full w-full resize-none border-none shadow-none disabled:pointer-events-none disabled:opacity-50'
@@ -67,7 +104,10 @@ export const AddPostForm = () => {
 						/>
 					</div>
 					<div className='flex items-center justify-between bg-[#ecf9ff] pl-6'>
-						<button className='flex items-center gap-1.5'>
+						<button
+							type='button'
+							className='flex items-center gap-1.5'
+						>
 							<Image
 								width={24}
 								height={24}
@@ -78,7 +118,10 @@ export const AddPostForm = () => {
 								Изображения
 							</span>
 						</button>
-						<button className='flex items-center gap-1.5'>
+						<button
+							type='button'
+							className='flex items-center gap-1.5'
+						>
 							<Image
 								width={24}
 								height={24}
@@ -87,7 +130,10 @@ export const AddPostForm = () => {
 							/>
 							<span className='hidden lg:inline'>Видео</span>
 						</button>
-						<button className='flex items-center gap-1.5'>
+						<button
+							type='button'
+							className='flex items-center gap-1.5'
+						>
 							<Image
 								width={24}
 								height={24}
@@ -97,7 +143,7 @@ export const AddPostForm = () => {
 							<span className='hidden lg:inline'>Событие</span>
 						</button>
 						<button
-							disabled={isPending}
+							disabled={isCreatePending || isEditPending}
 							className='flex h-full w-full max-w-[70px] items-center justify-center bg-[#c7edff] p-6 hover:opacity-80 disabled:pointer-events-none disabled:opacity-50'
 						>
 							<Send size={24} color='var(--color-text)' />

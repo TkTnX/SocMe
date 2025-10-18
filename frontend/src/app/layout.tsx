@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html suppressHydrationWarning={true} lang='ru'>
-			<body className={`${font.className} antialiased`}>
+			<body className={`${font.className} pb-20 antialiased md:pb-0`}>
 				<Providers>
 					<Header />
 					{children}

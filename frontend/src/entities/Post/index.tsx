@@ -3,23 +3,29 @@ import Image from 'next/image'
 
 import { UserTitle } from '../User'
 
+import { useUser } from '@/api/hooks'
 import { IPost } from '@/api/types'
 import { PostControls } from '@/entities/Post/components'
 import { AddComment } from '@/features'
-import { Block } from '@/shared/components'
+import { Block, PostMoreDropdown } from '@/shared/components'
 
 interface Props {
 	post: IPost
 }
 
 export const Post = ({ post }: Props) => {
+	const { user } = useUser()
 	return (
 		<Block className='pt-3.5 pb-2'>
 			<div className='flex items-center justify-between'>
 				<UserTitle user={post.user} />
-				<button>
-					<MoreVertical color='var(--color-text)' />
-				</button>
+				{user?.id === post.userId && (
+					<PostMoreDropdown post={post}>
+						<button>
+							<MoreVertical color='var(--color-text)' />
+						</button>
+					</PostMoreDropdown>
+				)}
 			</div>
 			<div className='mt-3.5'>
 				<h2 className='mt-4 text-sm text-black'>{post.text}</h2>
@@ -38,7 +44,7 @@ export const Post = ({ post }: Props) => {
 			</div>
 
 			<PostControls />
-			<AddComment  />
+			<AddComment />
 		</Block>
 	)
 }

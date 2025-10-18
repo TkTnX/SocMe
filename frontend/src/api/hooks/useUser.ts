@@ -5,7 +5,6 @@ import { getUser } from '@/api/requests'
 
 export function useUser() {
 	const token = Cookie.get('accessToken')
-	console.log(token)
 	const {
 		data: user,
 		isPending: isUserPending,

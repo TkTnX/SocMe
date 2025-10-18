@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
 
+import { useUser } from '@/api/hooks'
 import { navbarItems } from '@/shared/data'
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 export const Navbar = ({ isMobile = false }: Props) => {
 	const pathname = usePathname()
+	const { user } = useUser()
 
 	return (
 		<nav
@@ -44,6 +46,7 @@ export const Navbar = ({ isMobile = false }: Props) => {
 						)}
 					</li>
 				))}
+			
 			</ul>
 		</nav>
 	)

@@ -1,8 +1,14 @@
-import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query'
+import { UseMutationOptions, useMutation, useQuery } from '@tanstack/react-query';
 
-import { createPost, getPosts } from '@/api/requests'
-import { IPostRequest } from '@/api/types'
-import { PostSchema } from '@/shared/schemas'
+
+
+import { createPost, deletePost, editPost, getPosts } from '@/api/requests';
+import { IPostRequest } from '@/api/types';
+import { PostSchema } from '@/shared/schemas';
+
+
+
+
 
 export function usePosts() {
 	const {
@@ -14,10 +20,42 @@ export function usePosts() {
 		queryFn: () => getPosts()
 	})
 
-	const createPostMutation = (options?: Omit<UseMutationOptions<PostSchema, unknown, PostSchema>, "mutationKey" | "mutationFn">) =>
+	const createPostMutation = (
+		options?: Omit<
+			UseMutationOptions<PostSchema, unknown, PostSchema>,
+			'mutationKey' | 'mutationFn'
+		>
+	) =>
 		useMutation({
 			mutationKey: ['create posts'],
-			mutationFn: async (values: IPostRequest) => await createPost(values),
+			mutationFn: async (values: IPostRequest) =>
+				await createPost(values),
+			...options
+		})
+
+	const editPostMutation = (
+		postId: string,
+		options?: Omit<
+			UseMutationOptions<PostSchema, unknown, PostSchema>,
+			'mutationKey' | 'mutationFn'
+		>
+	) =>
+		useMutation({
+			mutationKey: ['edit post'],
+			mutationFn: async (values: IPostRequest) =>
+				await editPost(values, postId),
+			...options
+		})
+
+	const deletePostMutation = (
+		options?: Omit<
+			UseMutationOptions<any, unknown, any>,
+			'mutationKey' | 'mutationFn'
+		>
+	) =>
+		useMutation({
+			mutationKey: ['delete post'],
+			mutationFn: async (postId: string) => await deletePost(postId),
 			...options
 		})
 
@@ -25,6 +63,8 @@ export function usePosts() {
 		posts,
 		isLoading,
 		error,
-		createPostMutation
+		createPostMutation,
+		editPostMutation,
+		deletePostMutation
 	}
 }
