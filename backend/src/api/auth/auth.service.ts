@@ -63,7 +63,12 @@ export class AuthService {
 		const user = await this.prismaService.user.findUnique({
 			where: {
 				id: userId
-			}
+			},
+			// include: {
+			// 	posts: true,
+			// 	followers: true,
+			// 	followings: true,
+			// }
 		})
 
 		if (!user) throw new NotFoundException('Пользователь не найден')

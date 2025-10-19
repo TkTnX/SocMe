@@ -4,10 +4,9 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 import { IUser } from '@/api/types'
-import { Skeleton } from '@/shared/components'
+import { PremiumIcon, Skeleton } from '@/shared/components'
 
-// TODO: TEMP
-const isPremium = true
+
 
 interface Props {
 	userImageClassName?: string
@@ -45,14 +44,7 @@ export const UserTitle = ({
 						: isUserPending && (
 								<Skeleton className='h-4 w-full rounded-sm' />
 							)}{' '}
-					{isPremium && (
-						<Image
-							src={'/images/icons/premium-icon.svg'}
-							width={16}
-							height={13}
-							alt='Премиум пользователь'
-						/>
-					)}
+					<PremiumIcon isPremium={true} />
 				</Link>
 				<p className='text-xs text-black/40'>
 					{user?.hobby || 'Пользователь'}

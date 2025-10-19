@@ -3,21 +3,23 @@ import { UseMutationOptions, useMutation, useQuery } from '@tanstack/react-query
 
 
 import { createPost, deletePost, editPost, getPosts } from '@/api/requests';
-import { IPostRequest } from '@/api/types';
+import { IPost, IPostRequest } from '@/api/types';
 import { PostSchema } from '@/shared/schemas';
 
 
 
 
 
-export function usePosts() {
+export function usePosts(userPosts?: IPost[]) {
 	const {
 		data: posts,
 		isLoading,
 		error
 	} = useQuery({
-		queryKey: ['posts'],
-		queryFn: () => getPosts()
+		queryKey: ['posts', userPosts],
+		queryFn: () => getPosts(),
+		enabled: !userPosts,
+		initialData: userPosts
 	})
 
 	const createPostMutation = (

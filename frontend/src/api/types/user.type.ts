@@ -11,9 +11,10 @@ export interface IUser {
 	password?: string
 
 	bio?: string
-	websites?: string
+	websites?: string[]
 	hobby?: string
 	avatar?: string
+	cover?: string
 
 	provider: EProviders
 

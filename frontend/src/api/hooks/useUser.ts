@@ -1,9 +1,15 @@
-import { useQuery } from '@tanstack/react-query'
-import Cookie from 'js-cookie'
+import { useQuery } from '@tanstack/react-query';
+import Cookie from 'js-cookie';
 
-import { getUser } from '@/api/requests'
 
-export function useUser() {
+
+import { getUser, getUserById } from '@/api/requests';
+
+
+
+
+
+export function useUser(userId?: string) {
 	const token = Cookie.get('accessToken')
 	const {
 		data: user,
@@ -15,9 +21,19 @@ export function useUser() {
 		enabled: !!token
 	})
 
+
+	const getUserByIdQuery = (userId: string) => {
+		return useQuery({
+			queryKey: ['user by id'],
+			queryFn: () => getUserById(userId!),
+			enabled: !!userId
+		})
+	}
+
 	return {
 		user: user || null,
 		isUserPending,
-		userError
+		userError,
+		getUserByIdQuery
 	}
 }

@@ -2,13 +2,18 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 import { useUser } from '@/api/hooks'
 import { UserTitle } from '@/entities'
 import { Block, Button } from '@/shared/components'
 
 export const UserInfo = () => {
+	const pathname = usePathname()
 	const { user, isUserPending, userError } = useUser()
+
+	if (pathname.includes('/profile')) return null
+
 	if (!user || userError)
 		return (
 			<Block>

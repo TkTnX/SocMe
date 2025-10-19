@@ -32,4 +32,27 @@ export class UserService {
 			}
 		})
 	}
+
+	public async findUserById(userId: string) {
+		const user = await this.prismaService.user.findUnique({
+			where: { id: userId },
+			include: {
+				posts: {
+					include: {
+						user: true
+					}
+				},
+				followers: true,
+				followings: true
+			},
+			omit: {
+				password: true,
+				provider: true
+			}
+		})
+
+		if (!user) throw new NotFoundException('Пользователь не найден!')
+
+		return user
+	}
 }

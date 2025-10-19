@@ -8,8 +8,7 @@ export default function RootLayout({
 	return (
 		<div className='container mt-10 flex min-h-screen items-start gap-4'>
 			<LeftMenu />
-			<main className='flex-1'>{children}</main>
-			<RightMenu />
+			<main className='flex flex-1 items-start gap-4'>{children}</main>
 		</div>
 	)
 }

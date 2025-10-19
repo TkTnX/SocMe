@@ -1,11 +1,21 @@
-'use client'
+'use client';
 
-import { usePosts } from '@/api/hooks'
-import { Post } from '@/entities'
-import { Skeleton } from '@/shared/components'
+import { usePosts } from '@/api/hooks';
+import { IPost } from '@/api/types';
+import { Post } from '@/entities';
+import { Skeleton } from '@/shared/components';
 
-export const PostsList = () => {
-	const { posts, error, isLoading } = usePosts()
+
+
+
+
+interface Props {
+	userPosts?: IPost[]
+}
+
+export const PostsList = ({ userPosts }: Props) => {
+	
+	const { posts, error, isLoading } = usePosts(userPosts)
 
 	// TODO: Вывод компонента ошибки
 	if (!posts && error)

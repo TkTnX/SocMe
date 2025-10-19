@@ -3,3 +3,4 @@ export * from "./LeftMenu"
 export * from "./RightMenu"
 export * from "./PostsList"
 export * from "./AuthForm"
+export * from './Profile'
