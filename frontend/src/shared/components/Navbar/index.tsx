@@ -4,10 +4,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { cn } from '@/lib/utils'
-
 import { useUser } from '@/api/hooks'
 import { navbarItems } from '@/shared/data'
+import { cn } from '@/shared/lib/utils'
 
 interface Props {
 	isMobile?: boolean
@@ -46,7 +45,6 @@ export const Navbar = ({ isMobile = false }: Props) => {
 						)}
 					</li>
 				))}
-			
 			</ul>
 		</nav>
 	)

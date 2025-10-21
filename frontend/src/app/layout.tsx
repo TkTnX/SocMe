@@ -1,13 +1,22 @@
 import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
+import localFont from 'next/font/local'
 
 import './globals.css'
 import { Navbar, Providers } from '@/shared/components'
 import { Header } from '@/widgets'
 
-// todo: шрифт vk
-const font = Nunito({
-	subsets: ['latin']
+const vkFont = localFont({
+	src: [
+		{
+			path: '../shared/fonts/vk/VK_Sans_Display_Regular.ttf',
+			weight: '400'
+		},
+		{
+			path: '../shared/fonts/vk/VKSansDisplay-Medium.ttf',
+			weight: '500'
+		}
+	]
 })
 
 export const metadata: Metadata = {
@@ -22,7 +31,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html suppressHydrationWarning={true} lang='ru'>
-			<body className={`${font.className} pb-20 antialiased md:pb-0`}>
+			<body className={`${vkFont.className} pb-20 antialiased md:pb-0`}>
 				<Providers>
 					<Header />
 					{children}

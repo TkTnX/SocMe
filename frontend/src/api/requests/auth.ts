@@ -1,4 +1,4 @@
-import { axiosInstance, saveToken } from '@/lib'
+import { axiosInstance, saveToken } from '@/shared/lib'
 import { SignInSchema, SignUpSchema } from '@/shared/schemas'
 
 export const signUp = async (values: SignUpSchema) => {
@@ -11,7 +11,6 @@ export const signUp = async (values: SignUpSchema) => {
 export const signIn = async (values: SignInSchema) => {
 	const { data } = await axiosInstance.post('/auth/sign-in', values)
 
-	
 	if (data) saveToken(data)
 
 	return data

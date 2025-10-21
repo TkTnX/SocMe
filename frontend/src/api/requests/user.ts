@@ -1,13 +1,11 @@
-import { IUser } from '@/api/types';
-import { axiosInstance } from '@/lib';
-
+import { IUser } from '@/api/types'
+import { axiosInstance } from '@/shared/lib'
 
 export const getUsers = async () => {
 	const { data } = await axiosInstance.get<Promise<IUser[]>>('/users')
-	
+
 	return data
 }
-
 
 export const getUser = async () => {
 	const { data } = await axiosInstance.get<Promise<IUser>>('/auth/@me')

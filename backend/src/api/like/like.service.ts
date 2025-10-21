@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { Comment, ELikeType, Hashtag, Post } from 'generated/prisma'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 
@@ -44,7 +44,9 @@ export class LikeService {
 					where: { id }
 				})
 				break
-		}
+        }
+        
+        if(!likedItem) throw new NotFoundException("id не найден!")
 
 		const like = await this.prismaService.like.create({
 			data: {

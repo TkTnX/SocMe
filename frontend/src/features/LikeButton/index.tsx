@@ -8,8 +8,9 @@ import { toast } from 'react-toastify'
 
 import { useLike } from '@/api/hooks'
 import { ELikeType, IUser } from '@/api/types'
-import { cn } from '@/lib'
 import { Badge } from '@/shared/components'
+import { showErrorMessage } from '@/shared/helpers'
+import { cn } from '@/shared/lib'
 
 interface Props {
 	type: string
@@ -35,17 +36,10 @@ export const LikeButton = ({ id, user, type, totalLikes = 0 }: Props) => {
 				setCurrLikes(currLikes - 1)
 			}
 		},
-		onError: () => {
-			// TODO: Перенести эту функцию в отдельный файл
-			const err = error as AxiosError<{
-				message: string
-				error: string
-				statusCode: number
-			}>
-			toast.error(err?.response?.data.message[0])
-		}
+		onError: (error: unknown) => showErrorMessage(error)
 	})
 
+	// TODO: Comments
 	useEffect(() => {
 		const like = user?.likes?.find(like => like.likedId === id)
 		setIsLiked(!!like)

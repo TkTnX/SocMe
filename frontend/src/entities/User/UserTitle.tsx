@@ -1,12 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { cn } from '@/lib/utils'
-
 import { IUser } from '@/api/types'
 import { PremiumIcon, Skeleton } from '@/shared/components'
-
-
+import { cn } from '@/shared/lib/utils'
 
 interface Props {
 	userImageClassName?: string

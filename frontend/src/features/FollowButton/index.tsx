@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { useFollow } from '@/api/hooks'
 import { IFollower } from '@/api/types'
 import { Button, type ButtonVariants } from '@/shared/components'
+import { showErrorMessage } from '@/shared/helpers'
 
 interface Props {
 	followings?: IFollower[]
@@ -22,15 +23,7 @@ export const FollowButton = ({
 	const { followMutation } = useFollow()
 	const queryClient = useQueryClient()
 	const { mutate, isPending } = followMutation(profileId, {
-		onError: (error: unknown) => {
-			// TODO: Перенести эту функцию в отдельный файл
-			const err = error as AxiosError<{
-				message: string
-				error: string
-				statusCode: number
-			}>
-			toast.error(err?.response?.data.message[0])
-		},
+		onError: (error: unknown) => showErrorMessage(error),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['user by id', profileId]
