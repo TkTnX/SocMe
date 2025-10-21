@@ -20,7 +20,7 @@ export interface ILike {
 
 }
 
-enum ELikeType {
+export enum ELikeType {
   POST,
   COMMENT,
   HASHTAG

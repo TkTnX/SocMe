@@ -4,20 +4,20 @@ import { toast } from 'react-toastify'
 
 import { useFollow } from '@/api/hooks'
 import { IFollower } from '@/api/types'
-import { Button } from '@/shared/components'
+import { Button, type ButtonVariants } from '@/shared/components'
 
 interface Props {
 	followings?: IFollower[]
 	followers?: IFollower[]
 	profileId: string
-	isUserFollowed?: IFollower
+	variant?: ButtonVariants
 }
 
 export const FollowButton = ({
-	followings,
 	followers,
 	profileId,
-	isUserFollowed
+	variant,
+	followings
 }: Props) => {
 	const { followMutation } = useFollow()
 	const queryClient = useQueryClient()
@@ -37,18 +37,20 @@ export const FollowButton = ({
 			})
 		}
 	})
-	const isFollowed = followers?.find(following => {
-		console.log(following)
-
+	const isFollowing = followers?.find(following => {
 		return following.followingToId === profileId
 	})
 
+	const isFollowed = followings?.find(
+		follower => follower.followerId === profileId
+	)
+
 	const buttonText =
-		isFollowed && !isUserFollowed
+		isFollowing && !isFollowed
 			? 'Отписаться'
-			: isUserFollowed && !isFollowed
+			: isFollowed && !isFollowing
 				? 'Добавить в друзья'
-				: isUserFollowed && isFollowed
+				: isFollowed && isFollowing
 					? 'В друзьях'
 					: 'Подписаться'
 
@@ -57,7 +59,7 @@ export const FollowButton = ({
 			disabled={isPending}
 			onClick={() => mutate(profileId)}
 			className='flex-1'
-			variant={isFollowed ? 'outline' : 'default'}
+			variant={isFollowing ? 'outline' : variant ? variant : 'default'}
 		>
 			{buttonText}
 		</Button>

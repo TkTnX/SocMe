@@ -1,18 +1,30 @@
-import Image from 'next/image'
+import Image from 'next/image';
 
-export const PostControls = () => {
+
+
+import { IUser } from '@/api/types';
+import { LikeButton } from '@/features';
+
+
+
+
+
+interface Props {
+	id: string
+	user: IUser | null
+	totalLikes: number
+}
+
+export const PostControls = ({ id, user, totalLikes }: Props) => {
 	return (
 		<div className='mt-5 flex items-center justify-between'>
 			<div className='flex items-center gap-4'>
-				<button className='hover:opacity-80'>
-					{/* TODO: Badge с кол-вом лайков , как в макете */}
-					<Image
-						alt='Лайк!'
-						width={24}
-						height={24}
-						src={'/images/icons/like.svg'}
-					/>
-				</button>
+				<LikeButton
+					type={'POST'}
+					user={user}
+					id={id}
+					totalLikes={totalLikes}
+				/>
 				<button className='hover:opacity-80'>
 					{/* TODO: Badge с кол-вом комментов , как в макете */}
 					<Image

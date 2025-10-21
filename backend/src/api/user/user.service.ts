@@ -12,6 +12,31 @@ export class UserService {
 	public constructor(private readonly prismaService: PrismaService) {}
 	private readonly logger = new Logger(UserService.name)
 
+	public async findUsers(userId: string) {
+		const users = await this.prismaService.user.findMany({
+			// TODO: TEMP, потом на странице people понадобится динамическое значение
+			take: 3,
+			where: {
+				AND: [
+					{
+						NOT: {
+							id: userId
+						}
+					},
+					{
+						followers: {
+							none: {
+								followerId: userId
+							}
+						}
+					}
+				]
+			}
+		})
+
+		return users
+	}
+
 	public async create(dto: SignUpDto) {
 		const user = await this.prismaService.user.create({
 			data: dto
@@ -43,7 +68,7 @@ export class UserService {
 					}
 				},
 				followers: true,
-				followings: true
+				followings: true,
 			},
 			omit: {
 				password: true,

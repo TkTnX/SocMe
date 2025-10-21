@@ -43,7 +43,7 @@ export const Post = ({ post }: Props) => {
 				)}
 			</div>
 
-			<PostControls />
+			<PostControls totalLikes={post.likes.length} user={user} id={post.id} />
 			<AddComment />
 		</Block>
 	)

@@ -1,29 +1,19 @@
-'use client';
+'use client'
 
-import { usePosts } from '@/api/hooks';
-import { IPost } from '@/api/types';
-import { Post } from '@/entities';
-import { Skeleton } from '@/shared/components';
-
-
-
-
+import { usePosts } from '@/api/hooks'
+import { IPost } from '@/api/types'
+import { Post } from '@/entities'
+import { ErrorMessage, Skeleton } from '@/shared/components'
+import { ErrorType } from '@/shared/types'
 
 interface Props {
 	userPosts?: IPost[]
 }
 
 export const PostsList = ({ userPosts }: Props) => {
-	
 	const { posts, error, isLoading } = usePosts(userPosts)
 
-	// TODO: Вывод компонента ошибки
-	if (!posts && error)
-		return (
-			<p className='text-center text-3xl text-red-500'>
-				Ошибка при получении постов
-			</p>
-		)
+	if (!posts && error) <ErrorMessage error={error as ErrorType} />
 
 	if (posts?.length === 0)
 		return <p className='mt-6 text-center'>Постов нет</p>

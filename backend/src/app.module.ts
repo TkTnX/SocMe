@@ -7,8 +7,9 @@ import { AuthModule } from './api/auth/auth.module';
 import { UserModule } from './api/user/user.module';
 import { FollowModule } from './api/follow/follow.module';
 import { FollowerModule } from './api/follower/follower.module';
+import { LikeModule } from './api/like/like.module';
 
 @Module({
-	imports: [ConfigModule.forRoot(configServiceConfig), PrismaModule, PostModule, AuthModule, UserModule, FollowModule, FollowerModule]
+	imports: [ConfigModule.forRoot(configServiceConfig), PrismaModule, PostModule, AuthModule, UserModule, FollowModule, FollowerModule, LikeModule]
 })
 export class AppModule {}

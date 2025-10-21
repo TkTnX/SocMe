@@ -1,33 +1,33 @@
 'use client'
 
+import { AxiosError } from 'axios'
 import { Briefcase, Link } from 'lucide-react'
 import Image from 'next/image'
 
 import { ProfileControls, ProfileNumbers } from './components'
 import { useUser } from '@/api/hooks'
-import { Button, PremiumIcon, Skeleton } from '@/shared/components'
+import {
+	Button,
+	ErrorMessage,
+	PremiumIcon,
+	Skeleton
+} from '@/shared/components'
 import { PostsList } from '@/widgets/PostsList'
+import { ErrorType } from '@/shared/types'
 
 interface Props {
 	userId: string
 }
 
 export const Profile = ({ userId }: Props) => {
-	const { getUserByIdQuery, user } = useUser(userId)
+	const { getUserByIdQuery, user } = useUser()
 	const {
 		data: profile,
 		error: userError,
 		isPending: isUserPending
 	} = getUserByIdQuery(userId)
 
-
-	// TODO: Вывод компонента ошибки
-	if (userError)
-		return (
-			<p className='text-center text-3xl text-red-500'>
-				Ошибка при получении пользователя
-			</p>
-		)
+	if (userError) return <ErrorMessage error={userError as ErrorType} />
 
 	return (
 		<div className='flex-1'>

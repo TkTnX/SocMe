@@ -1,32 +1,42 @@
+'use client'
+
 import Link from 'next/link'
 
+import { useUser } from '@/api/hooks'
 import { UserTitle } from '@/entities'
-import { Block } from '@/shared/components'
+import { Block, Button, ErrorMessage, Skeleton } from '@/shared/components'
+import { ErrorType } from '@/shared/types'
 
 export const YouMayKnow = () => {
+	const { getUsersQuery } = useUser()
+
+	const { data, error, isPending } = getUsersQuery()
+
+	if (error) <ErrorMessage error={error as ErrorType} />
+
+	if (!data?.length && !isPending) return null
+
 	return (
 		<Block className='px-3'>
 			<h6 className='text-black'>Возможно, вам знакомы:</h6>
 			<div className='mt-6 flex flex-col gap-6 border-b pb-6'>
-				<div className='flex flex-col justify-between gap-2 lg:flex-row lg:items-center'>
-					<UserTitle user={{name: "John doe"}} />
-					<button className='text-main border-main rounded-xl border p-2 text-sm'>
-						Подписаться
-					</button>
-				</div>
-				<div className='flex flex-col justify-between gap-2 lg:flex-row lg:items-center'>
-					<UserTitle user={{name: "Jane Grill"}} />
-					<button className='text-main border-main rounded-xl border p-2 text-sm'>
-						Подписаться
-					</button>
-				</div>
-				<div className='flex flex-col justify-between gap-2 lg:flex-row lg:items-center'>
-					<UserTitle user={{name: "Tom Soul"}} />
-					<button className='text-main border-main rounded-xl border p-2 text-sm'>
-						Подписаться
-					</button>
-				</div>
-			
+				{isPending
+					? [...new Array(3)].map((_, index) => (
+							<Skeleton key={index} className='h-10 w-full' />
+						))
+					: data?.map(user => (
+							<div
+								key={user.id}
+								className='flex flex-col justify-between gap-2 lg:flex-row lg:items-center'
+							>
+								<UserTitle user={user} />
+								<Button variant={'outline'} asChild>
+									<Link href={`/profile/${user.id}`}>
+										Подписаться
+									</Link>
+								</Button>
+							</div>
+						))}
 			</div>
 			<Link
 				href={'/people'}

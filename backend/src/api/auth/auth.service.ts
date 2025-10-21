@@ -64,11 +64,9 @@ export class AuthService {
 			where: {
 				id: userId
 			},
-			// include: {
-			// 	posts: true,
-			// 	followers: true,
-			// 	followings: true,
-			// }
+			include: {
+				likes: true,
+			}
 		})
 
 		if (!user) throw new NotFoundException('Пользователь не найден')
