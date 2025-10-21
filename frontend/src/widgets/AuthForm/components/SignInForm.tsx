@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'
 import { useAuth } from '@/api/hooks'
 import { Button, Form } from '@/shared/components'
 import { SignInSchema, signInSchema } from '@/shared/schemas'
+import { AxiosError } from 'axios'
 
 export const SignInForm = () => {
 	const router = useRouter()
@@ -15,6 +16,15 @@ export const SignInForm = () => {
 		onSuccess: () => {
 			toast.success('Успешный вход в аккаунт!')
 			router.push('/')
+		},
+		onError: error => {
+			const err = error as AxiosError<{
+				message: string
+				error: string
+				statusCode: number
+			}>
+console.log(err.response)
+			toast.error(err.response?.data.message)
 		}
 	})
 	const form = useForm<SignInSchema>({

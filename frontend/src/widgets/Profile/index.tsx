@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 import { ProfileControls, ProfileNumbers } from './components'
 import { useUser } from '@/api/hooks'
-import { PremiumIcon, Skeleton } from '@/shared/components'
+import { Button, PremiumIcon, Skeleton } from '@/shared/components'
 import { PostsList } from '@/widgets/PostsList'
 
 interface Props {
@@ -13,12 +13,13 @@ interface Props {
 }
 
 export const Profile = ({ userId }: Props) => {
-	const { getUserByIdQuery } = useUser(userId)
+	const { getUserByIdQuery, user } = useUser(userId)
 	const {
-		data: user,
+		data: profile,
 		error: userError,
 		isPending: isUserPending
 	} = getUserByIdQuery(userId)
+
 
 	// TODO: Вывод компонента ошибки
 	if (userError)
@@ -35,17 +36,17 @@ export const Profile = ({ userId }: Props) => {
 			>
 				{isUserPending ? (
 					<Skeleton className='h-[200px] w-full' />
-				) : user?.cover ? (
+				) : profile?.cover ? (
 					<div className='relative h-[200px] w-full rounded-t-2xl'>
 						<Image
-							alt={user.name}
+							alt={profile.name}
 							fill
-							src={user?.cover}
-							className='rounded-t-2xl'
+							src={profile?.cover}
+							className='rounded-t-2xl object-cover'
 						/>
 					</div>
 				) : (
-					<div className='h-[200px] w-full bg-gray-400' />
+					<div className='h-[200px] w-full rounded-t-2xl bg-gray-400' />
 				)}
 				<div className='absolute -bottom-15 left-1/2 mt-20 h-[150px] w-[150px] -translate-x-1/2 overflow-hidden rounded-full border-2 bg-white'>
 					{isUserPending ? (
@@ -53,9 +54,11 @@ export const Profile = ({ userId }: Props) => {
 					) : (
 						<Image
 							fill
-							alt={user?.name!}
+							alt={profile?.name!}
 							className='object-cover'
-							src={user?.avatar || '/images/icons/no-avatar.svg'}
+							src={
+								profile?.avatar || '/images/icons/no-avatar.svg'
+							}
 						/>
 					)}
 				</div>
@@ -65,30 +68,32 @@ export const Profile = ({ userId }: Props) => {
 					{isUserPending ? (
 						<Skeleton className='h-[20px] w-[50px]' />
 					) : (
-						user?.name
+						profile?.name
 					)}{' '}
 					<PremiumIcon isPremium={true} />
 				</h3>
-				<div className='text-main mt-1 flex items-center justify-center gap-1 text-center text-xs font-bold'>
-					<Briefcase size={12} />
-					{isUserPending ? (
-						<Skeleton className='h-[10px] w-[70px]' />
-					) : (
-						user?.hobby
-					)}
-				</div>
+				{profile?.hobby && (
+					<div className='text-main mt-1 flex items-center justify-center gap-1 text-center text-xs font-bold'>
+						<Briefcase size={12} />
+						{isUserPending ? (
+							<Skeleton className='h-[10px] w-[70px]' />
+						) : (
+							profile?.hobby
+						)}
+					</div>
+				)}
 
 				{/* Кол-во постов, подписчиков и подписок */}
-				<ProfileNumbers isUserPending={isUserPending} user={user!} />
+				<ProfileNumbers isUserPending={isUserPending} user={profile!} />
 
 				{isUserPending ? (
 					<Skeleton className='mt-4 h-[200px] w-full' />
 				) : (
-					<p className='mt-4 text-center text-xs'>{user?.bio}</p>
+					<p className='mt-4 text-center text-xs'>{profile?.bio}</p>
 				)}
-				{user?.websites && (
+				{profile?.websites && (
 					<div className='mt-2 flex items-center justify-center gap-2'>
-						{user?.websites.map((webiste, index) => (
+						{profile?.websites.map((webiste, index) => (
 							<a
 								key={index}
 								className='bg-main/30 text-main flex items-center gap-1 rounded-lg p-1 text-xs hover:opacity-80'
@@ -100,9 +105,15 @@ export const Profile = ({ userId }: Props) => {
 						))}
 					</div>
 				)}
-				<ProfileControls user={user!} />
+				{user?.id === profile?.id ? (
+					<Button className='mt-4 w-full flex-1'>
+						Редактировать профиль
+					</Button>
+				) : (
+					<ProfileControls user={profile!} profileId={profile?.id!} />
+				)}
 			</div>
-			{!isUserPending && <PostsList userPosts={user?.posts} />}
+			{!isUserPending && <PostsList userPosts={profile?.posts} />}
 		</div>
 	)
 }
