@@ -14,6 +14,7 @@ import { usePosts, useUser } from '@/api/hooks';
 import { IPost } from '@/api/types';
 import { Block, Form, FormControl, FormField, FormItem, FormMessage, Textarea } from '@/shared/components';
 import { PostSchema, postSchema } from '@/shared/schemas';
+import { showErrorMessage } from '@/shared/helpers';
 
 
 
@@ -46,14 +47,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 				toast.success(successMessage)
 				onSuccess?.()
 			},
-			onError: (error: unknown) => {
-				const err = error as AxiosError<{
-					message: string
-					error: string
-					statusCode: number
-				}>
-				toast.error(err?.response?.data.message[0])
-			}
+			onError: (error: unknown) => showErrorMessage(error)
 		})
 
 	const { mutate: create, isPending: isCreatePending } = createPostMutation(getMutationHandlers("Успешное создание поста!"))

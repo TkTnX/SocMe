@@ -1,5 +1,6 @@
 import { MoreVertical } from 'lucide-react'
 import Image from 'next/image'
+import { useState } from 'react'
 
 import { UserTitle } from '../User'
 
@@ -8,6 +9,7 @@ import { IPost } from '@/api/types'
 import { PostControls } from '@/entities/Post/components'
 import { AddComment } from '@/features'
 import { Block, PostMoreDropdown } from '@/shared/components'
+import { CommentsList } from '@/widgets'
 
 interface Props {
 	post: IPost
@@ -15,6 +17,7 @@ interface Props {
 
 export const Post = ({ post }: Props) => {
 	const { user } = useUser()
+	const [openComments, setOpenComments] = useState(false)
 	return (
 		<Block className='pt-3.5 pb-2'>
 			<div className='flex items-center justify-between'>
@@ -43,8 +46,16 @@ export const Post = ({ post }: Props) => {
 				)}
 			</div>
 
-			<PostControls totalLikes={post.likes.length} user={user} id={post.id} />
-			<AddComment />
+			<PostControls
+				setOpenComments={setOpenComments}
+				openComments={openComments}
+				totalComments={post.comments.length}
+				totalLikes={post.likes.length}
+				user={user}
+				id={post.id}
+			/>
+			<AddComment postId={post.id} />
+			{openComments && <CommentsList postId={post.id} />}
 		</Block>
 	)
 }

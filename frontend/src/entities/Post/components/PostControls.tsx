@@ -1,21 +1,26 @@
-import Image from 'next/image';
+import Image from 'next/image'
 
-
-
-import { IUser } from '@/api/types';
-import { LikeButton } from '@/features';
-
-
-
-
+import { IUser } from '@/api/types'
+import { LikeButton } from '@/features'
+import { Badge } from '@/shared/components'
 
 interface Props {
 	id: string
 	user: IUser | null
 	totalLikes: number
+	setOpenComments: (bool: boolean) => void
+	openComments: boolean
+	totalComments: number
 }
 
-export const PostControls = ({ id, user, totalLikes }: Props) => {
+export const PostControls = ({
+	id,
+	user,
+	totalLikes,
+	setOpenComments,
+	openComments,
+	totalComments
+}: Props) => {
 	return (
 		<div className='mt-5 flex items-center justify-between'>
 			<div className='flex items-center gap-4'>
@@ -25,8 +30,16 @@ export const PostControls = ({ id, user, totalLikes }: Props) => {
 					id={id}
 					totalLikes={totalLikes}
 				/>
-				<button className='hover:opacity-80'>
+				<button
+					onClick={() => setOpenComments(!openComments)}
+					className='relative hover:opacity-80'
+				>
 					{/* TODO: Badge с кол-вом комментов , как в макете */}
+					{totalComments > 0 && (
+						<Badge className='absolute -top-3 -right-4'>
+							{totalComments > 99 ? '+99' : totalComments}
+						</Badge>
+					)}
 					<Image
 						alt='Комментарии'
 						width={24}

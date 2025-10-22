@@ -4,3 +4,4 @@ export * from "./RightMenu"
 export * from "./PostsList"
 export * from "./AuthForm"
 export * from './Profile'
+export * from "./CommentsList"

@@ -89,7 +89,7 @@ export class PostService {
 		})
 	}
 
-	private async getPostById(id: string) {
+	public async getPostById(id: string) {
 		const post = await this.prismaService.post.findUnique({ where: { id } })
 
 		if (!post) throw new NotFoundException('Пост не найден!')

@@ -1,4 +1,4 @@
-import { ILike, IPost } from "."
+import { ILike, IPost, IUser } from "."
 
 export interface IComment {
     id: string
@@ -11,6 +11,14 @@ export interface IComment {
     createdAt: string
     updatedAt?: string
 
+    user?: IUser
+    userId: string
+
     post?: IPost
     postId: string
+}
+
+export interface CommentRequest {
+    text: string
+    image: string | null
 }

@@ -53,7 +53,6 @@ export const LikeButton = ({ id, user, type, totalLikes = 0 }: Props) => {
 				'relative hover:opacity-80 disabled:pointer-events-none disabled:opacity-50'
 			)}
 		>
-			{/* TODO: Badge с кол-вом лайков , как в макете */}
 			{totalLikes > 0 && (
 				<Badge className='absolute -top-3 -right-4'>
 					{totalLikes > 99 ? '+99' : totalLikes}

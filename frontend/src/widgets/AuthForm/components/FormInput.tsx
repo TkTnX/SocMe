@@ -11,7 +11,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage, StyledInput }
 interface Props<T extends Record<string, any>>
 	extends Omit<React.ComponentProps<'input'>, 'form'> {
 	form: UseFormReturn<T>
-	label: string
+	label?: string
 	name: FieldPath<T>
 }
 
@@ -27,7 +27,7 @@ export const FormInput = <T extends Record<string, any>>({
 			name={name}
 			render={({ field }) => (
 				<FormItem>
-					<FormLabel>{label}</FormLabel>
+					{label && <FormLabel>{label}</FormLabel>}
 					<FormControl>
 						<StyledInput placeholder={props.placeholder} {...field} {...props} />
 					</FormControl>
