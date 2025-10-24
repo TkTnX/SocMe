@@ -26,9 +26,28 @@ export class CommentService {
 			}
 		})
 
-		if (!comments) return []
+		if (!comments.length) return []
 
-		return comments
+		const map = new Map<string, any>()
+		const roots: any[] = []
+
+		for (const comment of comments) {
+			map.set(comment.id, {...comment, replies: []})
+		}
+
+		for (const comment of comments) {
+			if (comment.replyToId) {
+				const parent = map.get(comment.replyToId)
+
+				if (parent) {
+					parent.replies.push(map.get(comment.id))
+				}
+			} else {
+				roots.push(map.get(comment.id))
+			}
+		}
+
+		return roots
 	}
 
 	public async createComment(

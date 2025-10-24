@@ -16,6 +16,7 @@ export const CommentsList = ({ postId }: Props) => {
 
 	if (error) return <ErrorMessage error={error as ErrorType} />
 
+	console.log(data)
 	return (
 		<div className='mt-4 flex flex-col gap-3 border-t py-4'>
 			{isPending ? (
@@ -24,7 +25,9 @@ export const CommentsList = ({ postId }: Props) => {
 				))
 			) : data.length > 0 ? (
 				data.map(comment => (
-					<Comment comment={comment} key={comment.id} />
+					<div className='border-b pb-4' key={comment.id}>
+						<Comment comment={comment} />
+					</div>
 				))
 			) : (
 				<p className='text-center'>Список комментариев пуст</p>

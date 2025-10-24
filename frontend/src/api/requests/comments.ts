@@ -30,3 +30,12 @@ export const deleteComment = async (commentId: string): Promise<IComment> => {
 
 	return data
 }
+
+export const replyToComment = async (
+	postId: string,
+	body: CommentRequest
+): Promise<IComment> => {
+	const { data } = await axiosInstance.post(`/comments/${postId}`, body)
+
+	return data
+}

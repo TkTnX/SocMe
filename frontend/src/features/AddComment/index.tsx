@@ -21,23 +21,28 @@ interface Props {
 	postId: string
 	comment?: IComment
 	onClose?: () => void
+	replyToId?: string
 }
 
-export const AddComment = ({ postId, comment, onClose }: Props) => {
+export const AddComment = ({ postId, comment, onClose, replyToId }: Props) => {
 	const { user, isUserPending } = useUser()
 	const queryClient = useQueryClient()
 	const form = useForm<CommentSchema>({
 		resolver: zodResolver(commentSchema),
 		defaultValues: {
 			image: null,
-			text: comment ? comment.text : ''
-		}
+			text: comment ? comment.text : '',
+			replyToId: replyToId || null
+		},
 	})
+
 	const commentsHook = useComments()
 
-	const commentMutation = comment
-		? commentsHook.editCommentMutation
-		: commentsHook.createCommentMutation
+	const commentMutation = replyToId
+		? commentsHook.replyToCommentMutation
+		: comment
+			? commentsHook.editCommentMutation
+			: commentsHook.createCommentMutation
 
 	const { mutate, isPending } = commentMutation(
 		comment ? comment.id : postId,
@@ -46,6 +51,7 @@ export const AddComment = ({ postId, comment, onClose }: Props) => {
 				queryClient.invalidateQueries({
 					queryKey: ['post comments', postId]
 				})
+				form.reset()
 				onClose?.()
 			}
 		}

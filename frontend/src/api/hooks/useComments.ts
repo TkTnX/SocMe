@@ -8,7 +8,8 @@ import {
 	createComment,
 	deleteComment,
 	editComment,
-	getPostComments
+	getPostComments,
+	replyToComment
 } from '@/api/requests'
 import { CommentRequest, IComment } from '@/api/types'
 
@@ -34,6 +35,7 @@ export function useComments() {
 			...options
 		})
 
+	// РЕДАКТИРОВАНИЕ КОММЕНТАРИЯ
 	const editCommentMutation = (
 		commentId: string,
 		options?: Omit<
@@ -60,11 +62,22 @@ export function useComments() {
 			mutationFn: () => deleteComment(commentId),
 			...options
 		})
+	
+	
+	const replyToCommentMutation = (postId:string,	options?: Omit<
+			UseMutationOptions<any, unknown, any>,
+			'mutationKey' | 'mutationFn'
+		>) => useMutation({
+			mutationKey: ['reply to comment', postId],
+			mutationFn: (body: CommentRequest) => replyToComment( postId, body),
+			...options
+		})
 
 	return {
 		getPostCommentsQuery,
 		createCommentMutation,
 		editCommentMutation,
-		deleteCommentMutation
+		deleteCommentMutation,
+		replyToCommentMutation
 	}
 }
