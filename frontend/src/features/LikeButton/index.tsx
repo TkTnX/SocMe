@@ -17,8 +17,9 @@ interface Props {
 	id: string
 	user: IUser | null
 	totalLikes: number
+	size?: number
 }
-export const LikeButton = ({ id, user, type, totalLikes = 0 }: Props) => {
+export const LikeButton = ({ size, id, user, type, totalLikes = 0 }: Props) => {
 	const queryClient = useQueryClient()
 	const [currLikes, setCurrLikes] = useState(totalLikes)
 	const [isLiked, setIsLiked] = useState(false)
@@ -54,14 +55,16 @@ export const LikeButton = ({ id, user, type, totalLikes = 0 }: Props) => {
 			)}
 		>
 			{totalLikes > 0 && (
-				<Badge className='absolute -top-3 -right-4'>
+				<Badge
+					className={cn('absolute -top-3 -right-4', {"w-[18px] h-[18px] text-xs -right-3 -top-2": size})}
+				>
 					{totalLikes > 99 ? '+99' : totalLikes}
 				</Badge>
 			)}
 			<Image
 				alt='Лайк'
-				width={24}
-				height={24}
+				width={size || 24}
+				height={size || 24}
 				src={`/images/icons/${isLiked ? 'like-filled' : 'like'}.svg`}
 			/>
 		</button>

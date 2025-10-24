@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useUser } from '@/api/hooks'
 import { IComment } from '@/api/types'
 import { UserTitle } from '@/entities/User'
-import { AddComment } from '@/features'
+import { AddComment, LikeButton } from '@/features'
 import { CommentMoreDropdown } from '@/shared/components'
 import { cn } from '@/shared/lib'
 
@@ -46,12 +46,21 @@ export const Comment = ({ comment, className }: Props) => {
 				<>
 					<div className='flex items-center justify-between'>
 						<p className='pt-2 pl-10'>{comment.text}</p>
-						<button
-							onClick={() => setOpenReply(!openReply)}
-							className='hover:text-main'
-						>
-							<Reply size={18} />
-						</button>
+						<div className='flex items-center gap-2'>
+							<button
+								onClick={() => setOpenReply(!openReply)}
+								className='hover:text-main'
+							>
+								<Reply size={18} />
+							</button>
+							<LikeButton
+								size={18}
+								type='COMMENT'
+								id={comment.id}
+								user={user}
+								totalLikes={comment.likes.length}
+							/>
+						</div>
 					</div>
 					{openReply && (
 						<AddComment
