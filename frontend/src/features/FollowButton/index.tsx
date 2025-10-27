@@ -1,7 +1,6 @@
 'use client'
 
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
 
 import { useFollow, useUser } from '@/api/hooks'
 import { IUser } from '@/api/types'
@@ -15,8 +14,6 @@ interface Props {
 
 export const FollowButton = ({ variant, profile }: Props) => {
 	const { user } = useUser()
-	const [isUserFollower, setIsUserFollower] = useState(false)
-	const [isFollowing, setIsFollowing] = useState(false)
 	const { followMutation } = useFollow()
 	const queryClient = useQueryClient()
 	const { mutate, isPending } = followMutation(profile?.id || '', {
@@ -28,23 +25,19 @@ export const FollowButton = ({ variant, profile }: Props) => {
 		}
 	})
 
-	useEffect(() => {
-		const isUserFollower = profile?.followers.find(
-			follower => follower.followerId === user?.id
-		)
-		const isProfileFollowingUser = profile?.followings.find(
-			following => following.followingToId === user?.id
-		)
-		setIsUserFollower(!!isUserFollower)
-		setIsFollowing(!!isProfileFollowingUser)
-	}, [user, profile])
+	const isUserFollower = profile?.followers.find(
+		follower => follower.followerId === user?.id
+	)
+	const isProfileFollowingUser = profile?.followings.find(
+		following => following.followingToId === user?.id
+	)
 
 	const buttonText =
-		isUserFollower && !isFollowing
+		isUserFollower && !isProfileFollowingUser
 			? 'Отписаться'
-			: !isUserFollower && isFollowing
+			: !isUserFollower && isProfileFollowingUser
 				? 'Добавить в друзья'
-				: isUserFollower && isFollowing
+				: isUserFollower && isProfileFollowingUser
 					? 'В друзьях'
 					: 'Подписаться'
 

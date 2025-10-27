@@ -1,4 +1,5 @@
 export * from "./post.schema"
-export * from "./signUp.schema"
-export * from "./signIn.schema"
+export * from "./sign-up.schema"
+export * from "./sign-in.schema"
 export * from "./comment.schema"
+export * from "./edit-profile.schema"

@@ -48,8 +48,6 @@ export class PostService {
 			take: 8
 		})
 
-		console.log(posts)
-
 		return posts
 	}
 

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 
 import { useUser } from '@/api/hooks'
 import { UserTitle } from '@/entities'
-import { Block, Button } from '@/shared/components'
+import { Block, Button, Cover } from '@/shared/components'
 
 export const UserInfo = () => {
 	const pathname = usePathname()
@@ -24,13 +24,7 @@ export const UserInfo = () => {
 		)
 	return (
 		<div className='overflow-hidden rounded-2xl bg-white'>
-			<div className='relative h-20 w-full'>
-				<Image
-					src={'/images/temp/userCover.jpg'}
-					alt='user cover'
-					fill
-				/>
-			</div>
+			<Cover isUserPending={isUserPending} className='h-20' coverUrl={user.cover} />
 			<Block className='overflow-visible rounded-t-none px-3 py-1'>
 				<UserTitle
 					isUserPending={isUserPending}

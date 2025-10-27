@@ -1,11 +1,12 @@
-import {
-	BadGatewayException,
-	Injectable,
-	Logger,
-	NotFoundException
-} from '@nestjs/common'
-import { SignUpDto } from 'src/api/auth/dto'
-import { PrismaService } from 'src/api/prisma/prisma.service'
+import { BadGatewayException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import * as argon from "argon2";
+import { SignUpDto } from 'src/api/auth/dto';
+import { PrismaService } from 'src/api/prisma/prisma.service';
+import { EditProfileDto } from 'src/api/user/dto';
+
+
+
+
 
 @Injectable()
 export class UserService {
@@ -16,9 +17,8 @@ export class UserService {
 		const users = await this.prismaService.user.findMany({
 			// TODO: TEMP, потом на странице people понадобится динамическое значение
 			take: 3,
-			
+
 			where: {
-				
 				AND: [
 					{
 						NOT: {
@@ -39,19 +39,6 @@ export class UserService {
 		return users
 	}
 
-	public async create(dto: SignUpDto) {
-		const user = await this.prismaService.user.create({
-			data: dto
-		})
-
-		if (!user) {
-			this.logger.error('Не удалось зарегистрировать пользователя')
-			throw new BadGatewayException('Не удалось зарегистрироваться!')
-		}
-
-		return user
-	}
-
 	public async findUserByEmail(email: string) {
 		return await this.prismaService.user.findFirst({
 			where: {
@@ -60,7 +47,7 @@ export class UserService {
 		})
 	}
 
-	public async findUserById(userId: string) {
+	public async findUserById(userId: string, takePassword: boolean = false) {
 		const user = await this.prismaService.user.findUnique({
 			where: { id: userId },
 			include: {
@@ -75,7 +62,7 @@ export class UserService {
 				followings: true
 			},
 			omit: {
-				password: true,
+				password: !takePassword ? true : false,
 				provider: true
 			}
 		})
@@ -83,5 +70,39 @@ export class UserService {
 		if (!user) throw new NotFoundException('Пользователь не найден!')
 
 		return user
+	}
+
+	public async create(dto: SignUpDto) {
+		const user = await this.prismaService.user.create({
+			data: dto
+		})
+
+		if (!user) {
+			this.logger.error('Не удалось зарегистрировать пользователя')
+			throw new BadGatewayException('Не удалось зарегистрироваться!')
+		}
+
+		return user
+	}
+
+	public async edit(dto: EditProfileDto, userId: string) {
+		const user = await this.findUserById(userId)
+		const { password, ...restDto } = dto 
+
+		let hashedPassword = user.password;
+		if (password !== "") {
+			hashedPassword = await argon.hash(password)
+		} 
+
+
+		
+		return this.prismaService.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				...restDto
+			}
+		})
 	}
 }

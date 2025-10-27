@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch } from "@nestjs/common";
 import { UserService } from "src/api/user/user.service";
 import { Authorized, Protected } from "src/common/decorators";
 
@@ -16,5 +16,11 @@ export class UserController {
     @Get(":userId")
     public async getUserById(@Param("userId") userId: string) {
         return await this.userService.findUserById(userId)
+    }
+
+    @Protected()
+    @Patch("edit")
+    public async edit(@Body() dto: any, @Authorized("userId") userId: string) {
+        return await this.userService.edit(dto, userId)
     }
 }

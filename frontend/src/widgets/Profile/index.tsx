@@ -1,19 +1,20 @@
 'use client'
 
-import { AxiosError } from 'axios'
-import { Briefcase, Link } from 'lucide-react'
+import { Briefcase, LinkIcon } from 'lucide-react'
 import Image from 'next/image'
 
 import { ProfileControls, ProfileNumbers } from './components'
 import { useUser } from '@/api/hooks'
 import {
 	Button,
+	Cover,
 	ErrorMessage,
 	PremiumIcon,
 	Skeleton
 } from '@/shared/components'
 import { ErrorType } from '@/shared/types'
 import { PostsList } from '@/widgets/PostsList'
+import Link from 'next/link'
 
 interface Props {
 	userId: string
@@ -34,20 +35,7 @@ export const Profile = ({ userId }: Props) => {
 			<div
 				className={`relative flex w-full flex-col items-center justify-center`}
 			>
-				{isUserPending ? (
-					<Skeleton className='h-[200px] w-full' />
-				) : profile?.cover ? (
-					<div className='relative h-[200px] w-full rounded-t-2xl'>
-						<Image
-							alt={profile.name}
-							fill
-							src={profile?.cover}
-							className='rounded-t-2xl object-cover'
-						/>
-					</div>
-				) : (
-					<div className='h-[200px] w-full rounded-t-2xl bg-gray-400' />
-				)}
+				<Cover coverUrl={user?.cover} isUserPending={isUserPending} />
 				<div className='absolute -bottom-15 left-1/2 mt-20 h-[150px] w-[150px] -translate-x-1/2 overflow-hidden rounded-full border-2 bg-white'>
 					{isUserPending ? (
 						<Skeleton className='h-full w-full' />
@@ -99,15 +87,15 @@ export const Profile = ({ userId }: Props) => {
 								className='bg-main/30 text-main flex items-center gap-1 rounded-lg p-1 text-xs hover:opacity-80'
 								href={webiste}
 							>
-								<Link size={12} />
+								<LinkIcon size={12} />
 								{webiste.split('://')[1]}
 							</a>
 						))}
 					</div>
 				)}
 				{user?.id === profile?.id ? (
-					<Button className='mt-4 w-full flex-1'>
-						Редактировать профиль
+					<Button asChild className='mt-4 w-full flex-1'>
+						<Link href='/profile/edit'>Редактировать профиль</Link>
 					</Button>
 				) : (
 					<ProfileControls profile={profile!} />

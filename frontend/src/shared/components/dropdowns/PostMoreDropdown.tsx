@@ -7,7 +7,8 @@ import {
 	DropdownMenuTrigger
 } from '../ui'
 
-import { DeletePost, EditPost } from '@/features'
+import { DeletePost } from '@/features'
+import { EditPost } from '@/widgets'
 
 interface Props {
 	children: React.ReactNode

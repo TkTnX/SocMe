@@ -5,3 +5,5 @@ export * from "./PostsList"
 export * from "./AuthForm"
 export * from './Profile'
 export * from "./CommentsList"
+export * from "./EditProfile"
+export * from "./EditPost"
