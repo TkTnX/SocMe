@@ -7,11 +7,59 @@ import {
 } from '@nestjs/common'
 import { PostDto } from 'src/api/post/dto'
 import { PrismaService } from 'src/api/prisma/prisma.service'
+import { UserService } from 'src/api/user/user.service'
 
 @Injectable()
 export class PostService {
-	public constructor(private readonly prismaService: PrismaService) {}
+	public constructor(
+		private readonly prismaService: PrismaService,
+		private readonly userService: UserService
+	) {}
 	private readonly logger = new Logger(PostService.name)
+
+	public async getPosts(userId: string) {
+		const user = await this.userService.findUserById(userId)
+
+		const posts = await this.prismaService.post.findMany({
+			include: {
+				user: {
+					include: {
+						followers: true
+					}
+				},
+				hashtags: true,
+				likes: true,
+				comments: true,
+				favorites: true
+			},
+			orderBy: {
+				createdAt: 'desc'
+			},
+			where: {
+				user: {
+					followers: {
+						some: {
+							followerId: user.id
+						}
+					}
+				}
+			},
+			// TODO: Add pagination
+			take: 8
+		})
+
+		console.log(posts)
+
+		return posts
+	}
+
+	public async getPostById(id: string) {
+		const post = await this.prismaService.post.findUnique({ where: { id } })
+
+		if (!post) throw new NotFoundException('Пост не найден!')
+
+		return post
+	}
 
 	// Создание постов
 	public async create(dto: PostDto, userId: string) {
@@ -71,29 +119,5 @@ export class PostService {
 			throw new UnauthorizedException('Вы не можете удалить этот пост!')
 
 		return await this.prismaService.post.delete({ where: { id: post.id } })
-	}
-
-	// TODO: В будущем получать только посты тех, на кого подписан
-	public async getPosts() {
-		return await this.prismaService.post.findMany({
-			include: {
-				user: true,
-				hashtags: true,
-				likes: true,
-				comments: true,
-				favorites: true
-			},
-			orderBy: {
-				createdAt: "desc"
-			}
-		})
-	}
-
-	public async getPostById(id: string) {
-		const post = await this.prismaService.post.findUnique({ where: { id } })
-
-		if (!post) throw new NotFoundException('Пост не найден!')
-
-		return post
 	}
 }

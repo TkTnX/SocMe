@@ -48,8 +48,10 @@ export class PostController {
 		return await this.postService.delete(postId, userId)
 	}
 
+	// Получение постов
+	@Protected()
 	@Get()
-	public async getPosts() {
-		return await this.postService.getPosts()
+	public async getPosts(@Authorized('userId') userId: string) {
+		return await this.postService.getPosts(userId)
 	}
 }

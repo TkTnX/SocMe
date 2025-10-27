@@ -5,22 +5,19 @@ import { FollowButton } from '@/features'
 import { Button } from '@/shared/components'
 
 interface Props {
-	user: IUser | null
-	profileId: string
+	profile: IUser | null
 }
 
-export const ProfileControls = ({ user, profileId }: Props) => {
+export const ProfileControls = ({ profile }: Props) => {
 	
 	return (
 		<>
 			<div className='mt-4 flex justify-end gap-2'>
 				<FollowButton
-					followings={user?.followings}
-					profileId={profileId}
-					followers={user?.followers}
+					profile={profile}
 				/>
 				<Button className='flex-1' asChild>
-					<Link href={`/c/${user?.id}`}>Написать</Link>
+					<Link href={`/c/${profile?.id}`}>Написать</Link>
 				</Button>
 			</div>
 

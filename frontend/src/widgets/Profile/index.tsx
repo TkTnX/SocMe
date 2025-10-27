@@ -12,8 +12,8 @@ import {
 	PremiumIcon,
 	Skeleton
 } from '@/shared/components'
-import { PostsList } from '@/widgets/PostsList'
 import { ErrorType } from '@/shared/types'
+import { PostsList } from '@/widgets/PostsList'
 
 interface Props {
 	userId: string
@@ -110,7 +110,7 @@ export const Profile = ({ userId }: Props) => {
 						Редактировать профиль
 					</Button>
 				) : (
-					<ProfileControls user={profile!} profileId={profile?.id!} />
+					<ProfileControls profile={profile!} />
 				)}
 			</div>
 			{!isUserPending && <PostsList userPosts={profile?.posts} />}

@@ -1,58 +1,59 @@
-import { useQueryClient } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
+'use client'
 
-import { useFollow } from '@/api/hooks'
-import { IFollower } from '@/api/types'
+import { useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+
+import { useFollow, useUser } from '@/api/hooks'
+import { IUser } from '@/api/types'
 import { Button, type ButtonVariants } from '@/shared/components'
 import { showErrorMessage } from '@/shared/helpers'
 
 interface Props {
-	followings?: IFollower[]
-	followers?: IFollower[]
-	profileId: string
 	variant?: ButtonVariants
+	profile: IUser | null
 }
 
-export const FollowButton = ({
-	followers,
-	profileId,
-	variant,
-	followings
-}: Props) => {
+export const FollowButton = ({ variant, profile }: Props) => {
+	const { user } = useUser()
+	const [isUserFollower, setIsUserFollower] = useState(false)
+	const [isFollowing, setIsFollowing] = useState(false)
 	const { followMutation } = useFollow()
 	const queryClient = useQueryClient()
-	const { mutate, isPending } = followMutation(profileId, {
+	const { mutate, isPending } = followMutation(profile?.id || '', {
 		onError: (error: unknown) => showErrorMessage(error),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ['user by id', profileId]
+				queryKey: ['user by id', profile?.id]
 			})
 		}
 	})
-	const isFollowing = followers?.find(following => {
-		return following.followingToId === profileId
-	})
 
-	const isFollowed = followings?.find(
-		follower => follower.followerId === profileId
-	)
+	useEffect(() => {
+		const isUserFollower = profile?.followers.find(
+			follower => follower.followerId === user?.id
+		)
+		const isProfileFollowingUser = profile?.followings.find(
+			following => following.followingToId === user?.id
+		)
+		setIsUserFollower(!!isUserFollower)
+		setIsFollowing(!!isProfileFollowingUser)
+	}, [user, profile])
 
 	const buttonText =
-		isFollowing && !isFollowed
+		isUserFollower && !isFollowing
 			? 'Отписаться'
-			: isFollowed && !isFollowing
+			: !isUserFollower && isFollowing
 				? 'Добавить в друзья'
-				: isFollowed && isFollowing
+				: isUserFollower && isFollowing
 					? 'В друзьях'
 					: 'Подписаться'
 
 	return (
 		<Button
 			disabled={isPending}
-			onClick={() => mutate(profileId)}
+			onClick={() => mutate(profile?.id)}
 			className='flex-1'
-			variant={isFollowing ? 'outline' : variant ? variant : 'default'}
+			variant={isUserFollower ? 'outline' : variant ? variant : 'default'}
 		>
 			{buttonText}
 		</Button>

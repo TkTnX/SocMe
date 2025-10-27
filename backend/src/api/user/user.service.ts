@@ -16,7 +16,9 @@ export class UserService {
 		const users = await this.prismaService.user.findMany({
 			// TODO: TEMP, потом на странице people понадобится динамическое значение
 			take: 3,
+			
 			where: {
+				
 				AND: [
 					{
 						NOT: {
@@ -65,7 +67,8 @@ export class UserService {
 				posts: {
 					include: {
 						user: true,
-						likes: true
+						likes: true,
+						comments: true
 					}
 				},
 				followers: true,

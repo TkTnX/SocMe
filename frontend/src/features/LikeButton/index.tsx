@@ -26,7 +26,7 @@ export const LikeButton = ({ size, id, user, type, totalLikes = 0 }: Props) => {
 
 	const { likeMutation } = useLike()
 
-	const { mutate, isPending, error } = likeMutation(type, id, {
+	const { mutate, isPending } = likeMutation(type, id, {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['posts'] })
 			setIsLiked(!isLiked)
@@ -40,7 +40,6 @@ export const LikeButton = ({ size, id, user, type, totalLikes = 0 }: Props) => {
 		onError: (error: unknown) => showErrorMessage(error)
 	})
 
-	// TODO: Comments
 	useEffect(() => {
 		const like = user?.likes?.find(like => like.likedId === id)
 		setIsLiked(!!like)
