@@ -1,6 +1,10 @@
-import { IUser } from '@/api/types'
-import { axiosInstance } from '@/shared/lib'
-import { EditProfileSchema } from '@/shared/schemas'
+import { IUser } from '@/api/types';
+import { axiosInstance } from '@/shared/lib';
+import { EditProfileSchema } from '@/shared/schemas';
+
+
+
+
 
 export const getUsers = async () => {
 	const { data } = await axiosInstance.get<Promise<IUser[]>>('/users')
@@ -19,8 +23,8 @@ export const getUserById = async (userId: string) => {
 	return data
 }
 
-export const editUserProfile = async (body: EditProfileSchema) => {
+export const editUserProfile = async (body: Partial<EditProfileSchema>) => {
 	const { data } = await axiosInstance.patch(`/users/edit`, body)
-	
+
 	return data
 }

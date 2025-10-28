@@ -2,6 +2,8 @@ import { Logger, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import * as cookieParser from 'cookie-parser'
+import * as express from 'express'
+import { join } from 'path'
 import { getCorsConfig } from 'src/configs'
 
 import { AppModule } from './app.module'
@@ -15,6 +17,7 @@ async function bootstrap() {
 	app.enableCors(getCorsConfig(config))
 	app.useGlobalPipes(new ValidationPipe())
 	app.use(cookieParser())
+	app.use('/uploads', express.static(join(__dirname, '..', 'uploads')))
 
 	const port = config.getOrThrow('HTTP_PORT')
 	const host = config.getOrThrow('HTTP_HOST')

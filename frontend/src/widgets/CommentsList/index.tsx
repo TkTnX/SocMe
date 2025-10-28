@@ -16,7 +16,6 @@ export const CommentsList = ({ postId }: Props) => {
 
 	if (error) return <ErrorMessage error={error as ErrorType} />
 
-	console.log(data)
 	return (
 		<div className='mt-4 flex flex-col gap-3 border-t py-4'>
 			{isPending ? (

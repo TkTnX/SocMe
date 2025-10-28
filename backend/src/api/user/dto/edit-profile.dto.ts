@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/mapped-types'
 import {
 	IsArray,
 	IsEmail,
@@ -27,8 +28,7 @@ export class EditProfileDto {
 	bio: string
 
 	@IsOptional()
-	@IsArray({ each: true })
-	@IsString({ message: 'URL Должны быть строками' })
+	@IsArray()
 	websites: string[]
 
 	@IsOptional()
@@ -36,3 +36,5 @@ export class EditProfileDto {
 	@MaxLength(15, { message: 'Максимум 15 символов' })
 	hobby: string
 }
+
+export class PartialEditProfileDto extends PartialType(EditProfileDto) {}

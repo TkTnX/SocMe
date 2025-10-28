@@ -1,11 +1,13 @@
-import {
-	UseMutationOptions,
-	useMutation,
-	useQuery
-} from '@tanstack/react-query'
+import { UseMutationOptions, useMutation, useQuery } from '@tanstack/react-query';
 
-import { editUserProfile, getUser, getUserById, getUsers } from '@/api/requests'
-import { EditProfileSchema } from '@/shared/schemas'
+
+
+import { editUserProfile, getUser, getUserById, getUsers } from '@/api/requests';
+import { EditProfileSchema } from '@/shared/schemas';
+
+
+
+
 
 export function useUser() {
 	const getUsersQuery = () =>
@@ -39,7 +41,8 @@ export function useUser() {
 	) =>
 		useMutation({
 			mutationKey: ['edit profile'],
-			mutationFn: (body: EditProfileSchema) => editUserProfile(body),
+			mutationFn: (body: Partial<EditProfileSchema>) =>
+				editUserProfile(body),
 			...options
 		})
 

@@ -1,12 +1,13 @@
-import { BadGatewayException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import * as argon from "argon2";
-import { SignUpDto } from 'src/api/auth/dto';
-import { PrismaService } from 'src/api/prisma/prisma.service';
-import { EditProfileDto } from 'src/api/user/dto';
-
-
-
-
+import {
+	BadGatewayException,
+	Injectable,
+	Logger,
+	NotFoundException
+} from '@nestjs/common'
+import * as argon from 'argon2'
+import { SignUpDto } from 'src/api/auth/dto'
+import { PrismaService } from 'src/api/prisma/prisma.service'
+import { EditProfileDto, PartialEditProfileDto } from 'src/api/user/dto'
 
 @Injectable()
 export class UserService {
@@ -85,22 +86,21 @@ export class UserService {
 		return user
 	}
 
-	public async edit(dto: EditProfileDto, userId: string) {
+	public async edit(dto: PartialEditProfileDto, userId: string) {
 		const user = await this.findUserById(userId)
-		const { password, ...restDto } = dto 
+		const { password, ...restDto } = dto
 
-		let hashedPassword = user.password;
-		if (password !== "") {
+		let hashedPassword = user.password
+		if (password && password !== '') {
 			hashedPassword = await argon.hash(password)
-		} 
+		}
 
-
-		
 		return this.prismaService.user.update({
 			where: {
 				id: user.id
 			},
 			data: {
+				password: hashedPassword,
 				...restDto
 			}
 		})

@@ -41,6 +41,13 @@ axiosInstance.interceptors.response.use(
 
 		if (!response || !config) return Promise.reject(error)
 
+		if (
+			config.url?.includes('/auth/sign-in') ||
+			config.url?.includes('/auth/sign-up')
+		) {
+			return Promise.reject(error)
+		}
+
 		if (config.url?.includes('/auth/refresh')) {
 			return Promise.reject(error)
 		}

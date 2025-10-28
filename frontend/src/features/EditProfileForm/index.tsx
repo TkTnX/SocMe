@@ -26,8 +26,8 @@ export const EditProfileForm = ({ user }: Props) => {
 			bio: user?.bio,
 			email: user?.email,
 			hobby: user?.hobby,
-            websites: user?.websites,
-            password: ""
+			websites: user?.websites,
+			password: ''
 		}
 	})
 	const { mutate, isPending } = editUserProfileMutation({
@@ -38,7 +38,16 @@ export const EditProfileForm = ({ user }: Props) => {
 		onError: err => showErrorMessage(err)
 	})
 
-	const onSubmit = (values: EditProfileSchema) => mutate(values)
+	const onSubmit = (values: EditProfileSchema) => {
+		if (
+			Number(values.password?.length) !== 0 &&
+			Number(values.password?.length) < 6
+		) {
+			return toast.error('Минмальная длина пароля - 6 символов')
+		}
+
+		mutate(values)
+	}
 
 	return (
 		<Form {...form}>
