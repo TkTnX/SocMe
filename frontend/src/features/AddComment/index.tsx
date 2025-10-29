@@ -100,14 +100,7 @@ export const AddComment = ({ postId, comment, onClose, replyToId }: Props) => {
 						</FormItem>
 					)}
 				/>
-				<button type='button' className='hover:opacity-80'>
-					<Image
-						src={'/images/icons/imageIcon.svg'}
-						alt='Добавить фото'
-						width={16}
-						height={16}
-					/>
-				</button>
+
 				{form.watch('text') ? (
 					<button
 						disabled={isPending}

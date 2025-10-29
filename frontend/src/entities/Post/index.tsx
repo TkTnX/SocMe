@@ -6,7 +6,7 @@ import { UserTitle } from '../User'
 
 import { useUser } from '@/api/hooks'
 import { IPost } from '@/api/types'
-import { PostControls } from '@/entities/Post/components'
+import { PostControls, PostImages } from '@/entities/Post/components'
 import { AddComment } from '@/features'
 import { Block, PostMoreDropdown } from '@/shared/components'
 import { CommentsList } from '@/widgets'
@@ -35,15 +35,7 @@ export const Post = ({ post }: Props) => {
 
 				{/* TODO: ADD SLIDER */}
 				{post.images.length ? (
-					<div className='relative mt-3.5 aspect-[4/5] max-h-[500px] w-full'>
-						{/* TODO: При нажатии открывать */}
-						<Image
-							className='rounded-2xl object-contain'
-							alt={post.text.slice(0, 50)}
-							src={post.images[0]}
-							fill
-						/>
-					</div>
+					<PostImages images={post.images} />
 				) : (
 					''
 				)}

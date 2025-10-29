@@ -83,15 +83,16 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 
 	const onSubmit = (values: PostSchema) =>
 		post
-			? edit({ ...values, images: imagesUrls })
+			? edit({ ...values, images: [...post.images, ...imagesUrls] })
 			: create({ ...values, images: imagesUrls })
 
 	return (
 		<Block className='p-0'>
-			{imagesUrls.length ? (
+			{(post || imagesUrls.length) ? (
 				<div className='flex flex-wrap items-stretch gap-2'>
-					{imagesUrls.map(image => (
+					{[...( post?.images || []), ...imagesUrls].map(image => (
 						<Image
+							key={image}
 							src={image}
 							alt='preview'
 							width={100}
@@ -103,7 +104,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 			) : (
 				''
 			)}
-			<Form {...form}>
+			<Form key={'addPostForm'} {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className='flex w-full items-start gap-4 px-6 py-4'>
 						{!post && (
