@@ -1,24 +1,28 @@
-'use client';
+'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { Send } from 'lucide-react';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import { Send } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
-
-
-import { usePosts, useUser } from '@/api/hooks';
-import { IPost } from '@/api/types';
-import { Block, Form, FormControl, FormField, FormItem, FormMessage, Textarea } from '@/shared/components';
-import { PostSchema, postSchema } from '@/shared/schemas';
-import { showErrorMessage } from '@/shared/helpers';
-
-
-
-
+import { UploadPostImages } from './components'
+import { usePosts, useUploads, useUser } from '@/api/hooks'
+import { IPost } from '@/api/types'
+import {
+	Block,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormMessage,
+	Textarea
+} from '@/shared/components'
+import { showErrorMessage } from '@/shared/helpers'
+import { PostSchema, postSchema } from '@/shared/schemas'
 
 interface Props {
 	post?: IPost | null
@@ -26,31 +30,51 @@ interface Props {
 }
 
 export const AddPostForm = ({ post = null, onSuccess }: Props) => {
+	const [images, setImages] = useState<File[]>([])
+	const [imagesUrls, setImagesUrls] = useState<string[]>(post?.images || [])
 	const { user } = useUser()
+	const { uploadMutation } = useUploads()
 	const queryClient = useQueryClient()
 	const { createPostMutation, editPostMutation } = usePosts()
 
 	const form = useForm<PostSchema>({
 		resolver: zodResolver(postSchema),
 		defaultValues: {
-			text: post ? post.text : ''
+			text: post ? post.text : '',
+			images: post ? post.images : []
 		}
 	})
 
-		const getMutationHandlers = (
-			successMessage: string,
-			onSuccess?: () => void
-		) => ({
-			onSuccess: () => {
-				form.reset({ text: '' })
-				queryClient.invalidateQueries({ queryKey: ['posts'] })
-				toast.success(successMessage)
-				onSuccess?.()
-			},
-			onError: (error: unknown) => showErrorMessage(error)
-		})
+	const { mutate: upload } = uploadMutation(true)
 
-	const { mutate: create, isPending: isCreatePending } = createPostMutation(getMutationHandlers("Успешное создание поста!"))
+	useEffect(() => {
+		const formData = new FormData()
+		for (const file of images) {
+			formData.append('files', file)
+		}
+		upload(formData, {
+			onSuccess: data => {
+				setImagesUrls(data)
+			}
+		})
+	}, [images])
+
+	const getMutationHandlers = (
+		successMessage: string,
+		onSuccess?: () => void
+	) => ({
+		onSuccess: () => {
+			form.reset({ text: '' })
+			queryClient.invalidateQueries({ queryKey: ['posts'] })
+			toast.success(successMessage)
+			onSuccess?.()
+		},
+		onError: (error: unknown) => showErrorMessage(error)
+	})
+
+	const { mutate: create, isPending: isCreatePending } = createPostMutation(
+		getMutationHandlers('Успешное создание поста!')
+	)
 
 	const { mutate: edit, isPending: isEditPending } = editPostMutation(
 		post?.id!,
@@ -58,10 +82,27 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 	)
 
 	const onSubmit = (values: PostSchema) =>
-		post ? edit(values) : create(values)
+		post
+			? edit({ ...values, images: imagesUrls })
+			: create({ ...values, images: imagesUrls })
 
 	return (
 		<Block className='p-0'>
+			{imagesUrls.length ? (
+				<div className='flex flex-wrap items-stretch gap-2'>
+					{imagesUrls.map(image => (
+						<Image
+							src={image}
+							alt='preview'
+							width={100}
+							height={100}
+							className='object-cover'
+						/>
+					))}
+				</div>
+			) : (
+				''
+			)}
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className='flex w-full items-start gap-4 px-6 py-4'>
@@ -72,7 +113,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 									'/images/icons/no-avatar.svg'
 								}
 								alt={user?.name || ''}
-								className='rounded-2xl'
+								className='min-h-[40px] min-w-[40px] rounded-2xl object-cover'
 								width={40}
 								height={40}
 							/>
@@ -98,20 +139,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 						/>
 					</div>
 					<div className='flex items-center justify-between bg-[#ecf9ff] pl-6'>
-						<button
-							type='button'
-							className='flex items-center gap-1.5'
-						>
-							<Image
-								width={24}
-								height={24}
-								alt='Добавление фото'
-								src={'/images/icons/imageIcon.svg'}
-							/>
-							<span className='hidden lg:inline'>
-								Изображения
-							</span>
-						</button>
+						<UploadPostImages setImages={setImages} />
 						<button
 							type='button'
 							className='flex items-center gap-1.5'

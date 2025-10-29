@@ -19,8 +19,7 @@ export class EditProfileDto {
 	@IsEmail({}, { message: 'Почта обязательна!' })
 	email: string
 
-	@IsNotEmpty({ message: 'Пароль обязателен!' })
-	@MinLength(6, { message: 'Минимальная длина пароля - 6 символов' })
+	@IsOptional()
 	password: string
 
 	@IsOptional()

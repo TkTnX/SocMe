@@ -1,14 +1,12 @@
-import { UseMutationOptions, useMutation, useQuery } from '@tanstack/react-query';
+import {
+	UseMutationOptions,
+	useMutation,
+	useQuery
+} from '@tanstack/react-query'
 
-
-
-import { createPost, deletePost, editPost, getPosts } from '@/api/requests';
-import { IPost, IPostRequest } from '@/api/types';
-import { PostSchema } from '@/shared/schemas';
-
-
-
-
+import { createPost, deletePost, editPost, getPosts } from '@/api/requests'
+import { IPost, IPostRequest } from '@/api/types'
+import { PostSchema } from '@/shared/schemas'
 
 export function usePosts(userPosts?: IPost[]) {
 	const {

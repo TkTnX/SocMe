@@ -1,16 +1,22 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-import { useUser } from '@/api/hooks'
-import { IUser } from '@/api/types'
-import { Button, Form } from '@/shared/components'
-import { showErrorMessage } from '@/shared/helpers'
-import { EditProfileSchema, editProfileSchema } from '@/shared/schemas'
-import { FormInput } from '@/widgets/AuthForm/components'
+
+
+import { useUser } from '@/api/hooks';
+import { IUser } from '@/api/types';
+import { Button, Form } from '@/shared/components';
+import { showErrorMessage } from '@/shared/helpers';
+import { EditProfileSchema, editProfileSchema } from '@/shared/schemas';
+import { FormInput } from '@/widgets/AuthForm/components';
+
+
+
+
 
 interface Props {
 	user: IUser | null
@@ -27,7 +33,7 @@ export const EditProfileForm = ({ user }: Props) => {
 			email: user?.email,
 			hobby: user?.hobby,
 			websites: user?.websites,
-			password: ''
+			password: ""
 		}
 	})
 	const { mutate, isPending } = editUserProfileMutation({
@@ -46,7 +52,10 @@ export const EditProfileForm = ({ user }: Props) => {
 			return toast.error('Минмальная длина пароля - 6 символов')
 		}
 
-		mutate(values)
+		const websites = values.websites?.split(",").map((value: string) => value.trim()) || []
+
+
+		mutate({...values, websites})
 	}
 
 	return (

@@ -1,13 +1,11 @@
-import {
-	BadGatewayException,
-	Injectable,
-	Logger,
-	NotFoundException,
-	UnauthorizedException
-} from '@nestjs/common'
-import { PostDto } from 'src/api/post/dto'
-import { PrismaService } from 'src/api/prisma/prisma.service'
-import { UserService } from 'src/api/user/user.service'
+import { BadGatewayException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { PostDto } from 'src/api/post/dto';
+import { PrismaService } from 'src/api/prisma/prisma.service';
+import { UserService } from 'src/api/user/user.service';
+
+
+
+
 
 @Injectable()
 export class PostService {
@@ -37,11 +35,18 @@ export class PostService {
 			},
 			where: {
 				user: {
-					followers: {
-						some: {
-							followerId: user.id
+					OR: [
+						{
+							followers: {
+								some: {
+									followerId: user.id
+								}
+							}
+						},
+						{
+						id: userId
 						}
-					}
+					]
 				}
 			},
 			// TODO: Add pagination

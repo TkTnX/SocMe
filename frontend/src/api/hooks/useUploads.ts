@@ -2,7 +2,7 @@ import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 
 
 
-import { uploadFile } from "@/api/requests";
+import { uploadFile, uploadFiles } from "@/api/requests";
 
 
 
@@ -10,7 +10,8 @@ import { uploadFile } from "@/api/requests";
 
 export function useUploads() {
 
-    const uploadMutation = (
+	const uploadMutation = (
+		isMany?: boolean,
 		options?: Omit<
 			UseMutationOptions<any, unknown, any>,
 			'mutationKey' | 'mutationFn'
@@ -18,7 +19,7 @@ export function useUploads() {
 	) =>
 		useMutation({
 			mutationKey: ['upload file'],
-			mutationFn: (body: FormData) => uploadFile(body),
+			mutationFn: (body: FormData) => isMany ? uploadFiles(body) : uploadFile(body),
 			...options
 		})
 

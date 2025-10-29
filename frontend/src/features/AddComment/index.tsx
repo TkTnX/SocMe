@@ -33,7 +33,7 @@ export const AddComment = ({ postId, comment, onClose, replyToId }: Props) => {
 			image: null,
 			text: comment ? comment.text : '',
 			replyToId: replyToId || null
-		},
+		}
 	})
 
 	const commentsHook = useComments()
@@ -71,7 +71,7 @@ export const AddComment = ({ postId, comment, onClose, replyToId }: Props) => {
 						src={user?.avatar || '/images/icons/no-avatar.svg'}
 						width={26}
 						height={26}
-						className='rounded-full object-cover'
+						className='min-h-[26px] min-w-[26px] rounded-full object-cover'
 						alt={user?.name || ''}
 					/>
 				) : (

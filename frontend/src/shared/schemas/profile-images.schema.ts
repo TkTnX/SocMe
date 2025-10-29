@@ -1,16 +1,9 @@
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/shared/constants';
 import z from 'zod';
 
 
 
 
-
-const MAX_FILE_SIZE = 1000000
-const ACCEPTED_IMAGE_TYPES = [
-	'image/jpeg',
-	'image/jpg',
-	'image/png',
-	'image/webp'
-]
 
 export const profileImages = z.object({
 	image: z

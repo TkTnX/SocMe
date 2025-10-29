@@ -8,7 +8,7 @@ export const editProfileSchema = z.object({
 	email: z.email('Введите почту!'),
 	password: z.string('Пароль должен быть строкой!').optional(),
 	bio: z.string().optional(),
-	websites: z.array(z.url('Введите url сайта')).optional(),
+	websites: z.any().optional(),
 	hobby: z.string().max(15).optional(),
 	avatar: z.url("URL аватарки должен быть строкой").optional(),
 	cover: z.url("URL Обложки должен быть строкой").optional()

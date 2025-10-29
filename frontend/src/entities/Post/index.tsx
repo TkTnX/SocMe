@@ -33,16 +33,19 @@ export const Post = ({ post }: Props) => {
 			<div className='mt-3.5'>
 				<h2 className='mt-4 text-sm text-black'>{post.text}</h2>
 
-				{post.image && (
-					<div className='relative mt-3.5 aspect-[16/9] max-h-[305px] w-full'>
+				{/* TODO: ADD SLIDER */}
+				{post.images.length ? (
+					<div className='relative mt-3.5 aspect-[4/5] max-h-[500px] w-full'>
 						{/* TODO: При нажатии открывать */}
 						<Image
-							className='rounded-2xl object-cover'
+							className='rounded-2xl object-contain'
 							alt={post.text.slice(0, 50)}
-							src={post.image}
+							src={post.images[0]}
 							fill
 						/>
 					</div>
+				) : (
+					''
 				)}
 			</div>
 
