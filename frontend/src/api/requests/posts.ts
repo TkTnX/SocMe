@@ -7,6 +7,12 @@ export const getPosts = async () => {
 	return data
 }
 
+export const getPostById = async (postId: string) => {
+	const { data } = await axiosInstance.get<IPost>(`/posts/${postId}`)
+	
+	return data
+}
+
 export const createPost = async (values: IPostRequest) => {
 	const { data } = await axiosInstance.post<IPost>('/posts', values)
 

@@ -32,7 +32,7 @@ export const PostImages = ({ images }: Props) => {
 		<Carousel setApi={setApi}>
 			<CarouselContent>
 				{images.map(image => (
-					<CarouselItem>
+					<CarouselItem key={image}>
 						<div
 							key={image}
 							className='relative mt-3.5 aspect-[4/5] max-h-[500px] w-full'

@@ -1,10 +1,11 @@
 import {
 	UseMutationOptions,
+	UseQueryOptions,
 	useMutation,
 	useQuery
 } from '@tanstack/react-query'
 
-import { createPost, deletePost, editPost, getPosts } from '@/api/requests'
+import { createPost, deletePost, editPost, getPostById, getPosts } from '@/api/requests'
 import { IPost, IPostRequest } from '@/api/types'
 import { PostSchema } from '@/shared/schemas'
 
@@ -18,6 +19,12 @@ export function usePosts(userPosts?: IPost[]) {
 		queryFn: () => getPosts(),
 		enabled: !userPosts,
 		initialData: userPosts
+	})
+
+	const getPostByIdQuery = (postId: string, options?: Omit<UseQueryOptions<any, unknown, any>, 'queryKey' | 'queryFn'>) => useQuery({
+		queryKey: ['get post by id', postId],
+		queryFn: () => getPostById(postId),
+		...options
 	})
 
 	const createPostMutation = (
@@ -63,6 +70,7 @@ export function usePosts(userPosts?: IPost[]) {
 		posts,
 		isLoading,
 		error,
+		getPostByIdQuery,
 		createPostMutation,
 		editPostMutation,
 		deletePostMutation

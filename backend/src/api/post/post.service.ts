@@ -1,11 +1,13 @@
-import { BadGatewayException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { PostDto } from 'src/api/post/dto';
-import { PrismaService } from 'src/api/prisma/prisma.service';
-import { UserService } from 'src/api/user/user.service';
-
-
-
-
+import {
+	BadGatewayException,
+	Injectable,
+	Logger,
+	NotFoundException,
+	UnauthorizedException
+} from '@nestjs/common'
+import { PostDto } from 'src/api/post/dto'
+import { PrismaService } from 'src/api/prisma/prisma.service'
+import { UserService } from 'src/api/user/user.service'
 
 @Injectable()
 export class PostService {
@@ -44,7 +46,7 @@ export class PostService {
 							}
 						},
 						{
-						id: userId
+							id: userId
 						}
 					]
 				}
@@ -57,7 +59,14 @@ export class PostService {
 	}
 
 	public async getPostById(id: string) {
-		const post = await this.prismaService.post.findUnique({ where: { id } })
+		const post = await this.prismaService.post.findUnique({
+			where: { id },
+			include: {
+				user: true,
+				likes: true,
+				comments: true
+			}
+		})
 
 		if (!post) throw new NotFoundException('Пост не найден!')
 

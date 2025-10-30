@@ -10,16 +10,18 @@ import { PostControls, PostImages } from '@/entities/Post/components'
 import { AddComment } from '@/features'
 import { Block, PostMoreDropdown } from '@/shared/components'
 import { CommentsList } from '@/widgets'
+import { cn } from '@/shared/lib'
 
 interface Props {
 	post: IPost
+	className?:string
 }
 
-export const Post = ({ post }: Props) => {
+export const Post = ({ post, className }: Props) => {
 	const { user } = useUser()
 	const [openComments, setOpenComments] = useState(false)
 	return (
-		<Block className='pt-3.5 pb-2'>
+		<Block className={cn('pt-3.5 pb-2', className)}>
 			<div className='flex items-center justify-between'>
 				<UserTitle user={post.user} />
 				{user?.id === post.userId && (
@@ -33,7 +35,6 @@ export const Post = ({ post }: Props) => {
 			<div className='mt-3.5'>
 				<h2 className='mt-4 text-sm text-black'>{post.text}</h2>
 
-				{/* TODO: ADD SLIDER */}
 				{post.images.length ? (
 					<PostImages images={post.images} />
 				) : (

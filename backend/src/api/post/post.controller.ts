@@ -54,4 +54,10 @@ export class PostController {
 	public async getPosts(@Authorized('userId') userId: string) {
 		return await this.postService.getPosts(userId)
 	}
+
+
+	@Get(':postId')
+	public async getPostById(@Param("postId") postId: string) {
+		return await this.postService.getPostById(postId)
+	}
 }

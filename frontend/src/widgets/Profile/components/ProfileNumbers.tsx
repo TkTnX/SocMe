@@ -1,5 +1,6 @@
 import { IUser } from '@/api/types'
 import { Skeleton } from '@/shared/components'
+import { getDeclensions } from '@/shared/helpers'
 
 interface Props {
 	isUserPending: boolean
@@ -9,7 +10,6 @@ interface Props {
 export const ProfileNumbers = ({ isUserPending, user }: Props) => {
 	return (
 		<div className='mt-2 flex flex-wrap items-center justify-center gap-2 sm:gap-10'>
-			{/* TODO: Добавить склонения */}
 			<div className='flex items-center gap-1'>
 				<span className='text-sm font-bold text-black'>
 					{isUserPending ? (
@@ -18,7 +18,10 @@ export const ProfileNumbers = ({ isUserPending, user }: Props) => {
 						user?.posts.length
 					)}
 				</span>{' '}
-				Постов
+				{getDeclensions(
+					['Пост', 'Поста', 'Постов'],
+					user?.posts.length || 0
+				)}
 			</div>
 			<div className='flex items-center gap-1'>
 				<span className='text-sm font-bold text-black'>
@@ -28,7 +31,10 @@ export const ProfileNumbers = ({ isUserPending, user }: Props) => {
 						user?.followers.length
 					)}
 				</span>{' '}
-				Подписчиков
+				{getDeclensions(
+					['Подписчик', 'Подписчика', 'Подписчиков'],
+					user?.followers.length || 0
+				)}
 			</div>
 			<div className='flex items-center gap-1'>
 				<span className='text-sm font-bold text-black'>
@@ -38,7 +44,10 @@ export const ProfileNumbers = ({ isUserPending, user }: Props) => {
 						user?.followings.length
 					)}
 				</span>{' '}
-				Подписок
+				{getDeclensions(
+					['Подписка', 'Подписки', 'Подписок'],
+					user?.followings.length || 0
+				)}
 			</div>
 		</div>
 	)
