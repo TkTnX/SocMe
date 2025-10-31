@@ -30,7 +30,8 @@ export class PostService {
 				hashtags: true,
 				likes: true,
 				comments: true,
-				favorites: true
+				favorites: true,
+				
 			},
 			orderBy: {
 				createdAt: 'desc'
@@ -64,7 +65,8 @@ export class PostService {
 			include: {
 				user: true,
 				likes: true,
-				comments: true
+				comments: true,
+				hashtags: true
 			}
 		})
 

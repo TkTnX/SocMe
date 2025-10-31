@@ -1,13 +1,12 @@
-import {
-	BadGatewayException,
-	Injectable,
-	Logger,
-	NotFoundException
-} from '@nestjs/common'
-import * as argon from 'argon2'
-import { SignUpDto } from 'src/api/auth/dto'
-import { PrismaService } from 'src/api/prisma/prisma.service'
-import { EditProfileDto, PartialEditProfileDto } from 'src/api/user/dto'
+import { BadGatewayException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import * as argon from 'argon2';
+import { SignUpDto } from 'src/api/auth/dto';
+import { PrismaService } from 'src/api/prisma/prisma.service';
+import { EditProfileDto, PartialEditProfileDto } from 'src/api/user/dto';
+
+
+
+
 
 @Injectable()
 export class UserService {
@@ -60,7 +59,8 @@ export class UserService {
 					}
 				},
 				followers: true,
-				followings: true
+				followings: true,
+				hashtags: true
 			},
 			omit: {
 				password: !takePassword ? true : false,

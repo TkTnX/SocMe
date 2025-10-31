@@ -73,7 +73,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 	})
 
 	const { mutate: create, isPending: isCreatePending } = createPostMutation(
-		getMutationHandlers('Успешное создание поста!')
+		getMutationHandlers('Успешное создание поста!'),
 	)
 
 	const { mutate: edit, isPending: isEditPending } = editPostMutation(
@@ -81,16 +81,29 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 		getMutationHandlers('Пост успешно изменён!', onSuccess)
 	)
 
-	const onSubmit = (values: PostSchema) =>
-		post
-			? edit({ ...values, images: [...post.images, ...imagesUrls] })
-			: create({ ...values, images: imagesUrls })
+	const onSubmit = (values: PostSchema) => {
+		const hashtags = values.text
+			.split(' ')
+			.filter(word => word.includes('#'))
+		const text = values.text
+			.split(' ')
+			.filter(word => !word.includes('#'))
+			.join(' ')
+
+		return post
+			? edit({
+					text,
+					images: [...post.images, ...imagesUrls],
+					hashtags
+				})
+			: create({ text, images: imagesUrls, hashtags })
+	}
 
 	return (
 		<Block className='p-0'>
-			{(post || imagesUrls.length) ? (
+			{post || imagesUrls.length ? (
 				<div className='flex flex-wrap items-stretch gap-2'>
-					{[...( post?.images || []), ...imagesUrls].map(image => (
+					{[...(post?.images || []), ...imagesUrls].map(image => (
 						<Image
 							key={image}
 							src={image}

@@ -20,4 +20,5 @@ export interface IPost {
 export interface IPostRequest {
 	text: string
 	images: string[]
+	hashtags: string[]
 }

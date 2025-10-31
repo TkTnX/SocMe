@@ -1,12 +1,11 @@
 import { MoreVertical } from 'lucide-react'
-import Image from 'next/image'
 import { useState } from 'react'
 
 import { UserTitle } from '../User'
 
 import { useUser } from '@/api/hooks'
 import { IPost } from '@/api/types'
-import { PostControls, PostImages } from '@/entities/Post/components'
+import { PostControls, PostHashtags, PostImages } from '@/entities/Post/components'
 import { AddComment } from '@/features'
 import { Block, PostMoreDropdown } from '@/shared/components'
 import { CommentsList } from '@/widgets'
@@ -41,7 +40,7 @@ export const Post = ({ post, className }: Props) => {
 					''
 				)}
 			</div>
-
+				{post.hashtags && <PostHashtags hashtags={post.hashtags} />}
 			<PostControls
 				setOpenComments={setOpenComments}
 				openComments={openComments}

@@ -11,6 +11,7 @@ import { PrismaModule } from './api/prisma/prisma.module'
 import { UserModule } from './api/user/user.module'
 import { FileModule } from './api/file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static'
+import { HashtagModule } from './api/hashtag/hashtag.module';
 import * as path from 'path'
 
 @Module({
@@ -28,6 +29,7 @@ import * as path from 'path'
 		LikeModule,
 		CommentModule,
 		FileModule,
+		HashtagModule,
 	]
 })
 export class AppModule {}
