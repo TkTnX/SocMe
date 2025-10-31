@@ -5,7 +5,8 @@ import {
 	Get,
 	Param,
 	Patch,
-	Post
+	Post,
+	Query
 } from '@nestjs/common'
 import { PostDto } from 'src/api/post/dto'
 import { Authorized, Protected } from 'src/common/decorators'
@@ -51,8 +52,8 @@ export class PostController {
 	// Получение постов
 	@Protected()
 	@Get()
-	public async getPosts(@Authorized('userId') userId: string) {
-		return await this.postService.getPosts(userId)
+	public async getPosts(@Authorized('userId') userId: string, @Query("hashtag") hashtag?:string) {
+		return await this.postService.getPosts(userId, hashtag)
 	}
 
 

@@ -6,8 +6,16 @@ import { EditProfileSchema } from '@/shared/schemas';
 
 
 
-export const getUsers = async () => {
-	const { data } = await axiosInstance.get<Promise<IUser[]>>('/users')
+export const getUsers = async (isPeoplePage: boolean = false, query?: string) => {
+	let queryString = '?'
+
+	if (isPeoplePage) queryString = queryString + `isPeoplePage=${isPeoplePage}&`
+	if(query) queryString = queryString + `query=${query}&`
+
+
+	const { data } = await axiosInstance.get<Promise<IUser[]>>(
+		`/users${queryString}`
+	)
 
 	return data
 }

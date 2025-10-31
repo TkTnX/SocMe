@@ -2,6 +2,7 @@
 
 import { Briefcase, LinkIcon } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 import { ProfileControls, ProfileNumbers } from './components'
 import { useUser } from '@/api/hooks'
@@ -14,7 +15,6 @@ import {
 } from '@/shared/components'
 import { ErrorType } from '@/shared/types'
 import { PostsList } from '@/widgets/PostsList'
-import Link from 'next/link'
 
 interface Props {
 	userId: string
@@ -51,7 +51,7 @@ export const Profile = ({ userId }: Props) => {
 					)}
 				</div>
 			</div>
-			<div className='rounded-b-2xl bg-white px-4 pt-16 pb-4'>
+			<div className='mb-6 rounded-b-2xl bg-white px-4 pt-16 pb-4'>
 				<h3 className='flex items-center justify-center gap-1 text-center text-2xl font-bold text-black'>
 					{isUserPending ? (
 						<Skeleton className='h-[20px] w-[50px]' />

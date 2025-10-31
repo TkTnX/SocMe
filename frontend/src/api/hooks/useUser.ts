@@ -10,10 +10,10 @@ import { EditProfileSchema } from '@/shared/schemas';
 
 
 export function useUser() {
-	const getUsersQuery = () =>
+	const getUsersQuery = (isPeoplePage: boolean, query?: string) =>
 		useQuery({
-			queryKey: ['users'],
-			queryFn: () => getUsers()
+			queryKey: ['users', query],
+			queryFn: () => getUsers(isPeoplePage, query)
 		})
 
 	const {

@@ -6,8 +6,6 @@ import { useUser } from '@/api/hooks'
 import { Block, Skeleton } from '@/shared/components'
 import { AddHashtag } from '@/widgets/AddHashtag'
 
-
-
 export const FollowedHashtags = () => {
 	const { user, isUserPending, userError } = useUser()
 	if (userError) return null
@@ -27,7 +25,7 @@ export const FollowedHashtags = () => {
 						? user?.hashtags.map(hashtag => (
 								<Link
 									key={hashtag.id}
-									href={`/posts?hashtag=${hashtag.name}`}
+									href={`/posts?hashtag=${hashtag.name.substring(1)}`}
 									className='text-main border-main hover:bg-main w-fit rounded-full border px-2 py-1 text-center transition hover:text-white'
 								>
 									{hashtag.name}

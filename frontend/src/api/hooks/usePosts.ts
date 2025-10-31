@@ -1,31 +1,39 @@
-import {
-	UseMutationOptions,
-	UseQueryOptions,
-	useMutation,
-	useQuery
-} from '@tanstack/react-query'
+import { UseMutationOptions, UseQueryOptions, useMutation, useQuery } from '@tanstack/react-query';
 
-import { createPost, deletePost, editPost, getPostById, getPosts } from '@/api/requests'
-import { IPost, IPostRequest } from '@/api/types'
-import { PostSchema } from '@/shared/schemas'
 
-export function usePosts(userPosts?: IPost[]) {
+
+import { createPost, deletePost, editPost, getPostById, getPosts } from '@/api/requests';
+import { IPost, IPostRequest } from '@/api/types';
+import { PostSchema } from '@/shared/schemas';
+
+
+
+
+
+export function usePosts(userPosts?: IPost[], hashtag?: string) {
 	const {
 		data: posts,
 		isLoading,
 		error
 	} = useQuery({
-		queryKey: ['posts', userPosts],
-		queryFn: () => getPosts(),
+		queryKey: ['posts', userPosts, hashtag],
+		queryFn: () => getPosts(hashtag),
 		enabled: !userPosts,
 		initialData: userPosts
 	})
 
-	const getPostByIdQuery = (postId: string, options?: Omit<UseQueryOptions<any, unknown, any>, 'queryKey' | 'queryFn'>) => useQuery({
-		queryKey: ['get post by id', postId],
-		queryFn: () => getPostById(postId),
-		...options
-	})
+	const getPostByIdQuery = (
+		postId: string,
+		options?: Omit<
+			UseQueryOptions<any, unknown, any>,
+			'queryKey' | 'queryFn'
+		>
+	) =>
+		useQuery({
+			queryKey: ['get post by id', postId],
+			queryFn: () => getPostById(postId),
+			...options
+		})
 
 	const createPostMutation = (
 		options?: Omit<

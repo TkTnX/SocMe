@@ -73,7 +73,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 	})
 
 	const { mutate: create, isPending: isCreatePending } = createPostMutation(
-		getMutationHandlers('Успешное создание поста!'),
+		getMutationHandlers('Успешное создание поста!')
 	)
 
 	const { mutate: edit, isPending: isEditPending } = editPostMutation(
@@ -100,7 +100,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 	}
 
 	return (
-		<Block className='p-0'>
+		<Block className='mb-6 p-0'>
 			{post || imagesUrls.length ? (
 				<div className='flex flex-wrap items-stretch gap-2'>
 					{[...(post?.images || []), ...imagesUrls].map(image => (

@@ -17,9 +17,8 @@ export class PostService {
 	) {}
 	private readonly logger = new Logger(PostService.name)
 
-	public async getPosts(userId: string) {
+	public async getPosts(userId: string, hashtag?: string) {
 		const user = await this.userService.findUserById(userId)
-
 		const posts = await this.prismaService.post.findMany({
 			include: {
 				user: {
@@ -30,8 +29,7 @@ export class PostService {
 				hashtags: true,
 				likes: true,
 				comments: true,
-				favorites: true,
-				
+				favorites: true
 			},
 			orderBy: {
 				createdAt: 'desc'
@@ -50,6 +48,14 @@ export class PostService {
 							id: userId
 						}
 					]
+				},
+				hashtags: {
+					some: {
+						name: {
+							equals: hashtag ? `#${hashtag}` : undefined,
+							mode: 'insensitive'
+						}
+					}
 				}
 			},
 			// TODO: Add pagination

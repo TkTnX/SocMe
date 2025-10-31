@@ -1,23 +1,27 @@
-import { BadGatewayException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import * as argon from 'argon2';
-import { SignUpDto } from 'src/api/auth/dto';
-import { PrismaService } from 'src/api/prisma/prisma.service';
-import { EditProfileDto, PartialEditProfileDto } from 'src/api/user/dto';
-
-
-
-
+import {
+	BadGatewayException,
+	Injectable,
+	Logger,
+	NotFoundException
+} from '@nestjs/common'
+import * as argon from 'argon2'
+import { SignUpDto } from 'src/api/auth/dto'
+import { PrismaService } from 'src/api/prisma/prisma.service'
+import { EditProfileDto, PartialEditProfileDto } from 'src/api/user/dto'
 
 @Injectable()
 export class UserService {
 	public constructor(private readonly prismaService: PrismaService) {}
 	private readonly logger = new Logger(UserService.name)
 
-	public async findUsers(userId: string) {
+	public async findUsers(
+		userId: string,
+		isPeoplePage: boolean = false,
+		query?: string
+	) {
 		const users = await this.prismaService.user.findMany({
 			// TODO: TEMP, потом на странице people понадобится динамическое значение
-			take: 3,
-
+			take: !isPeoplePage ? 3 : undefined,
 			where: {
 				AND: [
 					{
@@ -30,6 +34,12 @@ export class UserService {
 							none: {
 								followerId: userId
 							}
+						}
+					},
+					{
+						name: {
+							contains: query ? query : undefined,
+							mode: 'insensitive'
 						}
 					}
 				]

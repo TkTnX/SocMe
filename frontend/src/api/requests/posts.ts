@@ -1,15 +1,17 @@
 import { IPost, IPostRequest } from '@/api/types'
 import { axiosInstance } from '@/shared/lib'
 
-export const getPosts = async () => {
-	const { data } = await axiosInstance.get<IPost[]>('/posts')
+export const getPosts = async (hashtag?: string) => {
+	const { data } = await axiosInstance.get<IPost[]>(
+		`/posts${hashtag ? `?hashtag=${hashtag}` : ''}`
+	)
 
 	return data
 }
 
 export const getPostById = async (postId: string) => {
 	const { data } = await axiosInstance.get<IPost>(`/posts/${postId}`)
-	
+
 	return data
 }
 

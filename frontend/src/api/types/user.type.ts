@@ -15,6 +15,8 @@ export interface IUser {
 	hobby?: string
 	avatar?: string
 	cover?: string
+	city?: string
+	gender?: EGender
 
 	provider: EProviders
 
@@ -30,4 +32,9 @@ enum EProviders {
     CREDENTIALS,
     YANDEX,
     GOOGLE
+}
+
+enum EGender {
+	MALE,
+	FEMALE
 }

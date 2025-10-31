@@ -20,6 +20,8 @@ model User {
   hobby    String?
   avatar   String?
   cover    String?
+  gender EGender?
+  city String?
 
   provider EProviders @default(CREDENTIALS)
 
@@ -130,4 +132,10 @@ enum EProviders {
   CREDENTIALS
   YANDEX
   GOOGLE
+}
+
+
+enum EGender {
+  MALE
+  FEMALE
 }
