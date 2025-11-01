@@ -1,4 +1,4 @@
-import { PeopleList, RightMenu } from "@/widgets"
+import { PeopleFilterMenu, PeopleList } from "@/widgets"
 
 const PeoplePage = () => {
 	return (
@@ -6,8 +6,7 @@ const PeoplePage = () => {
 			<div className='flex-1'>
 				<PeopleList />
 			</div>
-            {/* TODO: TEMP */}
-			<RightMenu />
+			<PeopleFilterMenu />
 		</>
 	)
 }

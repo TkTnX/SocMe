@@ -22,6 +22,7 @@ model User {
   cover    String?
   gender EGender?
   city String?
+  birthdayDate String?
 
   provider EProviders @default(CREDENTIALS)
 
