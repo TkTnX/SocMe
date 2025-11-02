@@ -1,16 +1,5 @@
-import {
-	Body,
-	Controller,
-	Get,
-	Param,
-	Patch,
-	Query,
-	UploadedFile,
-	UseInterceptors
-} from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { FileService } from 'src/api/file/file.service'
-import { EditProfileDto, PartialEditProfileDto } from 'src/api/user/dto'
+import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common'
+import { PartialEditProfileDto } from 'src/api/user/dto'
 import { UserService } from 'src/api/user/user.service'
 import { Authorized, Protected } from 'src/common/decorators'
 
@@ -22,10 +11,9 @@ export class UserController {
 	@Get()
 	public async getUsers(
 		@Authorized('userId') userId: string,
-		@Query('isPeoplePage') isPeoplePage: boolean,
-		@Query('query') query: string
+		@Query() query
 	) {
-		return await this.userService.findUsers(userId, isPeoplePage, query)
+		return await this.userService.findUsers(userId, query)
 	}
 
 	@Get(':userId')

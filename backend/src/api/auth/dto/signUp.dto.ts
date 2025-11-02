@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator'
+import { EGender } from 'generated/prisma'
 
 export class SignUpDto {
 	@IsNotEmpty({ message: 'Имя обязательно!' })
@@ -12,4 +13,7 @@ export class SignUpDto {
 	@IsNotEmpty({ message: 'Пароль обязателен!' })
 	@MinLength(6, { message: 'Минимальная длина пароля - 6 символов' })
 	password: string
+
+	@IsNotEmpty({message: "Пол обязателен!"})
+	gender: EGender
 }

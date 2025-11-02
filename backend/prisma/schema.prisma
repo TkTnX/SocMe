@@ -20,9 +20,9 @@ model User {
   hobby    String?
   avatar   String?
   cover    String?
-  gender EGender?
+  gender EGender
   city String?
-  birthdayDate String?
+  birthdayDate DateTime?
 
   provider EProviders @default(CREDENTIALS)
 

@@ -7,7 +7,8 @@ export const signUpSchema = z.object({
 	email: z.email('Введите почту!'),
 	password: z
 		.string('Пароль должен быть строкой!')
-		.min(6, 'Минимальная длина пароля - 6 символов!')
+		.min(6, 'Минимальная длина пароля - 6 символов!'),
+	gender: z.string('Пол должен быть строкой')
 })
 
 export type SignUpSchema = z.infer<typeof signUpSchema>

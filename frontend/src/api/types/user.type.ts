@@ -17,6 +17,7 @@ export interface IUser {
 	cover?: string
 	city?: string
 	gender?: EGender
+	birthdayDate?: string
 
 	provider: EProviders
 

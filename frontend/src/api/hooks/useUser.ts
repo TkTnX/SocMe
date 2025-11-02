@@ -1,16 +1,17 @@
-import { UseMutationOptions, useMutation, useQuery } from '@tanstack/react-query';
+import {
+	UseMutationOptions,
+	useMutation,
+	useQuery
+} from '@tanstack/react-query'
 
-
-
-import { editUserProfile, getUser, getUserById, getUsers } from '@/api/requests';
-import { EditProfileSchema } from '@/shared/schemas';
-
-
-
-
+import { editUserProfile, getUser, getUserById, getUsers } from '@/api/requests'
+import { EditProfileSchema } from '@/shared/schemas'
 
 export function useUser() {
-	const getUsersQuery = (isPeoplePage: boolean, query?: string) =>
+	const getUsersQuery = (
+		isPeoplePage: boolean,
+		query?: Record<string, string>
+	) =>
 		useQuery({
 			queryKey: ['users', query],
 			queryFn: () => getUsers(isPeoplePage, query)
@@ -41,8 +42,11 @@ export function useUser() {
 	) =>
 		useMutation({
 			mutationKey: ['edit profile'],
-			mutationFn: (body: Partial<EditProfileSchema>) =>
-				editUserProfile(body),
+			mutationFn: (
+				body: Partial<Omit<EditProfileSchema, 'websites'>> & {
+					websites?: string[]
+				}
+			) => editUserProfile(body),
 			...options
 		})
 

@@ -6,7 +6,17 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import { useAuth } from '@/api/hooks'
-import { Button, Form } from '@/shared/components'
+import {
+	Button,
+	Form,
+	FormField,
+	FormItem,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '@/shared/components'
 import { SignUpSchema, signUpSchema } from '@/shared/schemas'
 
 export const SignUpForm = () => {
@@ -34,7 +44,8 @@ export const SignUpForm = () => {
 		defaultValues: {
 			name: '',
 			email: '',
-			password: ''
+			password: '',
+			gender: ''
 		}
 	})
 
@@ -61,12 +72,41 @@ export const SignUpForm = () => {
 					placeholder='tonystark@example.com'
 				/>
 				<FormInput
-					type="password"
+					type='password'
 					form={form}
 					label='Пароль'
 					name='password'
 					placeholder='******'
 				/>
+				<FormField
+					control={form.control}
+					name='gender'
+					render={({ field }) => (
+						<FormItem>
+							<Select
+								onValueChange={field.onChange}
+								value={field.value}
+							>
+								<SelectTrigger className='w-full'>
+									<SelectValue
+										placeholder={
+											field.value || 'Выберите пол'
+										}
+									/>
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value='MALE'>
+										Мужской
+									</SelectItem>
+									<SelectItem value='FEMALE'>
+										Женский
+									</SelectItem>
+								</SelectContent>
+							</Select>
+						</FormItem>
+					)}
+				/>
+
 				<Button disabled={isPending}> Зарегистрироваться</Button>
 			</form>
 		</Form>

@@ -1,6 +1,7 @@
 'use client'
 
 import { Filter, Search } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -17,16 +18,17 @@ import {
 import { ErrorType } from '@/shared/types'
 
 export const PeopleList = () => {
+	const searchParams = useSearchParams()
 	const [query, setQuery] = useState('')
 	const [value] = useDebounce(query, 1000)
 	const { getUsersQuery } = useUser()
-	const { data, error, isPending } = getUsersQuery(true, value)
-	// TODO: Фильтрация по городу, полу, возрасту
-	// TODO: При редактировании профиля добавить возможность изменять по городу, полу, возрасту
-	// TODO: Фильтрация на мобилках должна отображаться
+	const { data, error, isPending } = getUsersQuery(true, {
+		value,
+		...Object.fromEntries(searchParams)
+	})
 	return (
 		<>
-			<PeopleFilterSheet />
+				<PeopleFilterSheet />
 			<Block className='mt-2 py-2'>
 				<label className='flex items-center gap-2'>
 					<Search />

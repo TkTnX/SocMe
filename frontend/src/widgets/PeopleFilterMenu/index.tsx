@@ -54,7 +54,6 @@ export const PeopleFilterMenu = ({ isMobile = false, onClose }: Props) => {
 		router.push(`?${query}`)
 		onClose?.()
 	}
-	console.log({ city, age, gender })
 
 	return (
 		<div

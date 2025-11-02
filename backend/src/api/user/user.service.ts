@@ -5,45 +5,83 @@ import {
 	NotFoundException
 } from '@nestjs/common'
 import * as argon from 'argon2'
+import { EGender, Prisma } from 'generated/prisma'
 import { SignUpDto } from 'src/api/auth/dto'
 import { PrismaService } from 'src/api/prisma/prisma.service'
-import { EditProfileDto, PartialEditProfileDto } from 'src/api/user/dto'
+import { PartialEditProfileDto } from 'src/api/user/dto'
 
 @Injectable()
 export class UserService {
 	public constructor(private readonly prismaService: PrismaService) {}
 	private readonly logger = new Logger(UserService.name)
 
-	public async findUsers(
-		userId: string,
-		isPeoplePage: boolean = false,
-		query?: string
-	) {
-		const users = await this.prismaService.user.findMany({
-			// TODO: TEMP, потом на странице people понадобится динамическое значение
-			take: !isPeoplePage ? 3 : undefined,
-			where: {
-				AND: [
-					{
-						NOT: {
-							id: userId
-						}
-					},
-					{
-						followers: {
-							none: {
-								followerId: userId
-							}
-						}
-					},
-					{
-						name: {
-							contains: query ? query : undefined,
-							mode: 'insensitive'
+	public async findUsers(userId: string, query: Record<string, string>) {
+		let where: Prisma.UserWhereInput = {
+			AND: [
+				{
+					NOT: {
+						id: userId
+					}
+				},
+				{
+					followers: {
+						none: {
+							followerId: userId
 						}
 					}
-				]
+				},
+				{
+					name: {
+						contains: query.value ? query.value : undefined,
+						mode: 'insensitive'
+					}
+				},
+				{
+					gender:
+						query.gender && query.gender !== 'any'
+							? (query.gender as EGender)
+							: undefined
+				},
+				{
+					city: {
+						contains: query.city ? query.city : undefined,
+						mode: 'insensitive'
+					}
+				}
+			]
+		}
+
+		if (query.ageFrom || query.ageTo) {
+			const now = new Date()
+
+			let gteDate // нижняя граница возраста
+			let lteDate // верхняя граница возраста
+
+			if (query.ageFrom) {
+				lteDate = new Date(
+					now.getFullYear() - Number(query.ageFrom),
+					now.getMonth(),
+					now.getDate()
+				)
 			}
+
+			if (query.ageTo) {
+				gteDate = new Date(
+					now.getFullYear() - Number(query.ageTo) - 1,
+					now.getMonth(),
+					now.getDate() + 1
+				)
+			}
+
+			where.birthdayDate = {
+				...(gteDate && { gte: gteDate }),
+				...(lteDate && { lte: lteDate })
+			}
+		}
+
+		const users = await this.prismaService.user.findMany({
+			take: !query.isPeoplePage ? 3 : undefined,
+			where
 		})
 
 		return users
@@ -98,11 +136,16 @@ export class UserService {
 
 	public async edit(dto: PartialEditProfileDto, userId: string) {
 		const user = await this.findUserById(userId)
-		const { password, ...restDto } = dto
+		const { password, birthdayDate, ...restDto } = dto
 
 		let hashedPassword = user.password
 		if (password && password !== '') {
 			hashedPassword = await argon.hash(password)
+		}
+
+		let birthDate
+		if (birthdayDate) {
+			birthDate = new Date(birthdayDate)
 		}
 
 		return this.prismaService.user.update({
@@ -111,6 +154,7 @@ export class UserService {
 			},
 			data: {
 				password: hashedPassword,
+				birthdayDate: birthDate,
 				...restDto
 			}
 		})

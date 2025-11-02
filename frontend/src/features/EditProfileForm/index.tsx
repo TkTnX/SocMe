@@ -1,22 +1,16 @@
-'use client';
+'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
-
-
-import { useUser } from '@/api/hooks';
-import { IUser } from '@/api/types';
-import { Button, Form } from '@/shared/components';
-import { showErrorMessage } from '@/shared/helpers';
-import { EditProfileSchema, editProfileSchema } from '@/shared/schemas';
-import { FormInput } from '@/widgets/AuthForm/components';
-
-
-
-
+import { useUser } from '@/api/hooks'
+import { IUser } from '@/api/types'
+import { Button, Form } from '@/shared/components'
+import { showErrorMessage } from '@/shared/helpers'
+import { EditProfileSchema, editProfileSchema } from '@/shared/schemas'
+import { FormInput } from '@/widgets/AuthForm/components'
 
 interface Props {
 	user: IUser | null
@@ -29,11 +23,13 @@ export const EditProfileForm = ({ user }: Props) => {
 		resolver: zodResolver(editProfileSchema),
 		defaultValues: {
 			name: user?.name,
-			bio: user?.bio,
+			bio: user?.bio || '',
 			email: user?.email,
-			hobby: user?.hobby,
-			websites: user?.websites,
-			password: ""
+			hobby: user?.hobby || '',
+			websites: user?.websites?.join(', ') || '',
+			password: '',
+			birthdayDate: user?.birthdayDate || '',
+			city: user?.city || ''
 		}
 	})
 	const { mutate, isPending } = editUserProfileMutation({
@@ -45,6 +41,7 @@ export const EditProfileForm = ({ user }: Props) => {
 	})
 
 	const onSubmit = (values: EditProfileSchema) => {
+		console.log(values)
 		if (
 			Number(values.password?.length) !== 0 &&
 			Number(values.password?.length) < 6
@@ -52,10 +49,11 @@ export const EditProfileForm = ({ user }: Props) => {
 			return toast.error('Минмальная длина пароля - 6 символов')
 		}
 
-		const websites = values.websites?.split(",").map((value: string) => value.trim()) || []
+		const websites = values.websites
+			?.split(',')
+			.map((value: string) => value.trim()) || []
 
-
-		mutate({...values, websites})
+		mutate({ ...values, websites })
 	}
 
 	return (
@@ -92,6 +90,22 @@ export const EditProfileForm = ({ user }: Props) => {
 				<h3 className='text-main mt-5 text-xl font-semibold'>
 					Личные данные
 				</h3>
+				<FormInput
+					disabled={isPending}
+					form={form}
+					type='date'
+					label='Дата рождения'
+					name='birthdayDate'
+					placeholder='19-03-2009'
+				/>
+				<FormInput
+					disabled={isPending}
+					form={form}
+					type='text'
+					label='Город'
+					name='city'
+					placeholder='Москва'
+				/>
 				<FormInput
 					disabled={isPending}
 					form={form}

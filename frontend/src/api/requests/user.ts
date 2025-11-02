@@ -1,20 +1,21 @@
-import { IUser } from '@/api/types';
-import { axiosInstance } from '@/shared/lib';
-import { EditProfileSchema } from '@/shared/schemas';
+import { IUser } from '@/api/types'
+import { axiosInstance } from '@/shared/lib'
+import { EditProfileSchema } from '@/shared/schemas'
 
+export const getUsers = async (
+	isPeoplePage: boolean = false,
+	query?: Record<string, string>
+) => {
+	const params = new URLSearchParams()
 
+	if (isPeoplePage) params.append('isPeoplePage', String(isPeoplePage))
 
-
-
-export const getUsers = async (isPeoplePage: boolean = false, query?: string) => {
-	let queryString = '?'
-
-	if (isPeoplePage) queryString = queryString + `isPeoplePage=${isPeoplePage}&`
-	if(query) queryString = queryString + `query=${query}&`
-
+	Object.entries(query || {}).forEach(([key, value]) => {
+		if (value) params.append(key, value)
+	})
 
 	const { data } = await axiosInstance.get<Promise<IUser[]>>(
-		`/users${queryString}`
+		`/users?${params.toString()}`
 	)
 
 	return data
@@ -31,7 +32,11 @@ export const getUserById = async (userId: string) => {
 	return data
 }
 
-export const editUserProfile = async (body: Partial<EditProfileSchema>) => {
+export const editUserProfile = async (
+	body: Partial<Omit<EditProfileSchema, 'websites'>> & {
+		websites?: string[]
+	}
+) => {
 	const { data } = await axiosInstance.patch(`/users/edit`, body)
 
 	return data

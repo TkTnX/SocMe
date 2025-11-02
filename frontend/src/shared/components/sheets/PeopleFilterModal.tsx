@@ -17,14 +17,17 @@ export const PeopleFilterSheet = () => {
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild>
-				<Button variant={'outline'}>
+				<Button className='flex md:hidden' variant={'outline'}>
 					<Filter />
 					Фильтрация
 				</Button>
 			</SheetTrigger>
 			<SheetContent className='w-full !max-w-full' side='left'>
 				<SheetTitle />
-				<PeopleFilterMenu onClose={() => setOpen(false)} isMobile={true} />
+				<PeopleFilterMenu
+					onClose={() => setOpen(false)}
+					isMobile={true}
+				/>
 			</SheetContent>
 		</Sheet>
 	)

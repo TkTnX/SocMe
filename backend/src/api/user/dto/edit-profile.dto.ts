@@ -34,6 +34,10 @@ export class EditProfileDto {
 	@IsString({ message: 'Работа/хобби должно быть строкой!' })
 	@MaxLength(15, { message: 'Максимум 15 символов' })
 	hobby: string
+
+	@IsOptional()
+	@IsString({ message: 'Дата рождения должна быть строкой' })
+	birthdayDate: string
 }
 
 export class PartialEditProfileDto extends PartialType(EditProfileDto) {}
