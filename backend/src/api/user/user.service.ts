@@ -51,6 +51,14 @@ export class UserService {
 			]
 		}
 
+		if (query.act) {
+			where.followings = {
+				some: {
+					followingToId: userId
+				}
+			}
+		}
+
 		if (query.ageFrom || query.ageTo) {
 			const now = new Date()
 

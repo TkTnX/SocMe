@@ -41,7 +41,6 @@ export const EditProfileForm = ({ user }: Props) => {
 	})
 
 	const onSubmit = (values: EditProfileSchema) => {
-		console.log(values)
 		if (
 			Number(values.password?.length) !== 0 &&
 			Number(values.password?.length) < 6

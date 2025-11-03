@@ -1,0 +1,11 @@
+import {  PeopleList } from '@/widgets'
+
+const PeoplePage = () => {
+	return (
+		<div className='flex-1'>
+			<PeopleList />
+		</div>
+	)
+}
+
+export default PeoplePage

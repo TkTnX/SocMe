@@ -66,7 +66,16 @@ export class AuthService {
 			},
 			include: {
 				likes: true,
-				hashtags: true
+				hashtags: true,
+				followers: true,
+				followings: {
+					include: {
+						followingTo: true
+					}
+				}
+			},
+			omit: {
+				password: true
 			}
 		})
 
