@@ -1,4 +1,4 @@
-import { IFavorite, IFollower, IHashtag, ILike, IPost } from ".";
+import { IFavorite, IFollower, IGroup, IGroupFollower, IHashtag, ILike, IPost } from ".";
 
 
 
@@ -27,6 +27,8 @@ export interface IUser {
 	followings: IFollower[]
 	posts: IPost[]
 	hashtags: IHashtag[]
+	groups: IGroup[]
+	followingGroups: IGroupFollower[]
 }
 
 enum EProviders {

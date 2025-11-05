@@ -16,7 +16,11 @@ interface Props {
 export const PostsList = ({ userPosts }: Props) => {
 	const searchParams = useSearchParams()
 	const hashtag = searchParams.get('hashtag') || undefined
-	const { posts, error, isLoading } = usePosts(userPosts, hashtag)
+
+	const { posts, error, isLoading } = usePosts(
+		userPosts,
+		Object.fromEntries(searchParams)
+	)
 	const router = useRouter()
 	const pathname = usePathname()
 	if (!posts && error) <ErrorMessage error={error as ErrorType} />
@@ -29,12 +33,15 @@ export const PostsList = ({ userPosts }: Props) => {
 			{hashtag && (
 				<div className='flex items-center justify-between'>
 					<h3>Поиск по тегу: #{hashtag}</h3>
-					<button onClick={() => router.replace(pathname)} className='text-main'>
+					<button
+						onClick={() => router.replace(pathname)}
+						className='text-main'
+					>
 						<X />
 					</button>
 				</div>
 			)}
-			<div className=' flex flex-col gap-6'>
+			<div className='mt-4 flex flex-col gap-6'>
 				{isLoading
 					? [...new Array(5)].map((_, index) => (
 							<Skeleton

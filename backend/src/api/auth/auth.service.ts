@@ -72,7 +72,9 @@ export class AuthService {
 					include: {
 						followingTo: true
 					}
-				}
+				},
+				groups: true,
+				followingGroups: {include: {group: true}}
 			},
 			omit: {
 				password: true

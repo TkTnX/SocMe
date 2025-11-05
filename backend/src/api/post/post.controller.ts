@@ -52,8 +52,8 @@ export class PostController {
 	// Получение постов
 	@Protected()
 	@Get()
-	public async getPosts(@Authorized('userId') userId: string, @Query("hashtag") hashtag?:string) {
-		return await this.postService.getPosts(userId, hashtag)
+	public async getPosts(@Authorized('userId') userId: string, @Query() query?:Record<string,string>) {
+		return await this.postService.getPosts(userId, query)
 	}
 
 

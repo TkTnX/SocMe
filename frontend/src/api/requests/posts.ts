@@ -1,9 +1,20 @@
-import { IPost, IPostRequest } from '@/api/types'
-import { axiosInstance } from '@/shared/lib'
+import { IPost, IPostRequest } from '@/api/types';
+import { axiosInstance } from '@/shared/lib';
 
-export const getPosts = async (hashtag?: string) => {
+
+
+
+
+export const getPosts = async (query?: Record<string, string>) => {
+	const params = new URLSearchParams()
+
+	Object.entries(query || {}).forEach(([key, value]) => {
+		if (value) params.append(key, value)
+	})
+
+
 	const { data } = await axiosInstance.get<IPost[]>(
-		`/posts${hashtag ? `?hashtag=${hashtag}` : ''}`
+		`/posts?${[params.toString()]}`
 	)
 
 	return data

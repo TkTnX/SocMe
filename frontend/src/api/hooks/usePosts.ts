@@ -10,14 +10,14 @@ import { PostSchema } from '@/shared/schemas';
 
 
 
-export function usePosts(userPosts?: IPost[], hashtag?: string) {
+export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 	const {
 		data: posts,
 		isLoading,
 		error
 	} = useQuery({
-		queryKey: ['posts', userPosts, hashtag],
-		queryFn: () => getPosts(hashtag),
+		queryKey: ['posts', userPosts, query],
+		queryFn: () => getPosts(query),
 		enabled: !userPosts,
 		initialData: userPosts
 	})

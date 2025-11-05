@@ -1,5 +1,6 @@
 import { IUser } from '@/api/types'
 import { Skeleton } from '@/shared/components'
+import { POST_DECLENSIONS, SUBSCIPTION_DECLENSIONS } from '@/shared/constants'
 import { getDeclensions } from '@/shared/helpers'
 
 interface Props {
@@ -19,7 +20,7 @@ export const ProfileNumbers = ({ isUserPending, user }: Props) => {
 					)}
 				</span>{' '}
 				{getDeclensions(
-					['Пост', 'Поста', 'Постов'],
+					POST_DECLENSIONS,
 					user?.posts.length || 0
 				)}
 			</div>
@@ -32,7 +33,7 @@ export const ProfileNumbers = ({ isUserPending, user }: Props) => {
 					)}
 				</span>{' '}
 				{getDeclensions(
-					['Подписчик', 'Подписчика', 'Подписчиков'],
+					SUBSCIPTION_DECLENSIONS,
 					user?.followers.length || 0
 				)}
 			</div>

@@ -15,13 +15,13 @@ model User {
   email    String  @unique
   password String?
 
-  bio      String?
-  websites String[]
-  hobby    String?
-  avatar   String?
-  cover    String?
-  gender EGender
-  city String?
+  bio          String?
+  websites     String[]
+  hobby        String?
+  avatar       String?
+  cover        String?
+  gender       EGender
+  city         String?
   birthdayDate DateTime?
 
   provider EProviders @default(CREDENTIALS)
@@ -33,8 +33,10 @@ model User {
   posts      Post[]
   hashtags   Hashtag[]
   comments   Comment[]
+  groups     Group[]
 
-  createdAt DateTime @default(now())
+  createdAt       DateTime        @default(now())
+  followingGroups GroupFollower[]
 }
 
 model Follower {
@@ -47,10 +49,40 @@ model Follower {
   followingToId String
 }
 
+model Group {
+  id String @id @default(uuid())
+
+  name        String
+  avatar      String?
+  cover       String?
+  // Развлекательное, образовательное и тд
+  type        String
+  description String?
+  phone       String?
+  email       String?
+  website     String?
+  address     String?
+
+  admins    User[]
+  followers GroupFollower[]
+  posts     Post[]
+
+  createdAt DateTime @default(now())
+}
+
+model GroupFollower {
+  id String @id @default(uuid())
+
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId String
+}
+
 model Post {
   id String @id @default(uuid())
 
-  text  String
+  text   String
   images String[]
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -63,6 +95,8 @@ model Post {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime?
+  group     Group?    @relation(fields: [groupId], references: [id])
+  groupId   String?
 }
 
 model Comment {
@@ -134,7 +168,6 @@ enum EProviders {
   YANDEX
   GOOGLE
 }
-
 
 enum EGender {
   MALE
