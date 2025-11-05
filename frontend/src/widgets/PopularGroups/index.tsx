@@ -12,7 +12,7 @@ export const PopularGroups = () => {
 	const { data, isPending, error } = getGroupsQuery({ followers: 'asc' })
 
 	return (
-		<Block className='hidden w-full max-w-[200px] sm:block lg:max-w-[280px]'>
+		<Block >
 			<h3>Популярное</h3>
 			<div className='mt-4 flex flex-col gap-2'>
 				{error ? (

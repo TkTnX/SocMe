@@ -1,5 +1,7 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
+
 import { useGroups } from '@/api/hooks'
 import { GroupBlock } from '@/entities'
 import { Block, ErrorMessage, Skeleton } from '@/shared/components'
@@ -7,8 +9,10 @@ import { ErrorType } from '@/shared/types'
 
 export const GroupsList = () => {
 	const { getGroupsQuery } = useGroups()
+	const searchParams = useSearchParams()
+	const name = searchParams.get('name') || ''
 
-	const { data, error, isPending } = getGroupsQuery()
+	const { data, error, isPending } = getGroupsQuery({ name })
 
 	return (
 		<Block>
@@ -18,7 +22,7 @@ export const GroupsList = () => {
 					<ErrorMessage error={error as ErrorType} />
 				) : isPending ? (
 					[...new Array(6)].map((_, index) => (
-						<Skeleton key={index} className='' />
+						<Skeleton key={index} className='h-[200px] w-full' />
 					))
 				) : (
 					data.map(group => (

@@ -12,7 +12,13 @@ export class GroupService {
 	public constructor(private readonly prismaService: PrismaService) {}
 
 	public async getGroups(query?: Record<string, string>) {
-		let where: Prisma.GroupWhereInput = {}
+		console.log(query)
+		let where: Prisma.GroupWhereInput = {
+			name: {
+				contains: query?.name ? query.name : undefined,
+				mode: 'insensitive'
+			}
+		}
 		let orderBy: Prisma.GroupOrderByWithRelationInput = {}
 
 		if (query?.followers) {
