@@ -1,3 +1,5 @@
+'use client'
+
 import { MoreVertical, Reply } from 'lucide-react'
 import { useState } from 'react'
 

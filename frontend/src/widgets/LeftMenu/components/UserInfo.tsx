@@ -24,7 +24,7 @@ export const UserInfo = () => {
 		)
 	return (
 		<div className='overflow-hidden rounded-2xl bg-white'>
-			<Cover isUserPending={isUserPending} className='h-20' coverUrl={user.cover} />
+			<Cover isPending={isUserPending} className='h-20' coverUrl={user.cover} />
 			<Block className='overflow-visible rounded-t-none px-3 py-1'>
 				<UserTitle
 					isUserPending={isUserPending}

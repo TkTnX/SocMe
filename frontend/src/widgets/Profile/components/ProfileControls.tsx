@@ -14,6 +14,8 @@ export const ProfileControls = ({ profile }: Props) => {
 		<>
 			<div className='mt-4 flex justify-end gap-2'>
 				<FollowButton
+					type='USER'
+					followId={profile?.id || ""}
 					profile={profile}
 				/>
 				<Button className='flex-1' asChild>

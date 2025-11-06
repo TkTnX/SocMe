@@ -6,13 +6,23 @@ import { useFollow, useUser } from '@/api/hooks'
 import { IUser } from '@/api/types'
 import { Button, type ButtonVariants } from '@/shared/components'
 import { showErrorMessage } from '@/shared/helpers'
+import { cn } from '@/shared/lib'
 
 interface Props {
 	variant?: ButtonVariants
-	profile: IUser | null
+	profile?: IUser | null
+	followId: string
+	type: 'USER' | 'GROUP'
+	className?: string
 }
 
-export const FollowButton = ({ variant, profile }: Props) => {
+export const FollowButton = ({
+	variant,
+	profile,
+	followId,
+	type,
+	className
+}: Props) => {
 	const { user } = useUser()
 	const { followMutation } = useFollow()
 	const queryClient = useQueryClient()
@@ -45,7 +55,7 @@ export const FollowButton = ({ variant, profile }: Props) => {
 		<Button
 			disabled={isPending}
 			onClick={() => mutate(profile?.id)}
-			className='flex-1'
+			className={cn('flex-1', className)}
 			variant={isUserFollower ? 'outline' : variant ? variant : 'default'}
 		>
 			{buttonText}

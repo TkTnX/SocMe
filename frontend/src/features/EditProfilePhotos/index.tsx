@@ -62,7 +62,7 @@ export const EditProfilePhotos = ({ isUserPending, user }: Props) => {
 
 	return (
 		<div className='relative'>
-			<Cover isUserPending={isUserPending} coverUrl={user?.cover} />
+			<Cover isPending={isUserPending} coverUrl={user?.cover} />
 			<Form {...form}>
 				<form>
 					<EditProfilePhotosInput

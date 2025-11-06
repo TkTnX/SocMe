@@ -4,13 +4,25 @@ import {
 	useQuery
 } from '@tanstack/react-query'
 
-import { createGroup, deleteGroup, editGroup, getGroups } from '@/api/requests'
+import {
+	createGroup,
+	deleteGroup,
+	editGroup,
+	getGroupById,
+	getGroups
+} from '@/api/requests'
 
 export function useGroups() {
 	const getGroupsQuery = (query?: Record<string, string>) =>
 		useQuery({
 			queryKey: ['groups', query],
 			queryFn: () => getGroups(query)
+		})
+
+	const getGroupByIdQuery = (id: string) =>
+		useQuery({
+			queryKey: ['group', id],
+			queryFn: () => getGroupById(id)
 		})
 
 	// TODO: ADD TYPE
@@ -42,8 +54,9 @@ export function useGroups() {
 
 	return {
 		getGroupsQuery,
+		getGroupByIdQuery,
 		createGroupMutation,
 		editGroupMutation,
-		deleteGroupMutation
+		deleteGroupMutation,
 	}
 }

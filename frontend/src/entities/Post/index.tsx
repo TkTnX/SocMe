@@ -1,3 +1,5 @@
+'use client'
+
 import { MoreVertical } from 'lucide-react'
 import { useState } from 'react'
 
@@ -5,15 +7,19 @@ import { UserTitle } from '../User'
 
 import { useUser } from '@/api/hooks'
 import { IPost } from '@/api/types'
-import { PostControls, PostHashtags, PostImages } from '@/entities/Post/components'
+import {
+	PostControls,
+	PostHashtags,
+	PostImages
+} from '@/entities/Post/components'
 import { AddComment } from '@/features'
 import { Block, PostMoreDropdown } from '@/shared/components'
-import { CommentsList } from '@/widgets'
 import { cn } from '@/shared/lib'
+import { CommentsList } from '@/widgets'
 
 interface Props {
 	post: IPost
-	className?:string
+	className?: string
 }
 
 export const Post = ({ post, className }: Props) => {
@@ -34,13 +40,9 @@ export const Post = ({ post, className }: Props) => {
 			<div className='mt-3.5'>
 				<h2 className='mt-4 text-sm text-black'>{post.text}</h2>
 
-				{post.images.length ? (
-					<PostImages images={post.images} />
-				) : (
-					''
-				)}
+				{post.images.length ? <PostImages images={post.images} /> : ''}
 			</div>
-				{post.hashtags && <PostHashtags hashtags={post.hashtags} />}
+			{post.hashtags && <PostHashtags hashtags={post.hashtags} />}
 			<PostControls
 				setOpenComments={setOpenComments}
 				openComments={openComments}

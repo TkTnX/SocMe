@@ -35,7 +35,7 @@ export const Profile = ({ userId }: Props) => {
 			<div
 				className={`relative flex w-full flex-col items-center justify-center`}
 			>
-				<Cover coverUrl={user?.cover} isUserPending={isUserPending} />
+				<Cover coverUrl={user?.cover} isPending={isUserPending} />
 				<div className='absolute -bottom-15 left-1/2 mt-20 h-[150px] w-[150px] -translate-x-1/2 overflow-hidden rounded-full border-2 bg-white'>
 					{isUserPending ? (
 						<Skeleton className='h-full w-full' />

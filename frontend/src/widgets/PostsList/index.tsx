@@ -11,9 +11,10 @@ import { ErrorType } from '@/shared/types'
 
 interface Props {
 	userPosts?: IPost[]
+	className?: string
 }
 
-export const PostsList = ({ userPosts }: Props) => {
+export const PostsList = ({ userPosts, className }: Props) => {
 	const searchParams = useSearchParams()
 	const hashtag = searchParams.get('hashtag') || undefined
 
@@ -26,10 +27,10 @@ export const PostsList = ({ userPosts }: Props) => {
 	if (!posts && error) <ErrorMessage error={error as ErrorType} />
 
 	if (posts?.length === 0)
-		return <p className='mt-6 text-center'>Постов нет</p>
+		return <p className='mt-6 flex-1 text-center'>Постов нет</p>
 
 	return (
-		<div>
+		<div className={className}>
 			{hashtag && (
 				<div className='flex items-center justify-between'>
 					<h3>Поиск по тегу: #{hashtag}</h3>
@@ -49,7 +50,9 @@ export const PostsList = ({ userPosts }: Props) => {
 								className='h-[500px] w-full'
 							/>
 						))
-					: posts?.map(post => <Post key={post.id} post={post} />)}
+					: (userPosts ? userPosts : posts)?.map(post => (
+							<Post key={post.id} post={post} />
+						))}
 			</div>
 		</div>
 	)

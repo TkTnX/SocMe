@@ -15,7 +15,7 @@ export interface IGroup {
 
 	admins?: IUser[]
 	followers?: IGroupFollower[]
-	posts: IPost
+	posts: IPost[]
 }
 
 

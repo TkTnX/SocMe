@@ -12,7 +12,6 @@ export class GroupService {
 	public constructor(private readonly prismaService: PrismaService) {}
 
 	public async getGroups(query?: Record<string, string>) {
-		console.log(query)
 		let where: Prisma.GroupWhereInput = {
 			name: {
 				contains: query?.name ? query.name : undefined,
@@ -71,7 +70,20 @@ export class GroupService {
 	public async getGroupById(groupId: string) {
 		const group = await this.prismaService.group.findUnique({
 			where: { id: groupId },
-			include: { followers: true }
+			include: {
+				followers: {
+					include: {
+						user: true
+					}
+				},
+				posts: {
+					include: {
+						comments: true,
+						likes: true,
+						user: true
+					}
+				}
+			}
 		})
 
 		if (!group) throw new NotFoundException('Сообщество не найдено')
