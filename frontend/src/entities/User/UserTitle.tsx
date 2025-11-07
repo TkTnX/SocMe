@@ -22,7 +22,7 @@ export const UserTitle = ({
 			<Link href={`/profile/${user.id}`}>
 				<Image
 					className={cn(
-						'relative min-h-[44px] min-w-[44px] rounded-2xl bg-white object-cover',
+						'relative max-h-[44px] min-h-[44px] max-w-[44px] min-w-[44px] rounded-2xl bg-white object-cover',
 						userImageClassName
 					)}
 					src={user.avatar || '/images/icons/no-avatar.svg'}

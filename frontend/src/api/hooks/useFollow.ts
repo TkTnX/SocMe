@@ -6,7 +6,7 @@ export function useFollow() {
 	const followMutation = (followingToId: string, options?: Omit<UseMutationOptions<any, unknown, any>, "mutationKey" | "mutationFn">) =>
 		useMutation({
 			mutationKey: ['follow'],
-			mutationFn: () => follow(followingToId),
+			mutationFn: (type: string) => follow(followingToId, type),
 			...options
 		})
 

@@ -10,7 +10,6 @@ import {
 	Response
 } from '@nestjs/common'
 import { Request, Response as ResponseType } from 'express'
-import { User } from 'generated/prisma'
 import { SignInDto, SignUpDto } from 'src/api/auth/dto'
 import { Authorized, Protected } from 'src/common/decorators'
 import { IPayload } from 'src/common/types'

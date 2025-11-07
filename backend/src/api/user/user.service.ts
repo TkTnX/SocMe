@@ -108,6 +108,10 @@ export class UserService {
 			where: { id: userId },
 			include: {
 				posts: {
+					where: {
+						groupId: null
+					},
+
 					include: {
 						user: true,
 						likes: true,

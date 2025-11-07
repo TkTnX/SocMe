@@ -24,10 +24,12 @@ export const GroupsList = () => {
 					[...new Array(6)].map((_, index) => (
 						<Skeleton key={index} className='h-[200px] w-full' />
 					))
-				) : (
+				) : data.length > 0 ? (
 					data.map(group => (
 						<GroupBlock group={group} key={group.id} />
 					))
+				) : (
+					<p>Ничего не найдено!</p>
 				)}
 			</div>
 		</Block>

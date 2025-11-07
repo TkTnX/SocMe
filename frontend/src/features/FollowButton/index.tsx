@@ -26,14 +26,28 @@ export const FollowButton = ({
 	const { user } = useUser()
 	const { followMutation } = useFollow()
 	const queryClient = useQueryClient()
-	const { mutate, isPending } = followMutation(profile?.id || '', {
+	const { mutate, isPending } = followMutation(followId || '', {
 		onError: (error: unknown) => showErrorMessage(error),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ['user by id', profile?.id]
+				queryKey: ['user by id', followId]
 			})
+			if (type === 'GROUP') {
+				queryClient.invalidateQueries({
+					queryKey: ['user']
+				})
+				queryClient.invalidateQueries({
+					queryKey: ['group', followId]
+				})
+			}
 		}
 	})
+
+	// TODO: Редактирование сообщества
+
+	const isUserFollowingGroup = user?.followingGroups?.find(
+		group => group.groupId === followId
+	)
 
 	const isUserFollower = profile?.followers.find(
 		follower => follower.followerId === user?.id
@@ -43,7 +57,7 @@ export const FollowButton = ({
 	)
 
 	const buttonText =
-		isUserFollower && !isProfileFollowingUser
+		(isUserFollower && !isProfileFollowingUser) || isUserFollowingGroup
 			? 'Отписаться'
 			: !isUserFollower && isProfileFollowingUser
 				? 'Добавить в друзья'
@@ -54,9 +68,15 @@ export const FollowButton = ({
 	return (
 		<Button
 			disabled={isPending}
-			onClick={() => mutate(profile?.id)}
+			onClick={() => mutate(type)}
 			className={cn('flex-1', className)}
-			variant={isUserFollower ? 'outline' : variant ? variant : 'default'}
+			variant={
+				isUserFollower || isUserFollowingGroup
+					? 'outline'
+					: variant
+						? variant
+						: 'default'
+			}
 		>
 			{buttonText}
 		</Button>

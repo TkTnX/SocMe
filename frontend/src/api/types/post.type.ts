@@ -1,4 +1,4 @@
-import { IComment, IFavorite, IHashtag, ILike, IUser } from '.'
+import { IComment, IFavorite, IGroup, IHashtag, ILike, IUser } from '.'
 
 export interface IPost {
 	id: string
@@ -12,6 +12,9 @@ export interface IPost {
 	likes: ILike[]
 	favorites: IFavorite[]
 	hashtags: IHashtag[]
+
+	groupId: string
+	group?: IGroup
 
 	createdAt: string
 	updatedAt?: string

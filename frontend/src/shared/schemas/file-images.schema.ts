@@ -1,11 +1,14 @@
-import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/shared/constants';
 import z from 'zod';
 
 
 
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/shared/constants';
 
 
-export const profileImages = z.object({
+
+
+
+export const fileImages = z.object({
 	image: z
 		.instanceof(File, {message: "Изображение обязательно"})
 		.refine(
@@ -18,4 +21,4 @@ export const profileImages = z.object({
 		)
 })
 
-export type ProfileImages = z.infer<typeof profileImages>
+export type FileImages = z.infer<typeof fileImages>

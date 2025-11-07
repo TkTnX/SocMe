@@ -8,23 +8,23 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { useUploads, useUser } from '@/api/hooks'
-import { IUser } from '@/api/types'
-import { Cover, Form, Skeleton } from '@/shared/components'
+import { useGroups, useUploads } from '@/api/hooks'
+import { IGroup } from '@/api/types'
 import { EditPhotoInput } from '@/features'
-import { fileImages, FileImages } from '@/shared/schemas'
+import { Cover, Form, Skeleton } from '@/shared/components'
+import { FileImages, fileImages } from '@/shared/schemas'
 
 interface Props {
-	isUserPending: boolean
-	user: IUser | null
+	isPending: boolean
+	group: IGroup
 }
 
-export const EditProfilePhotos = ({ isUserPending, user }: Props) => {
+export const EditGroupPhotos = ({ isPending, group }: Props) => {
 	const { uploadMutation } = useUploads()
-	const { editUserProfileMutation } = useUser()
+	const { editGroupMutation } = useGroups()
 	const { mutate } = uploadMutation()
 	const queryClient = useQueryClient()
-	const { mutate: mutateUser } = editUserProfileMutation({
+	const { mutate: mutateGroup } = editGroupMutation(group.id, {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['user'] })
 		}
@@ -37,16 +37,13 @@ export const EditProfilePhotos = ({ isUserPending, user }: Props) => {
 		}
 	})
 
-	const onSubmit = async (
-		values: FileImages,
-		type: 'cover' | 'avatar'
-	) => {
+	const onSubmit = async (values: FileImages, type: 'cover' | 'avatar') => {
 		const formData = new FormData()
 		formData.append('file', values.image)
 
 		mutate(formData, {
 			onSuccess: data => {
-				mutateUser({
+				mutateGroup({
 					[type]: data
 				})
 				toast.success(
@@ -60,7 +57,7 @@ export const EditProfilePhotos = ({ isUserPending, user }: Props) => {
 
 	return (
 		<div className='relative'>
-			<Cover isPending={isUserPending} coverUrl={user?.cover} />
+			<Cover isPending={isPending} coverUrl={group?.cover} />
 			<Form {...form}>
 				<form>
 					<EditPhotoInput
@@ -78,7 +75,7 @@ export const EditProfilePhotos = ({ isUserPending, user }: Props) => {
 			<Form {...form}>
 				<form>
 					<div className='group absolute -bottom-15 left-1/2 mt-20 h-[150px] w-[150px] -translate-x-1/2 overflow-hidden rounded-full border-2 bg-white'>
-						{isUserPending ? (
+						{isPending ? (
 							<Skeleton className='h-full w-full' />
 						) : (
 							<Image
@@ -86,8 +83,8 @@ export const EditProfilePhotos = ({ isUserPending, user }: Props) => {
 								alt={'Аватар'}
 								className='object-cover'
 								src={
-									user?.avatar ||
-									'/images/icons/no-avatar.svg'
+									group?.avatar ||
+									'/images/no-avatar-group.jpg'
 								}
 							/>
 						)}

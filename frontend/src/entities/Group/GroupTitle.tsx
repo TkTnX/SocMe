@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { IGroup, IGroupFollower } from '@/api/types'
-import { PremiumIcon, Skeleton } from '@/shared/components'
+import {  Skeleton } from '@/shared/components'
 import { SUBSCIPTION_DECLENSIONS } from '@/shared/constants'
 import { getDeclensions } from '@/shared/helpers'
 import { cn } from '@/shared/lib/utils'
@@ -66,7 +66,12 @@ export const GroupTitle = ({
 }
 
 function isGroupFollower(
-	group: IGroup | IGroupFollower
+	group: IGroup | IGroupFollower | undefined
 ): group is IGroupFollower {
-	return 'groupId' in group
+	if (group) {
+		
+		return 'groupId' in group
+	}
+
+	return false
 }

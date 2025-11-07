@@ -11,7 +11,7 @@ export class UserController {
 	@Get()
 	public async getUsers(
 		@Authorized('userId') userId: string,
-		@Query() query
+		@Query() query: Record<string, string>
 	) {
 		return await this.userService.findUsers(userId, query)
 	}

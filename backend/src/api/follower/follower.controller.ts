@@ -14,8 +14,10 @@ export class FollowerController {
 	constructor(private readonly followerService: FollowerService) {}
 
   @Protected()
-	@Post(':followingToId')
-  public async follow(@Param('followingToId') followingToId: string, @Authorized("userId") userId: string) {
-    return await this.followerService.follow(followingToId, userId)
+	@Post(':followingToId/:type')
+  public async follow(@Param('followingToId') followingToId: string, @Param("type") type:"GROUP" | "USER", @Authorized("userId") userId: string) {
+    return await this.followerService.follow(followingToId,type, userId)
   }
+
+  
 }

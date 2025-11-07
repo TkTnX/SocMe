@@ -127,7 +127,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 									'/images/icons/no-avatar.svg'
 								}
 								alt={user?.name || ''}
-								className='min-h-[40px] min-w-[40px] rounded-2xl object-cover'
+								className='max-h-[40px] min-h-[40px] max-w-[40px] min-w-[40px] rounded-2xl object-cover'
 								width={40}
 								height={40}
 							/>

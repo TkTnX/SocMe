@@ -8,7 +8,7 @@ import {
 	Post,
 	Query
 } from '@nestjs/common'
-import { EditGroupDto, GroupDto } from 'src/api/group/dto'
+import { GroupDto, PartialEditGroupDto } from 'src/api/group/dto'
 import { Authorized, Protected } from 'src/common/decorators'
 
 import { GroupService } from './group.service'
@@ -36,13 +36,16 @@ export class GroupController {
 		return await this.groupService.createGroups(dto, userId)
 	}
 
+	
+
 	@Protected()
 	@Patch(':groupId')
 	public async editGroup(
-		@Param() groupId: string,
-		@Body() dto: EditGroupDto
+		@Param("groupId") groupId: string,
+		@Body() dto: PartialEditGroupDto,
+		@Authorized("userId") userId:string
 	) {
-		return await this.groupService.editGroup(groupId, dto)
+		return await this.groupService.editGroup(groupId, dto, userId)
 	}
 
 	@Protected()

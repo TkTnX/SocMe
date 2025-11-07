@@ -71,6 +71,7 @@ export const PeopleFilterMenu = ({ isMobile = false, onClose }: Props) => {
 						<label>
 							<span className='text-xs'>Город</span>
 							{/* TODO: Инпут для выбора города (как vk) */}
+							{/* https://ui.shadcn.com/docs/components/combobox */}
 							<Input
 								onChange={e => setCity(e.target.value)}
 								className='mt-1 border'

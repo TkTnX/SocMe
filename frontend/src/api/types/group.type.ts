@@ -6,7 +6,7 @@ export interface IGroup {
 	name: string
 	avatar?: string
 	cover?: string
-	type: String
+	type: string
 	description?: string
 	phone?: string
 	email?: string

@@ -7,6 +7,7 @@ import { UserTitle } from '../User'
 
 import { useUser } from '@/api/hooks'
 import { IPost } from '@/api/types'
+import { GroupTitle } from '@/entities/Group'
 import {
 	PostControls,
 	PostHashtags,
@@ -23,12 +24,18 @@ interface Props {
 }
 
 export const Post = ({ post, className }: Props) => {
+	const isGroupPost = !!post.groupId
 	const { user } = useUser()
 	const [openComments, setOpenComments] = useState(false)
 	return (
 		<Block className={cn('pt-3.5 pb-2', className)}>
 			<div className='flex items-center justify-between'>
-				<UserTitle user={post.user} />
+				{isGroupPost ? (
+					<GroupTitle group={post.group!} />
+				) : (
+					<UserTitle user={post.user} />
+				)}
+
 				{user?.id === post.userId && (
 					<PostMoreDropdown post={post}>
 						<button>
@@ -43,14 +50,17 @@ export const Post = ({ post, className }: Props) => {
 				{post.images.length ? <PostImages images={post.images} /> : ''}
 			</div>
 			{post.hashtags && <PostHashtags hashtags={post.hashtags} />}
-			<PostControls
-				setOpenComments={setOpenComments}
-				openComments={openComments}
-				totalComments={post.comments.length}
-				totalLikes={post.likes.length}
-				user={user}
-				id={post.id}
-			/>
+			<div className='flex items-center justify-between'>
+				<PostControls
+					setOpenComments={setOpenComments}
+					openComments={openComments}
+					totalComments={post.comments.length}
+					totalLikes={post.likes.length}
+					user={user}
+					id={post.id}
+				/>
+				{isGroupPost && <p className='text-xs'>{post.user.name}</p>}
+			</div>
 			<AddComment postId={post.id} />
 			{openComments && <CommentsList postId={post.id} />}
 		</Block>
