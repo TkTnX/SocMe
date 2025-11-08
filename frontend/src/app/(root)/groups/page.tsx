@@ -1,4 +1,4 @@
-import { GroupsSearch } from '@/features'
+import { AddGroupForm, GroupsSearch } from '@/features'
 import { Block, Button } from '@/shared/components'
 import { GroupsList, PopularGroups, UserGroups } from '@/widgets'
 
@@ -13,7 +13,9 @@ const GroupsPage = () => {
 			<div className='hidden w-full max-w-[200px] flex-col gap-4 sm:flex lg:max-w-[280px]'>
 				<Block>
 					{' '}
-					<Button className='w-full'>Создать сообщество</Button>
+					<AddGroupForm>
+						<Button className='w-full'>Создать сообщество</Button>
+					</AddGroupForm>
 				</Block>
 				<PopularGroups />
 			</div>

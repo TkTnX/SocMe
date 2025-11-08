@@ -1,5 +1,6 @@
 import { IGroup } from '@/api/types';
 import { axiosInstance } from '@/shared/lib';
+import { CreateGroupSchema, EditGroupSchema } from '@/shared/schemas';
 
 
 
@@ -23,17 +24,12 @@ export const getGroupById = async (groupId: string) => {
 	return data
 }
 
-// TODO: ADD TYPE
-export const createGroup = async (body: any) => {
-	const { data } = await axiosInstance.post<Promise<IGroup>>(
-		`/groups`,
-		body
-	)
+export const createGroup = async (body: CreateGroupSchema) => {
+	const { data } = await axiosInstance.post<Promise<IGroup>>(`/groups`, body)
 	return data
 }
 
-// TODO: ADD TYPE
-export const editGroup = async (groupId: string, body: any) => {
+export const editGroup = async (groupId: string, body: EditGroupSchema) => {
 	const { data } = await axiosInstance.patch<Promise<IGroup>>(
 		`/groups/${groupId}`,
 		body

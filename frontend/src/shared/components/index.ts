@@ -6,3 +6,4 @@ export * from './PremiumIcon'
 export * from "./ErrorMessage"
 export * from "./Cover"
 export * from "./sheets"
+export * from "./modals"

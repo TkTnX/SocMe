@@ -3,17 +3,12 @@
 import { Info, Text } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 import { useGroups, useUser } from '@/api/hooks'
 import { FollowButton } from '@/features'
-import {
-	Block,
-	Cover,
-	ErrorMessage,
-	GroupDropdown,
-	Skeleton
-} from '@/shared/components'
-import { ErrorType } from '@/shared/types'
+import { Block, Cover, GroupDropdown, Skeleton } from '@/shared/components'
+import { GroupMoreInfo } from '@/shared/components/modals'
 import { PostsList } from '@/widgets'
 
 interface Props {
@@ -23,10 +18,10 @@ interface Props {
 export const BigGroup = ({ id }: Props) => {
 	const { user } = useUser()
 	const { getGroupByIdQuery } = useGroups()
-	const { data, isPending, error } = getGroupByIdQuery(id)
+	const { data, isPending } = getGroupByIdQuery(id)
 
-	if (error) return <ErrorMessage error={error as ErrorType} />
-
+	// TODO: Сделать not found page
+	if (!isPending && !data) return notFound()
 	return (
 		<div className='flex-1'>
 			<Block className='relative'>
@@ -80,9 +75,11 @@ export const BigGroup = ({ id }: Props) => {
 										{data?.description?.slice(0, 100)}...
 									</p>
 								</div>
-								<button className='text-main mt-4 flex items-center gap-2 underline'>
-									<Info /> Подробная информация
-								</button>
+								<GroupMoreInfo group={data}>
+									<button className='text-main mt-4 flex items-center gap-2 underline'>
+										<Info /> Подробная информация
+									</button>
+								</GroupMoreInfo>
 							</Block>
 						)}
 						{isPending ? (

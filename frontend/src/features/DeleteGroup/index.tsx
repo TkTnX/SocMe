@@ -6,22 +6,32 @@ import { useState } from 'react'
 import { useGroups } from '@/api/hooks'
 import { ConfirmationModal } from '@/features'
 import { Button } from '@/shared/components'
+import { showErrorMessage } from '@/shared/helpers'
 
 interface Props {
 	groupId: string
 }
 
-
+// * TODO: Создание сообществ
+// * TODO: Изменение админов
+// * TODO: Кнопка пробная информаци
+// * TODO: В модалках вернуть кнопку закрытия
+// todo: если 0 подписчиков, не выводить блок
+// TODO: Защита при удалении сообщества (только админы)
+// TODO: На главном фиде выводить посты от сообществ
 
 export const DeleteGroup = ({ groupId }: Props) => {
 	const [open, setOpen] = useState(false)
 	const router = useRouter()
 	const { deleteGroupMutation } = useGroups()
-	const { mutate, isPending, error } = deleteGroupMutation(groupId, {
-		onSuccess: () => router.push('/groups')
+	const { mutate, isPending } = deleteGroupMutation(groupId, {
+		onError: err => showErrorMessage(err)
 	})
 
-	const onDelete = () => mutate()
+	const onDelete = () => {
+		mutate()
+		router.push('/groups')
+	}
 
 	return (
 		<ConfirmationModal open={open} setOpen={setOpen} onSubmit={onDelete}>

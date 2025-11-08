@@ -1,16 +1,14 @@
-import {
-	UseMutationOptions,
-	useMutation,
-	useQuery
-} from '@tanstack/react-query'
+import { UseMutationOptions, useMutation, useQuery } from '@tanstack/react-query';
 
-import {
-	createGroup,
-	deleteGroup,
-	editGroup,
-	getGroupById,
-	getGroups
-} from '@/api/requests'
+
+
+import { createGroup, deleteGroup, editGroup, getGroupById, getGroups } from '@/api/requests';
+import { CreateGroupSchema, EditGroupSchema } from '@/shared/schemas';
+import { IGroup } from '@/api/types';
+
+
+
+
 
 export function useGroups() {
 	const getGroupsQuery = (query?: Record<string, string>) =>
@@ -25,22 +23,21 @@ export function useGroups() {
 			queryFn: () => getGroupById(id)
 		})
 
-	// TODO: ADD TYPE
+
 	const createGroupMutation = (
-		options?: UseMutationOptions<unknown, any, unknown>
+		options?: UseMutationOptions<IGroup, any, CreateGroupSchema>
 	) =>
 		useMutation({
-			mutationFn: (body: any) => createGroup(body),
+			mutationFn: (body: CreateGroupSchema) => createGroup(body),
 			...options
 		})
 
-	// TODO: ADD TYPE
 	const editGroupMutation = (
 		groupId: string,
 		options?: UseMutationOptions<unknown, any, unknown>
 	) =>
 		useMutation({
-			mutationFn: (body: any) => editGroup(groupId, body),
+			mutationFn: (body: EditGroupSchema) => editGroup(groupId, body),
 			...options
 		})
 

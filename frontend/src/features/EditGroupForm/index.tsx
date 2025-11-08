@@ -10,6 +10,7 @@ import { IGroup } from '@/api/types'
 import { Button, Form } from '@/shared/components'
 import { showErrorMessage } from '@/shared/helpers'
 import { EditGroupSchema, editGroupSchema } from '@/shared/schemas'
+import { GroupAdmins } from '@/widgets'
 import { FormInput } from '@/widgets/AuthForm/components'
 
 interface Props {
@@ -40,6 +41,14 @@ export const EditGroupForm = ({ group }: Props) => {
 	})
 
 	const onSubmit = (values: EditGroupSchema) => mutate(values)
+
+	const filteredUsers = group.followers?.filter(follower => {
+		const isAdmin = group.admins?.find(
+			admin => admin.id !== follower.userId
+		)
+
+		return isAdmin
+	})!
 
 	return (
 		<Form {...form}>
@@ -96,6 +105,12 @@ export const EditGroupForm = ({ group }: Props) => {
 					label='Сайт'
 					name='website'
 					placeholder='http://localhost:5000'
+				/>
+
+				<GroupAdmins
+					admins={group.admins!}
+					users={filteredUsers}
+					groupId={group.id}
 				/>
 
 				<Button disabled={isPending}> Сохранить</Button>

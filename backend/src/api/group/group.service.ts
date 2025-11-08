@@ -75,7 +75,7 @@ export class GroupService {
 			data: {
 				...dto,
 				admins: {
-					connect: dto.admins?.map(id => ({ id }))
+					set: dto.admins?.map(id => ({ id }))
 				}
 			}
 		})
