@@ -43,7 +43,6 @@ export const FollowButton = ({
 		}
 	})
 
-	// TODO: Редактирование сообщества
 
 	const isUserFollowingGroup = user?.followingGroups?.find(
 		group => group.groupId === followId

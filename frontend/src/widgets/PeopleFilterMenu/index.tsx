@@ -1,18 +1,20 @@
 'use client'
 
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { PeopleSearchBy } from './components'
 import {
 	Block,
 	Button,
+	Combobox,
 	Input,
 	Label,
 	RadioGroup,
 	RadioGroupItem
 } from '@/shared/components'
+import { RUSSIAN_CITIES } from '@/shared/data'
 import { cn } from '@/shared/lib'
 
 interface Props {
@@ -23,6 +25,7 @@ interface Props {
 export const PeopleFilterMenu = ({ isMobile = false, onClose }: Props) => {
 	const router = useRouter()
 	const pathname = usePathname()
+	const searchParams = useSearchParams()
 	const [city, setCity] = useState<string | undefined>(undefined)
 	const [age, setAge] = useState<[undefined | number, undefined | number]>([
 		undefined,
@@ -68,14 +71,12 @@ export const PeopleFilterMenu = ({ isMobile = false, onClose }: Props) => {
 				<Block>
 					<h4 className='text-main font-bold'>Параметры поиска</h4>
 					<div className='mt-2 flex flex-col gap-2'>
-						<label>
+						<label className='flex flex-col gap-1'>
 							<span className='text-xs'>Город</span>
-							{/* TODO: Инпут для выбора города (как vk) */}
-							{/* https://ui.shadcn.com/docs/components/combobox */}
-							<Input
-								onChange={e => setCity(e.target.value)}
+							<Combobox
 								className='mt-1 border'
-								placeholder='Выберите город'
+								onChange={value => setCity(value)}
+								items={RUSSIAN_CITIES}
 							/>
 						</label>
 						<div>
@@ -147,6 +148,11 @@ export const PeopleFilterMenu = ({ isMobile = false, onClose }: Props) => {
 							<Button className='mt-2' onClick={onSubmit}>
 								Применить
 							</Button>
+						)}
+						{searchParams.size > 0 && (
+							<button onClick={() => router.push(`/people`)}>
+								Сбросить фильтры
+							</button>
 						)}
 					</div>
 				</Block>

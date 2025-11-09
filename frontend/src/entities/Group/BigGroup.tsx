@@ -20,7 +20,6 @@ export const BigGroup = ({ id }: Props) => {
 	const { getGroupByIdQuery } = useGroups()
 	const { data, isPending } = getGroupByIdQuery(id)
 
-	// TODO: Сделать not found page
 	if (!isPending && !data) return notFound()
 	return (
 		<div className='flex-1'>

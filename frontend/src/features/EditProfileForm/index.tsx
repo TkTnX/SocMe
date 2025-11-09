@@ -2,12 +2,14 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import { useUser } from '@/api/hooks'
 import { IUser } from '@/api/types'
-import { Button, Form } from '@/shared/components'
+import { Button, Combobox, Form, FormLabel } from '@/shared/components'
+import { RUSSIAN_CITIES } from '@/shared/data'
 import { showErrorMessage } from '@/shared/helpers'
 import { EditProfileSchema, editProfileSchema } from '@/shared/schemas'
 import { FormInput } from '@/widgets/AuthForm/components'
@@ -18,6 +20,7 @@ interface Props {
 
 export const EditProfileForm = ({ user }: Props) => {
 	const router = useRouter()
+	const [city, setCity] = useState('')
 	const { editUserProfileMutation } = useUser()
 	const form = useForm<EditProfileSchema>({
 		resolver: zodResolver(editProfileSchema),
@@ -29,7 +32,7 @@ export const EditProfileForm = ({ user }: Props) => {
 			websites: user?.websites?.join(', ') || '',
 			password: '',
 			birthdayDate: user?.birthdayDate || '',
-			city: user?.city || ''
+			city: user?.city || city
 		}
 	})
 	const { mutate, isPending } = editUserProfileMutation({
@@ -48,11 +51,11 @@ export const EditProfileForm = ({ user }: Props) => {
 			return toast.error('Минмальная длина пароля - 6 символов')
 		}
 
-		const websites = values.websites
-			?.split(',')
-			.map((value: string) => value.trim()) || []
+		const websites =
+			values.websites?.split(',').map((value: string) => value.trim()) ||
+			[]
 
-		mutate({ ...values, websites })
+		mutate({ ...values, websites, city })
 	}
 
 	return (
@@ -97,14 +100,16 @@ export const EditProfileForm = ({ user }: Props) => {
 					name='birthdayDate'
 					placeholder='19-03-2009'
 				/>
-				<FormInput
-					disabled={isPending}
-					form={form}
-					type='text'
-					label='Город'
-					name='city'
-					placeholder='Москва'
-				/>
+				<label>
+					<FormLabel>Город</FormLabel>
+					<Combobox
+						defaultValue={form.getValues("city")}
+						className='mt-2 !w-full border'
+						onChange={value => setCity(value)}
+						items={RUSSIAN_CITIES}
+					/>
+				</label>
+
 				<FormInput
 					disabled={isPending}
 					form={form}

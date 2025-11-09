@@ -13,9 +13,7 @@ interface Props {
 }
 
 
-// * todo: если 0 подписчиков, не выводить блок
-// * TODO: Защита при удалении сообщества (только админы)
-// TODO: На главном фиде выводить посты от сообществ
+
 
 export const DeleteGroup = ({ groupId }: Props) => {
 	const [open, setOpen] = useState(false)
