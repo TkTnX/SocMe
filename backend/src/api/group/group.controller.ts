@@ -50,7 +50,7 @@ export class GroupController {
 
 	@Protected()
 	@Delete(':groupId')
-	public async deleteGroup(@Param('groupId') groupId: string) {
-		return await this.groupService.deleteGroup(groupId)
+	public async deleteGroup(@Param('groupId') groupId: string, @Authorized("userId") userId: string) {
+		return await this.groupService.deleteGroup(groupId, userId)
 	}
 }

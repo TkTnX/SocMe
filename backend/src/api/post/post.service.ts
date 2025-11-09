@@ -29,40 +29,56 @@ export class PostService {
 				hashtags: true,
 				likes: true,
 				comments: true,
-				favorites: true
+				favorites: true,
+				group: true
 			},
 			orderBy: {
 				createdAt: 'desc'
 			},
 			where: {
-				user: {
-					OR: [
-						{
-							followers: {
-								some: {
-									followerId: user.id
+				OR: [
+					{
+						user: {
+							OR: [
+								{
+									followers: {
+										some: {
+											followerId: user.id
+										}
+									}
+								},
+								{
+									id: userId
+								}
+							]
+						}
+					},
+					{
+						hashtags: {
+							some: {
+								name: {
+									equals: query?.hashtag
+										? `#${query.hashtag}`
+										: undefined,
+									mode: 'insensitive'
 								}
 							}
-						},
-						{
-							id: userId
 						}
-					]
-				},
-				hashtags: {
-					some: {
-						name: {
-							equals: query?.hashtag
-								? `#${query.hashtag}`
-								: undefined,
+					},
+					{
+						text: {
+							contains: query?.text ? query.text : undefined,
 							mode: 'insensitive'
 						}
+					},
+					{
+						groupId: {
+							in: user.followingGroups.map(
+								following => following.groupId
+							)
+						}
 					}
-				},
-				text: {
-					contains: query?.text ? query.text : undefined,
-					mode: 'insensitive'
-				}
+				]
 			},
 			// TODO: Add pagination
 			take: 8

@@ -85,31 +85,33 @@ export const BigGroup = ({ id }: Props) => {
 						{isPending ? (
 							<Skeleton className='h-[112px] w-[250px]' />
 						) : (
-							<Block>
-								<h5>
-									Подписчики{' '}
-									<span>{data?.followers?.length}</span>
-								</h5>
-								<div className='mt-2 flex flex-wrap gap-4'>
-									{data?.followers?.map(follower => (
-										<Link
-											key={follower.id}
-											href={`/profile/${follower.userId}`}
-										>
-											<Image
-												src={
-													follower.user?.avatar ||
-													'/images/icons/no-avatar.svg'
-												}
-												alt='Подписчик'
-												width={50}
-												height={50}
-												className='h-[50px] w-[50px] rounded-full object-cover'
-											/>
-										</Link>
-									))}
-								</div>
-							</Block>
+							data.followers && data?.followers?.length > 0 && (
+								<Block>
+									<h5>
+										Подписчики{' '}
+										<span>{data?.followers?.length}</span>
+									</h5>
+									<div className='mt-2 flex flex-wrap gap-4'>
+										{data?.followers?.map(follower => (
+											<Link
+												key={follower.id}
+												href={`/profile/${follower.userId}`}
+											>
+												<Image
+													src={
+														follower.user?.avatar ||
+														'/images/icons/no-avatar.svg'
+													}
+													alt='Подписчик'
+													width={50}
+													height={50}
+													className='h-[50px] w-[50px] rounded-full object-cover'
+												/>
+											</Link>
+										))}
+									</div>
+								</Block>
+							)
 						)}
 					</div>
 				</div>

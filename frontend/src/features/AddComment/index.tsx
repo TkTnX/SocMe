@@ -71,7 +71,7 @@ export const AddComment = ({ postId, comment, onClose, replyToId }: Props) => {
 						src={user?.avatar || '/images/icons/no-avatar.svg'}
 						width={26}
 						height={26}
-						className='min-h-[26px] min-w-[26px] rounded-full object-cover'
+						className='max-h-[26px] min-h-[26px] max-w-[26px] min-w-[26px] rounded-full object-cover'
 						alt={user?.name || ''}
 					/>
 				) : (

@@ -1,7 +1,8 @@
 import {
 	BadGatewayException,
 	Injectable,
-	NotFoundException
+	NotFoundException,
+	UnauthorizedException
 } from '@nestjs/common'
 import { Prisma } from 'generated/prisma'
 import { EditGroupDto, GroupDto, PartialEditGroupDto } from 'src/api/group/dto'
@@ -65,7 +66,9 @@ export class GroupService {
 		const group = await this.getGroupById(groupId)
 
 		if (!group.admins.find(admin => admin.id === userId)) {
-			throw new BadGatewayException('Вы не админ сообщества!')
+			throw new BadGatewayException(
+				'Вы не являетесь администратором сообщества!'
+			)
 		}
 
 		return this.prismaService.group.update({
@@ -81,8 +84,14 @@ export class GroupService {
 		})
 	}
 
-	public async deleteGroup(groupId: string) {
+	public async deleteGroup(groupId: string, userId: string) {
 		const group = await this.getGroupById(groupId)
+
+		if (!group.admins.find(admin => admin.id === userId)) {
+			throw new BadGatewayException(
+				'Вы не являетесь администратором сообщества!'
+			)
+		}
 
 		return await this.prismaService.group.delete({
 			where: { id: group.id }
