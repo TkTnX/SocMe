@@ -89,6 +89,11 @@ export class AuthService {
 
 	// GOOGLE OAUTH
 
+	// * TODO: Кнопка войти через google в auth
+	// * TODO: Сейчас в posts list выводятся посты пользователя, на которого даже не подписан. Пофиксить (вообще всё получение постов неправильно работает)
+	// TODO: Вход через яндекс
+	// todo: кНОПКА ВЫХОДА ИЗ АККАУНТА
+
 	public async googleLogin(req: any, res: Response) {
 		const { user } = req
 		const userInDB = await this.userService.findUserByEmail(user.email)

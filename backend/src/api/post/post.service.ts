@@ -9,6 +9,7 @@ import { PostDto } from 'src/api/post/dto'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 import { UserService } from 'src/api/user/user.service'
 
+
 @Injectable()
 export class PostService {
 	public constructor(
@@ -38,47 +39,50 @@ export class PostService {
 			where: {
 				OR: [
 					{
-						user: {
-							OR: [
-								{
-									followers: {
-										some: {
-											followerId: user.id
-										}
-									}
-								},
-								{
-									id: userId
-								}
-							]
+						groupId: {
+							in: user.followingGroups.map(group => group.groupId)
 						}
 					},
 					{
-						hashtags: {
-							some: {
-								name: {
-									equals: query?.hashtag
-										? `#${query.hashtag}`
-										: undefined,
-									mode: 'insensitive'
+						AND: [
+							{ groupId: null },
+							{
+								user: {
+									OR: [
+										{
+											followers: {
+												some: { followerId: user.id }
+											}
+										},
+										{ id: user.id }
+									]
+								}
+							}
+						]
+					}
+				],
+				...(query?.text
+					? {
+							text: {
+								contains: query.text,
+								mode: 'insensitive'
+							}
+						}
+					: {}),
+				...(query?.hashtag
+					? {
+							hashtags: {
+								some: {
+									name: {
+										equals: query?.hashtag
+											? `#${query.hashtag}`
+											: undefined,
+										mode: 'insensitive'
+									}
 								}
 							}
 						}
-					},
-					{
-						text: {
-							contains: query?.text ? query.text : undefined,
-							mode: 'insensitive'
-						}
-					},
-					{
-						groupId: {
-							in: user.followingGroups.map(
-								following => following.groupId
-							)
-						}
-					}
-				]
+					: {})
 			},
 			// TODO: Add pagination
 			take: 8

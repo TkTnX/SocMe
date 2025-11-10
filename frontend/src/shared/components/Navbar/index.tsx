@@ -14,8 +14,6 @@ interface Props {
 
 export const Navbar = ({ isMobile = false }: Props) => {
 	const pathname = usePathname()
-	const { user } = useUser()
-
 	return (
 		<nav
 			className={cn(
@@ -25,26 +23,31 @@ export const Navbar = ({ isMobile = false }: Props) => {
 			)}
 		>
 			<ul className='vsm:gap-10 vsm:justify-center flex w-full items-center justify-between lg:gap-[70px]'>
-				{navbarItems.map((item, index) => (
-					<li className='relative' key={index}>
-						<Link href={item.href}>
-							<Image
-								alt={item.href}
-								src={
-									pathname === item.href
-										? item.filledImage
-										: item.image
-								}
-								width={28}
-								height={28}
-							/>
-						</Link>
+				{navbarItems.map((item, index) => {
+					const isActive =
+						item.href === '/'
+							? pathname === '/'
+							: pathname.startsWith(item.href)
 
-						{pathname === item.href && (
-							<div className='bg-main absolute -bottom-[calc(100%-3px)] h-0.5 w-full rounded-xl' />
-						)}
-					</li>
-				))}
+					return (
+						<li className='relative' key={index}>
+							<Link href={item.href}>
+								<Image
+									alt={item.href}
+									src={
+										isActive ? item.filledImage : item.image
+									}
+									width={28}
+									height={28}
+								/>
+							</Link>
+
+							{isActive && (
+								<div className='bg-main absolute -bottom-[calc(100%-3px)] h-0.5 w-full rounded-xl' />
+							)}
+						</li>
+					)
+				})}
 			</ul>
 		</nav>
 	)

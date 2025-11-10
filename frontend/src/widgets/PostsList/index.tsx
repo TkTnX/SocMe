@@ -26,7 +26,6 @@ export const PostsList = ({
 		Object.fromEntries(searchParams)
 	)
 
-	console.log(posts)
 	const router = useRouter()
 	const pathname = usePathname()
 	if (!posts && error) <ErrorMessage error={error as ErrorType} />
