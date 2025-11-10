@@ -6,12 +6,15 @@ import {
 	HttpStatus,
 	Post,
 	Req,
+	Request,
 	Res,
+	UseGuards,
 	Response
 } from '@nestjs/common'
-import { Request, Response as ResponseType } from 'express'
+import { Request as ExpressRequest, Response as ResponseType } from 'express'
 import { SignInDto, SignUpDto } from 'src/api/auth/dto'
 import { Authorized, Protected } from 'src/common/decorators'
+import { GoogleOAuthGuard } from 'src/common/guards/google-oauth.guard'
 import { IPayload } from 'src/common/types'
 
 import { AuthService } from './auth.service'
@@ -39,7 +42,7 @@ export class AuthController {
 	}
 
 	@Get('refresh')
-	public async refresh(@Req() req: Request) {
+	public async refresh(@Req() req: ExpressRequest) {
 		return await this.authService.refresh(req)
 	}
 
@@ -47,5 +50,19 @@ export class AuthController {
 	@Get('@me')
 	public async getProfile(@Authorized() user: IPayload) {
 		return await this.authService.getMe(user)
+	}
+
+	@Get('google')
+	@UseGuards(GoogleOAuthGuard)
+	public async googleAuth() {
+		console.log("GET")
+	}
+
+	@Get('callback/google')
+	@UseGuards(GoogleOAuthGuard)
+	public async googleAuthRedirect(@Req() req: ExpressRequest, @Res() res: ResponseType) {
+
+
+		return this.authService.googleLogin(req, res)
 	}
 }

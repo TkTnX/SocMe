@@ -24,4 +24,5 @@ export interface IPostRequest {
 	text: string
 	images: string[]
 	hashtags: string[]
+	groupId?: string
 }

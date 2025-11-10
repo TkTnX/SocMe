@@ -14,7 +14,10 @@ interface Props {
 	className?: string
 }
 
-export const PostsList = ({ userPosts, className }: Props) => {
+export const PostsList = ({
+	userPosts,
+	className,
+}: Props) => {
 	const searchParams = useSearchParams()
 	const hashtag = searchParams.get('hashtag') || undefined
 

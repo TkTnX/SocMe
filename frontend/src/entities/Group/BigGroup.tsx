@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { useGroups, useUser } from '@/api/hooks'
-import { FollowButton } from '@/features'
+import { AddPostForm, FollowButton } from '@/features'
 import { Block, Cover, GroupDropdown, Skeleton } from '@/shared/components'
 import { GroupMoreInfo } from '@/shared/components/modals'
 import { PostsList } from '@/widgets'
@@ -59,10 +59,15 @@ export const BigGroup = ({ id }: Props) => {
 			</Block>
 			<div>
 				<div className='flex flex-col-reverse items-start gap-4 md:flex-row'>
-					<PostsList
-						className={'w-full flex-1 md:w-auto'}
-						userPosts={data?.posts || undefined}
-					/>
+					<div className='mt-4 flex-1'>
+						<AddPostForm
+							groupId={data?.id}
+						/>
+						<PostsList
+							className={'w-full flex-1 md:w-auto'}
+							userPosts={data?.posts || undefined}
+						/>
+					</div>
 					<div className='vsm:flex-row mt-4 flex w-full max-w-[345px] flex-col gap-4 md:w-auto md:flex-col'>
 						{isPending ? (
 							<Skeleton className='h-[112px] w-[250px]' />
@@ -84,7 +89,8 @@ export const BigGroup = ({ id }: Props) => {
 						{isPending ? (
 							<Skeleton className='h-[112px] w-[250px]' />
 						) : (
-							data.followers && data?.followers?.length > 0 && (
+							data.followers &&
+							data?.followers?.length > 0 && (
 								<Block>
 									<h5>
 										Подписчики{' '}

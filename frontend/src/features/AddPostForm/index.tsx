@@ -27,9 +27,10 @@ import { PostSchema, postSchema } from '@/shared/schemas'
 interface Props {
 	post?: IPost | null
 	onSuccess?: () => void
+	groupId?: string
 }
 
-export const AddPostForm = ({ post = null, onSuccess }: Props) => {
+export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 	const [images, setImages] = useState<File[]>([])
 	const [imagesUrls, setImagesUrls] = useState<string[]>(post?.images || [])
 	const { user } = useUser()
@@ -66,6 +67,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 		onSuccess: () => {
 			form.reset({ text: '' })
 			queryClient.invalidateQueries({ queryKey: ['posts'] })
+			queryClient.invalidateQueries({ queryKey: ['group', groupId] })
 			toast.success(successMessage)
 			onSuccess?.()
 		},
@@ -96,7 +98,7 @@ export const AddPostForm = ({ post = null, onSuccess }: Props) => {
 					images: [...post.images, ...imagesUrls],
 					hashtags
 				})
-			: create({ text, images: imagesUrls, hashtags })
+			: create({ text, images: imagesUrls, hashtags, groupId })
 	}
 
 	return (

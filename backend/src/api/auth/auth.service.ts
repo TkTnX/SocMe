@@ -1,4 +1,5 @@
 import {
+	BadGatewayException,
 	BadRequestException,
 	Injectable,
 	NotFoundException,
@@ -74,7 +75,7 @@ export class AuthService {
 					}
 				},
 				groups: true,
-				followingGroups: {include: {group: true}}
+				followingGroups: { include: { group: true } }
 			},
 			omit: {
 				password: true
@@ -84,6 +85,33 @@ export class AuthService {
 		if (!user) throw new NotFoundException('Пользователь не найден')
 
 		return user
+	}
+
+	// GOOGLE OAUTH
+
+	public async googleLogin(req: any, res: Response) {
+		const { user } = req
+		const userInDB = await this.userService.findUserByEmail(user.email)
+		let accessToken: string
+
+		if (userInDB && userInDB.provider !== 'GOOGLE') {
+			return res.redirect(`${this.configService.getOrThrow("HTTP_CORS")}/auth/sign-in?message=Почта уже занята`)
+		} else if (userInDB && userInDB.provider === 'GOOGLE') {
+			accessToken = await this.auth(res, userInDB)
+		} else {
+			const newUser = await this.prismaService.user.create({
+				data: {
+					email: user.email,
+					name: user.name,
+					avatar: user.avatar,
+					provider: 'GOOGLE'
+				}
+			})
+			accessToken = await this.auth(res, newUser)
+		}
+		return res.redirect(
+			`${this.configService.getOrThrow('HTTP_CORS')}/auth/callback/google?token=${accessToken}`
+		)
 	}
 
 	// Генерация токенов с помощью jwtService

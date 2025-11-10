@@ -35,6 +35,7 @@ export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 			...options
 		})
 
+	// МУТАЦИЯ СОЗДАНИЯ ПОСТА
 	const createPostMutation = (
 		options?: Omit<
 			UseMutationOptions<PostSchema, unknown, PostSchema>,
@@ -48,6 +49,8 @@ export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 			...options
 		})
 
+	
+	// МУТАЦИЯ РЕДАКТИРОВАНИЯ ПОСТА
 	const editPostMutation = (
 		postId: string,
 		options?: Omit<
@@ -62,6 +65,8 @@ export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 			...options
 		})
 
+	
+	// МУТАЦИЯ УДАЛЕНИЯ ПОСТА
 	const deletePostMutation = (
 		options?: Omit<
 			UseMutationOptions<any, unknown, any>,
