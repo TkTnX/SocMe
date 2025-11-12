@@ -12,7 +12,7 @@ export const UserBlock = ({ user }: Props) => {
 	return (
 		<Link
 			href={`/profile/${user.id}`}
-			className='flex flex-col justify-between overflow-hidden rounded-2xl bg-gray-50'
+			className='flex flex-col justify-between overflow-hidden rounded-2xl bg-gray-50 dark:bg-[#0e0e0e]'
 		>
 			<div className='relative h-[160px] w-full'>
 				<Image

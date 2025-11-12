@@ -1,6 +1,6 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 
-import { signIn, signUp } from '@/api/requests/auth'
+import { logout, signIn, signUp } from '@/api/requests/auth'
 import { SignInSchema, SignUpSchema } from '@/shared/schemas'
 
 export function useAuth() {
@@ -30,8 +30,15 @@ export function useAuth() {
 		})
 	}
 
+	const logoutMutation = (options?: Omit<UseMutationOptions<any, unknown, any>, 'mutationKey' | 'mutationFn'>) => useMutation({
+		mutationKey: ['logout'],
+		mutationFn: async () => await logout(),
+		...options
+	}) 
+
 	return {
 		signUpMutation,
-		signInMutation
+		signInMutation,
+		logoutMutation
 	}
 }

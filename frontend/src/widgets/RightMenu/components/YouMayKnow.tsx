@@ -18,7 +18,7 @@ export const YouMayKnow = () => {
 
 	return (
 		<Block className='px-3'>
-			<h6 className='text-black'>Возможно, вам знакомы:</h6>
+			<h6 className='text-inherit'>Возможно, вам знакомы:</h6>
 			<div className='mt-6 flex flex-col gap-6 border-b pb-6'>
 				{isPending
 					? [...new Array(3)].map((_, index) => (

@@ -15,3 +15,7 @@ export const signIn = async (values: SignInSchema) => {
 
 	return data
 }
+
+export const logout = async () => {
+	const {data} = await axiosInstance.post("/auth/logout")
+}

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { IGroup, IGroupFollower } from '@/api/types'
-import {  Skeleton } from '@/shared/components'
+import { Skeleton } from '@/shared/components'
 import { SUBSCIPTION_DECLENSIONS } from '@/shared/constants'
 import { getDeclensions } from '@/shared/helpers'
 import { cn } from '@/shared/lib/utils'
@@ -32,7 +32,7 @@ export const GroupTitle = ({
 			<div>
 				<Image
 					className={cn(
-						'relative min-h-[44px] min-w-[44px] rounded-2xl bg-white object-cover',
+						'relative min-h-[44px] min-w-[44px] rounded-2xl bg-white object-cover dark:bg-transparent',
 						groupImageClassName
 					)}
 					src={groupData.avatar || '/images/no-avatar-group.jpg'}
@@ -58,7 +58,7 @@ export const GroupTitle = ({
 						)}
 					</p>
 				) : (
-					<p className='text-xs text-black/40'>{groupData.type}</p>
+					<p className='text-xs text-black/40 dark:text-white'>{groupData.type}</p>
 				)}
 			</div>
 		</div>
@@ -69,7 +69,6 @@ function isGroupFollower(
 	group: IGroup | IGroupFollower | undefined
 ): group is IGroupFollower {
 	if (group) {
-		
 		return 'groupId' in group
 	}
 

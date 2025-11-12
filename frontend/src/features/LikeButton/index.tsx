@@ -55,12 +55,15 @@ export const LikeButton = ({ size, id, user, type, totalLikes = 0 }: Props) => {
 		>
 			{totalLikes > 0 && (
 				<Badge
-					className={cn('absolute -top-3 -right-4', {"w-[18px] h-[18px] text-xs -right-3 -top-2": size})}
+					className={cn('absolute -top-3 -right-4', {
+						'-top-2 -right-3 h-[18px] w-[18px] text-xs': size
+					})}
 				>
 					{totalLikes > 99 ? '+99' : totalLikes}
 				</Badge>
 			)}
 			<Image
+				className='dark:invert-100'
 				alt='Лайк'
 				width={size || 24}
 				height={size || 24}

@@ -5,9 +5,8 @@ import { Search } from '@/features'
 import { Navbar } from '@/shared/components'
 
 export const Header = () => {
-	
 	return (
-		<header className='flex h-[76px] bg-white'>
+		<header className='flex h-[76px] bg-white dark:bg-black'>
 			<div className='container flex items-center justify-between'>
 				<Link
 					className='relative block h-[30px] w-[100px] sm:h-[40px] sm:w-[130px]'

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 
 import { SignInForm, SignUpForm } from './components'
-import { GoogleOAuthButton } from '@/features'
+import { GoogleOAuthButton, YandexOAuthButton } from '@/features'
 import { Block } from '@/shared/components'
 
 interface Props {
@@ -19,8 +19,9 @@ export const AuthForm = ({ type }: Props) => {
 				{isSignUp ? 'Регистрация' : 'Вход в аккаунт'}
 			</h3>
 			{isSignUp ? <SignUpForm /> : <SignInForm />}
-			<div className='mt-4'>
+			<div className='mt-4 flex items-center gap-4'>
 				<GoogleOAuthButton />
+				<YandexOAuthButton />
 			</div>
 			{isSignUp ? (
 				<p className='mt-4 text-center'>

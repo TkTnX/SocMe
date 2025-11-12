@@ -64,7 +64,7 @@ export const AddComment = ({ postId, comment, onClose, replyToId }: Props) => {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='bg-bg mt-4 flex items-center rounded-2xl px-2'
+				className='bg-bg mt-4 flex items-center rounded-2xl px-2 dark:bg-[#0e0e0e]'
 			>
 				{!comment ? (
 					<Image
@@ -94,7 +94,7 @@ export const AddComment = ({ postId, comment, onClose, replyToId }: Props) => {
 									{...field}
 									disabled={isPending}
 									placeholder='Написать комментарий...'
-									className='py-4'
+									className='py-4 dark:bg-transparent'
 								/>
 							</FormControl>
 						</FormItem>

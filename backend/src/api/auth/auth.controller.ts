@@ -65,4 +65,10 @@ export class AuthController {
 
 		return this.authService.googleLogin(req, res)
 	}
+
+	@Protected()
+	@Post('logout')
+	public async logout(@Res({passthrough: true}) res: ResponseType) {
+		return await this.authService.logout(res)
+	}
 }

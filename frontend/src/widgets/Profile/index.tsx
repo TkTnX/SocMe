@@ -51,8 +51,8 @@ export const Profile = ({ userId }: Props) => {
 					)}
 				</div>
 			</div>
-			<div className='mb-6 rounded-b-2xl bg-white px-4 pt-16 pb-4'>
-				<h3 className='flex items-center justify-center gap-1 text-center text-2xl font-bold text-black'>
+			<div className='mb-6 rounded-b-2xl bg-white px-4 pt-16 pb-4 dark:bg-[#0e0e0e]'>
+				<h3 className='flex items-center justify-center gap-1 text-center text-2xl font-bold text-black dark:text-white'>
 					{isUserPending ? (
 						<Skeleton className='h-[20px] w-[50px]' />
 					) : (

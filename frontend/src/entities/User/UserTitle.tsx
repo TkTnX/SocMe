@@ -22,7 +22,7 @@ export const UserTitle = ({
 			<Link href={`/profile/${user.id}`}>
 				<Image
 					className={cn(
-						'relative max-h-[44px] min-h-[44px] max-w-[44px] min-w-[44px] rounded-2xl bg-white object-cover',
+						'relative max-h-[44px] min-h-[44px] max-w-[44px] min-w-[44px] rounded-2xl bg-white object-cover dark:bg-transparent',
 						userImageClassName
 					)}
 					src={user.avatar || '/images/icons/no-avatar.svg'}
@@ -43,7 +43,7 @@ export const UserTitle = ({
 							)}{' '}
 					<PremiumIcon isPremium={true} />
 				</Link>
-				<p className='text-xs text-black/40'>
+				<p className='text-xs text-black/40 dark:text-white'>
 					{user?.hobby || 'Пользователь'}
 				</p>
 			</div>

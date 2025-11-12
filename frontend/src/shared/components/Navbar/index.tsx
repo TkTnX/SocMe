@@ -37,6 +37,9 @@ export const Navbar = ({ isMobile = false }: Props) => {
 									src={
 										isActive ? item.filledImage : item.image
 									}
+									className={cn('', {
+										'dark:invert-100': !isActive
+									})}
 									width={28}
 									height={28}
 								/>

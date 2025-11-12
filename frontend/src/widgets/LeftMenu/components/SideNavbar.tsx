@@ -1,8 +1,8 @@
-import { Block } from '@/shared/components'
-import { SIDE_NAVBAR } from '@/shared/data'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { Block } from '@/shared/components'
+import { SIDE_NAVBAR } from '@/shared/data'
 
 export const SideNavbar = () => {
 	return (
@@ -15,6 +15,7 @@ export const SideNavbar = () => {
 							href={item.href}
 						>
 							<Image
+								className='dark:opacity-80 dark:invert-100'
 								src={item.icon}
 								alt={item.name}
 								width={24}

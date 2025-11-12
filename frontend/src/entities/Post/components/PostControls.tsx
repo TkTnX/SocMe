@@ -48,6 +48,7 @@ export const PostControls = ({
 						</Badge>
 					)}
 					<Image
+						className='dark:invert-100'
 						alt='Комментарии'
 						width={24}
 						height={24}
@@ -56,6 +57,7 @@ export const PostControls = ({
 				</button>
 				<button onClick={onShare} className='hover:opacity-80'>
 					<Image
+						className='dark:invert-100'
 						alt='Поделиться'
 						width={24}
 						height={24}

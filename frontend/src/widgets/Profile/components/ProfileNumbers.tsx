@@ -12,20 +12,17 @@ export const ProfileNumbers = ({ isUserPending, user }: Props) => {
 	return (
 		<div className='mt-2 flex flex-wrap items-center justify-center gap-2 sm:gap-10'>
 			<div className='flex items-center gap-1'>
-				<span className='text-sm font-bold text-black'>
+				<span className='text-sm font-bold text-black dark:text-white'>
 					{isUserPending ? (
 						<Skeleton className='h-[20px] w-[20px]' />
 					) : (
 						user?.posts.length
 					)}
 				</span>{' '}
-				{getDeclensions(
-					POST_DECLENSIONS,
-					user?.posts.length || 0
-				)}
+				{getDeclensions(POST_DECLENSIONS, user?.posts.length || 0)}
 			</div>
 			<div className='flex items-center gap-1'>
-				<span className='text-sm font-bold text-black'>
+				<span className='text-sm font-bold text-black dark:text-white'>
 					{isUserPending ? (
 						<Skeleton className='h-[20px] w-[20px]' />
 					) : (
@@ -38,7 +35,7 @@ export const ProfileNumbers = ({ isUserPending, user }: Props) => {
 				)}
 			</div>
 			<div className='flex items-center gap-1'>
-				<span className='text-sm font-bold text-black'>
+				<span className='text-sm font-bold text-black dark:text-white'>
 					{isUserPending ? (
 						<Skeleton className='h-[20px] w-[20px]' />
 					) : (

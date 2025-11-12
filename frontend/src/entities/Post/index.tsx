@@ -45,7 +45,7 @@ export const Post = ({ post, className }: Props) => {
 				)}
 			</div>
 			<div className='mt-3.5'>
-				<h2 className='mt-4 text-sm text-black'>{post.text}</h2>
+				<h2 className='mt-4 text-sm text-inherit'>{post.text}</h2>
 
 				{post.images.length ? <PostImages images={post.images} /> : ''}
 			</div>

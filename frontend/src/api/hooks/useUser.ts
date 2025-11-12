@@ -9,7 +9,7 @@ import { EditProfileSchema } from '@/shared/schemas'
 
 export function useUser() {
 	const getUsersQuery = (
-		isPeoplePage: boolean,
+		isPeoplePage?: boolean,
 		query?: Record<string, string>
 	) =>
 		useQuery({

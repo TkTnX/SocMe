@@ -154,7 +154,7 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 							)}
 						/>
 					</div>
-					<div className='flex items-center justify-between bg-[#ecf9ff] pl-6'>
+					<div className='flex items-center justify-between bg-[#ecf9ff] pl-6 dark:bg-black/20'>
 						<UploadPostImages setImages={setImages} />
 						<button
 							type='button'
@@ -182,7 +182,7 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 						</button>
 						<button
 							disabled={isCreatePending || isEditPending}
-							className='flex h-full w-full max-w-[70px] items-center justify-center bg-[#c7edff] p-6 hover:opacity-80 disabled:pointer-events-none disabled:opacity-50'
+							className='flex h-full w-full max-w-[70px] items-center justify-center bg-[#c7edff] p-6 hover:opacity-80 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-300'
 						>
 							<Send size={24} color='var(--color-text)' />
 						</button>

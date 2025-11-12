@@ -1,7 +1,7 @@
 import {
-	BadGatewayException,
 	BadRequestException,
 	Injectable,
+	InternalServerErrorException,
 	NotFoundException,
 	UnauthorizedException
 } from '@nestjs/common'
@@ -89,18 +89,15 @@ export class AuthService {
 
 	// GOOGLE OAUTH
 
-	// * TODO: Кнопка войти через google в auth
-	// * TODO: Сейчас в posts list выводятся посты пользователя, на которого даже не подписан. Пофиксить (вообще всё получение постов неправильно работает)
-	// TODO: Вход через яндекс
-	// todo: кНОПКА ВЫХОДА ИЗ АККАУНТА
-
 	public async googleLogin(req: any, res: Response) {
 		const { user } = req
 		const userInDB = await this.userService.findUserByEmail(user.email)
 		let accessToken: string
 
 		if (userInDB && userInDB.provider !== 'GOOGLE') {
-			return res.redirect(`${this.configService.getOrThrow("HTTP_CORS")}/auth/sign-in?message=Почта уже занята`)
+			return res.redirect(
+				`${this.configService.getOrThrow('HTTP_CORS')}/auth/sign-in?message=Почта уже занята`
+			)
 		} else if (userInDB && userInDB.provider === 'GOOGLE') {
 			accessToken = await this.auth(res, userInDB)
 		} else {
@@ -181,5 +178,13 @@ export class AuthService {
 			const { access_token } = await this.generateToken(user)
 			return { access_token }
 		}
+	}
+
+	// ВЫХОД ИЗ АККАУНТА
+
+	public async logout(res: Response) {
+		res.clearCookie('accessToken')
+		res.clearCookie('refreshToken')
+		return { message: 'Успешный выход из аккаунта' }
 	}
 }
