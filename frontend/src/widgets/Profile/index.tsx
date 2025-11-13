@@ -58,7 +58,7 @@ export const Profile = ({ userId }: Props) => {
 					) : (
 						profile?.name
 					)}{' '}
-					<PremiumIcon isPremium={true} />
+					<PremiumIcon isPremium={!!profile?.userSubscription} />
 				</h3>
 				{profile?.hobby && (
 					<div className='text-main mt-1 flex items-center justify-center gap-1 text-center text-xs font-bold'>

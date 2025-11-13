@@ -121,7 +121,8 @@ export class UserService {
 				followers: true,
 				followings: true,
 				hashtags: true,
-				followingGroups: true
+				followingGroups: true,
+				userSubscription: true
 			},
 			omit: {
 				password: !takePassword ? true : false,

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import { CreatePaymentButton } from '@/features'
 import { Block, Button } from '@/shared/components'
 
 const PremiumPage = () => {
@@ -32,13 +33,13 @@ const PremiumPage = () => {
 				<p className='z-10 text-7xl font-bold text-black dark:text-white'>
 					349₽{' '}
 					<span className='text-base text-gray-500'>/ месяц</span>
-                </p>
-                {/* TODO: получать доступные подписки и выводить их тут */}
+				</p>
+				{/* TODO: получать доступные подписки и выводить их тут */}
 				<p className='text-sm md:text-base'>
 					Оформив подписку, вы сможете открыть доступ к сторис и
 					уникальному статусу, который будет виден всем!
 				</p>
-				<Button className='z-10 w-full'>Оплатить</Button>
+				<CreatePaymentButton subscriptionId={'1'} value={349} />
 			</Block>
 		</div>
 	)

@@ -26,21 +26,19 @@ model User {
 
   provider EProviders @default(CREDENTIALS)
 
-  likes      Like[]
-  favorites  Favorite[]
-  followers  Follower[] @relation("follower")
-  followings Follower[] @relation("following")
-  posts      Post[]
-  hashtags   Hashtag[]
-  comments   Comment[]
-  groups     Group[]
-  payments   Payment[]
+  likes             Like[]
+  favorites         Favorite[]
+  followers         Follower[]        @relation("follower")
+  followings        Follower[]        @relation("following")
+  posts             Post[]
+  hashtags          Hashtag[]
+  comments          Comment[]
+  groups            Group[]
+  payments          Payment[]
+  followingGroups   GroupFollower[]
+  userSubscription UserSubscription?
 
-  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
-  subscriptionId String?       @unique
-
-  createdAt       DateTime        @default(now())
-  followingGroups GroupFollower[]
+  createdAt DateTime @default(now())
 }
 
 model Follower {
@@ -167,11 +165,25 @@ model Subscription {
   title       String
   description String
   price       Int
+
+  userSubscriptions UserSubscription[]
+  payments         Payment[]
+}
+
+model UserSubscription {
+  id String @id @default(uuid())
+
   status ESubscriptionStatuses @default(PENDING)
 
-  users User[]
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  subscriptionId String       @unique
 
-  payments Payment[]
+  paymentId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  expiresAt DateTime
 }
 
 model Payment {

@@ -41,7 +41,7 @@ export const UserTitle = ({
 						: isUserPending && (
 								<Skeleton className='h-4 w-full rounded-sm' />
 							)}{' '}
-					<PremiumIcon isPremium={true} />
+					<PremiumIcon isPremium={!!user.userSubscription} />
 				</Link>
 				<p className='text-xs text-black/40 dark:text-white'>
 					{user?.hobby || 'Пользователь'}
