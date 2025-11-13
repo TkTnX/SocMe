@@ -34,6 +34,10 @@ model User {
   hashtags   Hashtag[]
   comments   Comment[]
   groups     Group[]
+  payments   Payment[]
+
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId String?       @unique
 
   createdAt       DateTime        @default(now())
   followingGroups GroupFollower[]
@@ -157,6 +161,31 @@ model Hashtag {
   users User[]
 }
 
+model Subscription {
+  id String @id @default(uuid())
+
+  title       String
+  description String
+  price       Int
+  status ESubscriptionStatuses @default(PENDING)
+
+  users User[]
+
+  payments Payment[]
+}
+
+model Payment {
+  id String @id @default(uuid())
+
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  subscriptionId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  createdAt DateTime @default(now())
+}
+
 enum ELikeType {
   POST
   COMMENT
@@ -172,4 +201,10 @@ enum EProviders {
 enum EGender {
   MALE
   FEMALE
+}
+
+enum ESubscriptionStatuses {
+  PENDING
+  SUCCEEDED
+  FAILED
 }

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import * as path from 'path'
-import { configServiceConfig } from 'src/configs'
+import { configServiceConfig, getYookassaConfig } from 'src/configs'
 
 import { AuthModule } from './api/auth/auth.module'
 import { CommentModule } from './api/comment/comment.module'
@@ -14,6 +14,8 @@ import { LikeModule } from './api/like/like.module'
 import { PostModule } from './api/post/post.module'
 import { PrismaModule } from './api/prisma/prisma.module'
 import { UserModule } from './api/user/user.module'
+import { YookassaModule } from 'nestjs-yookassa'
+import { PaymentModule } from './api/payment/payment.module';
 
 @Module({
 	imports: [
@@ -21,6 +23,11 @@ import { UserModule } from './api/user/user.module'
 		ServeStaticModule.forRoot({
 			rootPath: path.join(__dirname, '..', 'uploads'),
 			serveRoot: '/static'
+		}),
+		YookassaModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: getYookassaConfig,
+			inject: [ConfigService]
 		}),
 		PrismaModule,
 		PostModule,
@@ -31,7 +38,9 @@ import { UserModule } from './api/user/user.module'
 		CommentModule,
 		FileModule,
 		HashtagModule,
-		GroupModule
+		GroupModule,
+		PaymentModule,
+		
 	]
 })
 export class AppModule {}
