@@ -16,4 +16,10 @@ export class PaymentController {
 	) {
 		return await this.paymentService.create(dto, userId)
 	}
+
+	@Post('webhook')
+	public async webhook(@Body() body: any) {
+		return await this.paymentService.webhook(body)
+		
+	}
 }

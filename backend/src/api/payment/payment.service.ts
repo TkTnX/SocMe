@@ -32,7 +32,7 @@ export class PaymentService {
 			payment_method_data: {
 				type: PaymentMethodsEnum.BANK_CARD
 			},
-			capture: false,
+			capture: true,
 			confirmation: {
 				type: ConfirmationEnum.REDIRECT,
 				return_url: `${this.configService.getOrThrow('HTTP_CORS')}/profile`
@@ -45,9 +45,14 @@ export class PaymentService {
 		const dbPayment = await this.prismaService.payment.create({
 			data: {
 				subscriptionId: dto.subscriptionId,
-				userId
+				userId,
+				yookassaPaymentId: newPayment.id
 			}
 		})
+
+		// TODO: Отслеживание вебхуков
+		// TODO: Валидация вебхуков
+		// TODO: Работа автосписания
 
 		// TODO: Возможно, в будущем это должно происходить после прихода webhook
 		if (user.userSubscription) {
@@ -70,5 +75,54 @@ export class PaymentService {
 			})
 		}
 		return newPayment
+	}
+
+	// TODO: Доделать вебхуки
+	public async webhook(body: { event: string; object: { id: string } }) {
+		const { event, object } = body
+
+		const dbPayment = await this.prismaService.payment.findFirst({
+			where: { yookassaPaymentId: object.id }
+		})
+
+		const userSubscription =
+			await this.prismaService.userSubscription.findFirst({
+				where: { paymentId: dbPayment?.id }
+			})
+
+		switch (event) {
+			case 'payment.succeeded':
+				await this.prismaService.payment.update({
+					where: {
+						id: dbPayment?.id
+					},
+					data: {
+						status: 'SUCCEEDED'
+					}
+				})
+
+				await this.prismaService.userSubscription.update({
+					where: {
+						id: userSubscription?.id
+					},
+					data: {
+						status: 'ACTIVE'
+					}
+				})
+				break
+			case 'payment.canceled':
+				await this.prismaService.payment.update({
+					where: {
+						id: dbPayment?.id
+					},
+					data: {
+						status: 'FAILED'
+					}
+				})
+
+				break
+			default:
+				break
+		}
 	}
 }

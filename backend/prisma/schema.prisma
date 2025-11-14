@@ -26,16 +26,16 @@ model User {
 
   provider EProviders @default(CREDENTIALS)
 
-  likes             Like[]
-  favorites         Favorite[]
-  followers         Follower[]        @relation("follower")
-  followings        Follower[]        @relation("following")
-  posts             Post[]
-  hashtags          Hashtag[]
-  comments          Comment[]
-  groups            Group[]
-  payments          Payment[]
-  followingGroups   GroupFollower[]
+  likes            Like[]
+  favorites        Favorite[]
+  followers        Follower[]        @relation("follower")
+  followings       Follower[]        @relation("following")
+  posts            Post[]
+  hashtags         Hashtag[]
+  comments         Comment[]
+  groups           Group[]
+  payments         Payment[]
+  followingGroups  GroupFollower[]
   userSubscription UserSubscription?
 
   createdAt DateTime @default(now())
@@ -167,13 +167,13 @@ model Subscription {
   price       Int
 
   userSubscriptions UserSubscription[]
-  payments         Payment[]
+  payments          Payment[]
 }
 
 model UserSubscription {
   id String @id @default(uuid())
 
-  status ESubscriptionStatuses @default(PENDING)
+  status ESubscriptionStatuses @default(DISABLED)
 
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
   subscriptionId String       @unique
@@ -191,6 +191,10 @@ model Payment {
 
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
   subscriptionId String
+
+  yookassaPaymentId String
+
+  status EPaymentStatuses @default(PENDING)
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
@@ -216,6 +220,11 @@ enum EGender {
 }
 
 enum ESubscriptionStatuses {
+  ACTIVE
+  DISABLED
+}
+
+enum EPaymentStatuses {
   PENDING
   SUCCEEDED
   FAILED
