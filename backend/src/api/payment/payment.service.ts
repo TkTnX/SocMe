@@ -77,7 +77,6 @@ export class PaymentService {
 		return newPayment
 	}
 
-	// TODO: Доделать вебхуки
 	public async webhook(body: { event: string; object: { id: string } }) {
 		const { event, object } = body
 

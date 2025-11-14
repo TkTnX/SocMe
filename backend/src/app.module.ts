@@ -16,6 +16,7 @@ import { PrismaModule } from './api/prisma/prisma.module'
 import { UserModule } from './api/user/user.module'
 import { YookassaModule } from 'nestjs-yookassa'
 import { PaymentModule } from './api/payment/payment.module';
+import { StoryModule } from './api/story/story.module';
 
 @Module({
 	imports: [
@@ -40,6 +41,7 @@ import { PaymentModule } from './api/payment/payment.module';
 		HashtagModule,
 		GroupModule,
 		PaymentModule,
+		StoryModule,
 		
 	]
 })

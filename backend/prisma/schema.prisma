@@ -37,6 +37,7 @@ model User {
   payments         Payment[]
   followingGroups  GroupFollower[]
   userSubscription UserSubscription?
+  stories   Story[]
 
   createdAt DateTime @default(now())
 }
@@ -176,7 +177,7 @@ model UserSubscription {
   status ESubscriptionStatuses @default(DISABLED)
 
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
-  subscriptionId String       @unique
+  subscriptionId String    
 
   paymentId String
 
@@ -199,6 +200,19 @@ model Payment {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
+  createdAt DateTime @default(now())
+}
+
+model Story {
+  id String @id @default(uuid())
+
+  image String
+  text  String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  // TODO: Story lives only one day
   createdAt DateTime @default(now())
 }
 

@@ -6,7 +6,6 @@ import { usePayment } from '@/api/hooks'
 import { Button } from '@/shared/components'
 import { showErrorMessage } from '@/shared/helpers'
 
-// todo: в будущем добавить тип
 export const CreatePaymentButton = (subscription: {
 	value: number
 	subscriptionId: string
