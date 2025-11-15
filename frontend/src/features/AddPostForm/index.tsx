@@ -24,6 +24,8 @@ import {
 import { showErrorMessage } from '@/shared/helpers'
 import { PostSchema, postSchema } from '@/shared/schemas'
 
+// TODO: Сократить количество кода
+
 interface Props {
 	post?: IPost | null
 	onSuccess?: () => void

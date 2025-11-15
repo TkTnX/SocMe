@@ -12,7 +12,7 @@ import { FileImages } from '@/shared/schemas';
 interface Props {
 	form: UseFormReturn<FileImages>
 	children: React.ReactNode
-	type: 'avatar' | 'cover'
+	type?: 'avatar' | 'cover'
 	onSubmit: (values: FileImages, type: 'avatar' | 'cover') => void
 }
 
@@ -34,6 +34,7 @@ export const EditPhotoInput = ({
 							if (file) {
 								field.onChange(file)
 								form.handleSubmit((values: FileImages) =>
+									// TODO: Доделать публикацию изображений
 									onSubmit(values, type)
 								)()
 							}

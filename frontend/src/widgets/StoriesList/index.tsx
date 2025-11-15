@@ -3,8 +3,8 @@
 import { Plus } from 'lucide-react'
 
 import { useStories } from '@/api/hooks'
-import { StoryRound } from '@/entities'
-import { ErrorMessage, Skeleton } from '@/shared/components'
+import { StoryModal, StoryRound } from '@/entities'
+import { CreateStoryModal, ErrorMessage, Skeleton } from '@/shared/components'
 import { ErrorType } from '@/shared/types'
 
 export const StoriesList = () => {
@@ -14,11 +14,12 @@ export const StoriesList = () => {
 
 	if (error) return <ErrorMessage error={error as ErrorType} />
 	return (
-		// TODO: Сделать компонент carousel
 		<div className='mb-4 flex items-center gap-2'>
-			<button className='bg-main relative flex h-[50px] w-[50px] items-center justify-center overflow-hidden rounded-full'>
-				<Plus className='text-white' />
-			</button>
+			<CreateStoryModal>
+				<button className='bg-main relative flex h-[50px] w-[50px] items-center justify-center overflow-hidden rounded-full'>
+					<Plus className='text-white' />
+				</button>
+			</CreateStoryModal>
 			{isPending
 				? [...new Array(5)].map((_, index) => (
 						<Skeleton
@@ -27,7 +28,9 @@ export const StoriesList = () => {
 						/>
 					))
 				: data.map(story => (
-						<StoryRound key={story.id} story={story} />
+						<StoryModal key={story.id} story={story}>
+							<StoryRound story={story} />
+						</StoryModal>
 					))}
 		</div>
 	)
