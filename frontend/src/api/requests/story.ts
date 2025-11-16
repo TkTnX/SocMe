@@ -1,5 +1,6 @@
 import { IStory } from '@/api/types'
 import { axiosInstance } from '@/shared/lib'
+import { StorySchema } from '@/shared/schemas'
 
 export const getStories = async (): Promise<IStory[]> => {
 	const { data } = await axiosInstance.get('/stories')
@@ -7,8 +8,7 @@ export const getStories = async (): Promise<IStory[]> => {
 	return data
 }
 
-// TODO: ADD TYPE
-export const createStory = async (body: any): Promise<IStory> => {
+export const createStory = async (body: StorySchema): Promise<IStory> => {
 	const { data } = await axiosInstance.post('/stories', body)
 
 	return data

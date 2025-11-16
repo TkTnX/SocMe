@@ -1,18 +1,31 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { Plus, Upload } from 'lucide-react'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
-import { useUploads } from '@/api/hooks'
-import { EditPhotoInput } from '@/features/EditPhotoInput'
-import { Form, Textarea } from '@/shared/components'
+import { useStories, useUploads } from '@/api/hooks'
+import {
+	Button,
+	ErrorMessage,
+	Form,
+	FormField,
+	Textarea
+} from '@/shared/components'
 import { StorySchema, storySchema } from '@/shared/schemas'
 
-export const CreateStoryForm = () => {
+interface Props {
+	setOpen: (bool: boolean) => void
+}
+
+export const CreateStoryForm = ({ setOpen }: Props) => {
 	const [image, setImage] = useState<File | null>(null)
 	const [imageUrl, setImageUrl] = useState('')
+	const queryClient = useQueryClient()
 	const form = useForm<StorySchema>({
 		resolver: zodResolver(storySchema),
 		defaultValues: {
@@ -20,11 +33,21 @@ export const CreateStoryForm = () => {
 			image: ''
 		}
 	})
+
+	const { createStoryMutation } = useStories()
+	const { mutate, isPending } = createStoryMutation({
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['stories'] })
+			toast.success('Создано')
+		},
+		onError: error => <ErrorMessage error={error} />
+	})
 	const { uploadMutation } = useUploads()
 	const { mutate: upload } = uploadMutation()
 
 	const onSubmit = async (values: StorySchema) => {
-		console.log(values)
+		mutate({ ...values, image: imageUrl })
+		setOpen(false)
 	}
 
 	useEffect(() => {
@@ -40,18 +63,57 @@ export const CreateStoryForm = () => {
 			}
 		})
 	}, [image])
-									// TODO: Доделать публикацию изображений
 
 	return (
 		<Form {...form}>
-			<form>
-				<EditPhotoInput form={form} onSubmit={onSubmit}>
-					<p className='bg-main absolute top-5 right-5 flex cursor-pointer gap-2 rounded-full px-4 py-2 text-white hover:opacity-80'>
-						<Plus />
-						Добавить изображение
-					</p>
-				</EditPhotoInput>
-				<Textarea placeholder='Что нового...' />
+			<form
+				onSubmit={form.handleSubmit(onSubmit)}
+				className='flex flex-col gap-4'
+			>
+				{imageUrl && (
+					<div className='relative h-[150px] w-[150px]'>
+						<Image
+							src={imageUrl}
+							alt='Изображение'
+							fill
+							className='rounded-2xl object-cover'
+						/>
+					</div>
+				)}
+				<FormField
+					disabled={isPending}
+					control={form.control}
+					name='image'
+					render={({ field }) => (
+						<label className='flex cursor-pointer flex-col items-center justify-center border-2 border-dashed py-10'>
+							<input
+								onChange={e => {
+									const file = e.target.files?.[0]
+									if (file) {
+										setImage(file)
+									}
+								}}
+								accept='image/*'
+								name={field.name}
+								ref={field.ref}
+								hidden
+								type='file'
+							/>
+
+							<Upload />
+							<p>Загрузить изображение</p>
+						</label>
+					)}
+				/>
+				<FormField
+					disabled={isPending}
+					control={form.control}
+					name='text'
+					render={({ field }) => (
+						<Textarea placeholder='Что нового...' {...field} />
+					)}
+				/>
+				<Button disabled={isPending}>Опубликовать</Button>
 			</form>
 		</Form>
 	)

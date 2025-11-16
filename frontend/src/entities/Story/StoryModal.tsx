@@ -16,10 +16,9 @@ interface Props {
 	story: IStory
 }
 
-// TODO: Открытие полной истории
-// TODO :Создание историй
 // TODO: Удаление историй
 // TODO: Carousel Для списка историй
+// TODO: Если у пользователя несколько историй, они должны быть в одной вкладке
 
 export const StoryModal = ({ children, story }: Props) => {
 	return (

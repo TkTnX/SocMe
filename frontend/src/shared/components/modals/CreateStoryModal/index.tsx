@@ -1,3 +1,7 @@
+'use client'
+
+import { useState } from 'react'
+
 import { CreateStoryForm } from '@/features'
 import {
 	Dialog,
@@ -11,12 +15,13 @@ interface Props {
 }
 
 export const CreateStoryModal = ({ children }: Props) => {
+	const [open, setOpen] = useState(false)
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent>
-                <DialogTitle>Новая история</DialogTitle>
-                <CreateStoryForm />
+				<DialogTitle>Новая история</DialogTitle>
+				<CreateStoryForm setOpen={setOpen} />
 			</DialogContent>
 		</Dialog>
 	)

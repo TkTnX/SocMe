@@ -1,6 +1,11 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import {
+	UseMutationOptions,
+	useMutation,
+	useQuery
+} from '@tanstack/react-query'
 
 import { createStory, deleteStory, getStories } from '@/api/requests'
+import { StorySchema } from '@/shared/schemas'
 
 export function useStories() {
 	const getStoriesQuery = () =>
@@ -9,11 +14,16 @@ export function useStories() {
 			queryFn: () => getStories()
 		})
 
-	const createStoryMutation = () =>
+	const createStoryMutation = (
+		options?: Omit<
+			UseMutationOptions<unknown, any, unknown>,
+			'mutationKey' | 'mutationFn'
+		>
+	) =>
 		useMutation({
 			mutationKey: ['create story'],
-			// TODO: ADD TYPE
-			mutationFn: (body: any) => createStory(body)
+			mutationFn: (body: StorySchema) => createStory(body),
+			...options
 		})
 
 	const deleteStoryMutation = () =>
