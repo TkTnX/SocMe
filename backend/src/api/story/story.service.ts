@@ -8,7 +8,6 @@ import { PrismaService } from 'src/api/prisma/prisma.service'
 import { StoryDto } from 'src/api/story/dto'
 import { UserService } from 'src/api/user/user.service'
 
-// TODO: Удалить баннер премиума, если он уже оформлен
 
 @Injectable()
 export class StoryService {

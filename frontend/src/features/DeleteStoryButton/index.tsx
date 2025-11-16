@@ -7,14 +7,17 @@ import { showErrorMessage } from '@/shared/helpers'
 
 interface Props {
 	storyId: string
+	onClick: () => void
 }
 
-export const DeleteStoryButton = ({ storyId }: Props) => {
+export const DeleteStoryButton = ({ storyId, onClick }: Props) => {
 	const { deleteStoryMutation } = useStories()
 	const queryClient = useQueryClient()
 	const { mutate, isPending } = deleteStoryMutation({
-		onSuccess: () =>
-			queryClient.invalidateQueries({ queryKey: ['stories'] }),
+		onSuccess: () => {
+			onClick()
+			return queryClient.invalidateQueries({ queryKey: ['stories'] })
+		},
 		onError: error => showErrorMessage(error)
 	})
 	return (
