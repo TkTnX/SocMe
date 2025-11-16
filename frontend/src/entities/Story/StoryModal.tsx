@@ -1,10 +1,14 @@
 'use client'
 
+import { Trash } from 'lucide-react'
 import Image from 'next/image'
 
+import { useUser } from '@/api/hooks'
 import { IStory } from '@/api/types'
 import { UserTitle } from '@/entities/User'
+import { DeleteStoryButton } from '@/features'
 import {
+	Button,
 	Dialog,
 	DialogContent,
 	DialogTitle,
@@ -16,16 +20,20 @@ interface Props {
 	story: IStory
 }
 
-// TODO: Удаление историй
 // TODO: Carousel Для списка историй
 // TODO: Если у пользователя несколько историй, они должны быть в одной вкладке
+// TODO: Блоку с текстом задать какой-то bg color (blur)
 
 export const StoryModal = ({ children, story }: Props) => {
+	const { user } = useUser()
+	const isUserStory = user?.id === story.userId
+
 	return (
 		<Dialog>
 			<DialogTrigger>{children}</DialogTrigger>
 			<DialogTitle />
 			<DialogContent className='overflow-hidden p-0'>
+				{isUserStory && <DeleteStoryButton storyId={story.id} />}
 				<div className='relative h-[calc(100vh-100px)] w-full'>
 					<Image
 						src={story.image}

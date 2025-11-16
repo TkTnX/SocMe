@@ -2,20 +2,14 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { Plus, Upload } from 'lucide-react'
+import { Upload } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 
 import { useStories, useUploads } from '@/api/hooks'
-import {
-	Button,
-	ErrorMessage,
-	Form,
-	FormField,
-	Textarea
-} from '@/shared/components'
+import { Button, Form, FormField, Textarea } from '@/shared/components'
+import { showErrorMessage } from '@/shared/helpers'
 import { StorySchema, storySchema } from '@/shared/schemas'
 
 interface Props {
@@ -38,9 +32,8 @@ export const CreateStoryForm = ({ setOpen }: Props) => {
 	const { mutate, isPending } = createStoryMutation({
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['stories'] })
-			toast.success('Создано')
 		},
-		onError: error => <ErrorMessage error={error} />
+		onError: error => showErrorMessage(error)
 	})
 	const { uploadMutation } = useUploads()
 	const { mutate: upload } = uploadMutation()
