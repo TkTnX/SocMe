@@ -23,7 +23,6 @@ export const StoriesList = () => {
 	const { data, isPending, error } = getStoriesQuery()
 
 	if (error) return <ErrorMessage error={error as ErrorType} />
-	console.log(data)
 
 	for (let i = 0; i < data?.length!; i++) {
 		if (!data) return null
@@ -34,7 +33,7 @@ export const StoriesList = () => {
 
 	return (
 		<Carousel>
-			<CarouselContent className='mb-4 flex max-w-[500px] items-center gap-2 py-1'>
+			<CarouselContent className='mb-4 flex max-w-[500px] items-center gap-5 py-1'>
 				<CarouselItem className='basis-[calc(1/10*100%)]'>
 					<CreateStoryModal>
 						<button className='bg-main relative flex h-[50px] w-[50px] items-center justify-center overflow-hidden rounded-full'>

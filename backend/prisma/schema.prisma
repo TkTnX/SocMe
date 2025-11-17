@@ -37,7 +37,7 @@ model User {
   payments         Payment[]
   followingGroups  GroupFollower[]
   userSubscription UserSubscription?
-  stories   Story[]
+  stories          Story[]
 
   createdAt DateTime @default(now())
 }
@@ -177,7 +177,7 @@ model UserSubscription {
   status ESubscriptionStatuses @default(DISABLED)
 
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
-  subscriptionId String    
+  subscriptionId String
 
   paymentId String
 
@@ -193,6 +193,7 @@ model Payment {
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
   subscriptionId String
 
+  paymentMethodId   String?
   yookassaPaymentId String
 
   status EPaymentStatuses @default(PENDING)
@@ -212,7 +213,6 @@ model Story {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
-  // TODO: Story lives only one day
   createdAt DateTime @default(now())
 }
 

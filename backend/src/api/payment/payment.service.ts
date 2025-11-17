@@ -1,16 +1,19 @@
-import { Injectable } from '@nestjs/common'
+import { BadGatewayException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { addMonths } from 'date-fns'
+import { Subscription, User } from 'generated/prisma'
 import {
 	ConfirmationEnum,
 	CreatePaymentRequest,
 	CurrencyEnum,
 	PaymentMethodsEnum,
+	VatCodesEnum,
 	YookassaService
 } from 'nestjs-yookassa'
 import { PaymentDto } from 'src/api/payment/dto'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 import { UserService } from 'src/api/user/user.service'
+import { YOOKASSA_IP } from 'src/constants'
 
 @Injectable()
 export class PaymentService {
@@ -33,6 +36,8 @@ export class PaymentService {
 				type: PaymentMethodsEnum.BANK_CARD
 			},
 			capture: true,
+			save_payment_method: true,
+
 			confirmation: {
 				type: ConfirmationEnum.REDIRECT,
 				return_url: `${this.configService.getOrThrow('HTTP_CORS')}/profile`
@@ -46,27 +51,31 @@ export class PaymentService {
 			data: {
 				subscriptionId: dto.subscriptionId,
 				userId,
+				// @ts-ignore
+				paymentMethodId: newPayment.payment_method?.id,
 				yookassaPaymentId: newPayment.id
 			}
 		})
 
-		// TODO: Отслеживание вебхуков
-		// TODO: Валидация вебхуков
-		// TODO: Работа автосписания
-
-		// TODO: Возможно, в будущем это должно происходить после прихода webhook
-		if (user.userSubscription) {
+		console.log(user)
+		const userSubscription =
+			await this.prismaService.userSubscription.findFirst({
+				where: { userId }
+			})
+		if (userSubscription) {
 			await this.prismaService.userSubscription.update({
 				where: {
-					id: user.userSubscription.id
+					id: userSubscription?.id
 				},
 				data: {
-					expiresAt: addMonths(user.userSubscription.expiresAt, 1)
+					status: 'ACTIVE',
+					expiresAt: addMonths(userSubscription.expiresAt, 1)
 				}
 			})
 		} else {
 			await this.prismaService.userSubscription.create({
 				data: {
+					status: 'DISABLED',
 					expiresAt: addMonths(new Date(), 1),
 					subscriptionId: dto.subscriptionId,
 					userId,
@@ -77,16 +86,86 @@ export class PaymentService {
 		return newPayment
 	}
 
-	public async webhook(body: { event: string; object: { id: string } }) {
-		const { event, object } = body
+	public async createBySavedCard(subscription: Subscription, user: User) {
+		const lastPayment = await this.prismaService.payment.findFirst({
+			where: { userId: user.id, status: 'SUCCEEDED' },
+			orderBy: { createdAt: 'desc' }
+		})
 
+		if (!lastPayment?.paymentMethodId) {
+			throw new Error('У пользователя нет сохранённого payment_method_id')
+		}
+
+		const yookassaPayment = await this.yookassaService.payments.create({
+			amount: {
+				value: subscription.price,
+				currency: CurrencyEnum.RUB
+			},
+			description: `Рекурентное списание подписки "${subscription.title}"`,
+			// @ts-ignore
+			payment_method_id: lastPayment.paymentMethodId,
+			receipt: {
+				customer: {
+					email: user.email
+				},
+				items: [
+					{
+						description: `Рекурентное списание подписки "${subscription.title}"`,
+						quantity: 1,
+						amount: {
+							value: subscription.price,
+							currency: CurrencyEnum.RUB
+						},
+						vat_code: VatCodesEnum.NDS_NONE
+					}
+				]
+			},
+			capture: true,
+			save_payment_method: true
+		})
+
+		const newDbPayment = await this.prismaService.payment.create({
+			data: {
+				yookassaPaymentId: yookassaPayment.id,
+				subscriptionId: subscription.id,
+				paymentMethodId: lastPayment.paymentMethodId,
+				userId: user.id
+			}
+		})
+
+		await this.prismaService.userSubscription.update({
+			where: { userId: user.id },
+			data: {
+				status: 'ACTIVE',
+				// @ts-ignore
+				expiresAt: addMonths(user.userSubscription.expiresAt, 1),
+				paymentId: newDbPayment.id
+			}
+		})
+
+		return yookassaPayment
+	}
+
+	public async webhook(
+		body: { event: string; object: { id: string } },
+		ip: string
+	) {
+		const { event, object } = body
+		if (!YOOKASSA_IP.includes(ip))
+			throw new BadGatewayException('Webhook не прошёл проверку!')
 		const dbPayment = await this.prismaService.payment.findFirst({
 			where: { yookassaPaymentId: object.id }
 		})
 
+		if (!dbPayment) {
+			throw new BadGatewayException(
+				`Платёж с yookassaPaymentId ${object.id} не найден в базе`
+			)
+		}
+
 		const userSubscription =
 			await this.prismaService.userSubscription.findFirst({
-				where: { paymentId: dbPayment?.id }
+				where: { userId: dbPayment?.userId }
 			})
 
 		switch (event) {
@@ -108,6 +187,7 @@ export class PaymentService {
 						status: 'ACTIVE'
 					}
 				})
+
 				break
 			case 'payment.canceled':
 				await this.prismaService.payment.update({
