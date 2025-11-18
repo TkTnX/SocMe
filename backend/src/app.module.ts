@@ -21,6 +21,8 @@ import { StoryModule } from './api/story/story.module';
 import { UserModule } from './api/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from 'src/api/payment/scheduler/scheduler.module';
+import { SubscriptionModule } from './api/subscription/subscription.module';
+import { ChatModule } from './api/chat/chat.module';
 
 
 
@@ -51,7 +53,9 @@ import { SchedulerModule } from 'src/api/payment/scheduler/scheduler.module';
 		PaymentModule,
 		StoryModule,
 		ScheduleModule.forRoot(),
-		SchedulerModule
+		SchedulerModule,
+		SubscriptionModule,
+		ChatModule
 	]
 })
 export class AppModule {}

@@ -4,10 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { Upload } from 'lucide-react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { useStories, useUploads } from '@/api/hooks'
+import { useStories, useUploads, useUser } from '@/api/hooks'
 import { Button, Form, FormField, Textarea } from '@/shared/components'
 import { showErrorMessage } from '@/shared/helpers'
 import { StorySchema, storySchema } from '@/shared/schemas'
@@ -17,8 +18,10 @@ interface Props {
 }
 
 export const CreateStoryForm = ({ setOpen }: Props) => {
+	const { user } = useUser()
 	const [image, setImage] = useState<File | null>(null)
 	const [imageUrl, setImageUrl] = useState('')
+	const router = useRouter()
 	const queryClient = useQueryClient()
 	const form = useForm<StorySchema>({
 		resolver: zodResolver(storySchema),
@@ -39,6 +42,7 @@ export const CreateStoryForm = ({ setOpen }: Props) => {
 	const { mutate: upload } = uploadMutation()
 
 	const onSubmit = async (values: StorySchema) => {
+		if (!user?.userSubscription) return router.push('/premium')
 		mutate({ ...values, image: imageUrl })
 		setOpen(false)
 	}

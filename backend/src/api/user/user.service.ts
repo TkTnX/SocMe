@@ -122,7 +122,11 @@ export class UserService {
 				followings: true,
 				hashtags: true,
 				followingGroups: true,
-				userSubscription: true
+				userSubscription: {
+					where: {
+						status: 'ACTIVE'
+					}
+				}
 			},
 			omit: {
 				password: !takePassword ? true : false,

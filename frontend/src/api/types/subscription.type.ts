@@ -1,6 +1,12 @@
 import { IUser } from '.'
 
-export interface ISubscription {}
+export interface ISubscription {
+	id: string
+	title: string
+	description: string
+	price: number
+	
+}
 export interface IUserSubscription {
 	id: string
 

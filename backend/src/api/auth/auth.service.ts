@@ -76,7 +76,11 @@ export class AuthService {
 				},
 				groups: true,
 				followingGroups: { include: { group: true } },
-				userSubscription: true
+				userSubscription: {
+					where: {
+						status: "ACTIVE"
+					}
+				}
 			},
 			omit: {
 				password: true

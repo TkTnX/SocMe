@@ -29,7 +29,7 @@ export const Profile = ({ userId }: Props) => {
 	} = getUserByIdQuery(userId)
 
 	if (userError) return <ErrorMessage error={userError as ErrorType} />
-
+	console.log(profile)
 	return (
 		<div className='flex-1'>
 			<div
