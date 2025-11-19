@@ -9,7 +9,6 @@ import { ErrorType } from '@/shared/types'
 export const ChatsList = () => {
 	const { getChatsQuery } = useChats()
 	const { data, isPending, error } = getChatsQuery()
-
 	return (
 		<Block className='h-full min-h-[calc(100vh-150px)] w-full max-w-[250px]'>
 			<h5 className='text-main'>Список чатов</h5>

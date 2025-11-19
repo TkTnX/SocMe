@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 import { UserService } from 'src/api/user/user.service'
 
@@ -22,19 +22,30 @@ export class ChatService {
 						userTwoId: user.id
 					}
 				]
-            }, include: {
-                userOne: true,
-                userTwo: true,
-                
-            }
+			},
+			include: {
+				userOne: true,
+				userTwo: true
+			}
 		})
 
 		return chats
 	}
 	public async getChat(chatId: string) {
 		const chat = await this.prismaService.chat.findUnique({
-			where: { id: chatId }
+			where: { id: chatId },
+			include: {
+				messages: {
+					orderBy: {
+						createdAt: 'asc'
+					}
+				},
+				userOne: true,
+				userTwo: true
+			}
 		})
+
+		if (!chat) throw new NotFoundException('Чат не найден!')
 
 		return chat
 	}

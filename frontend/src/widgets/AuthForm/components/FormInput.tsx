@@ -13,12 +13,14 @@ interface Props<T extends Record<string, any>>
 	form: UseFormReturn<T>
 	label?: string
 	name: FieldPath<T>
+	isShowErrorMessage?: boolean
 }
 
 export const FormInput = <T extends Record<string, any>>({
 	form,
 	label,
 	name,
+	isShowErrorMessage = true,
 	...props
 }: Props<T>) => {
 	return (
@@ -26,12 +28,16 @@ export const FormInput = <T extends Record<string, any>>({
 			control={form.control}
 			name={name}
 			render={({ field }) => (
-				<FormItem>
+				<FormItem className={props.className}>
 					{label && <FormLabel>{label}</FormLabel>}
 					<FormControl>
-						<StyledInput placeholder={props.placeholder} {...field} {...props} />
+						<StyledInput
+							placeholder={props.placeholder}
+							{...field}
+							{...props}
+						/>
 					</FormControl>
-					<FormMessage />
+					{isShowErrorMessage && <FormMessage />}
 				</FormItem>
 			)}
 		/>
