@@ -1,20 +1,18 @@
-import {
-	BadRequestException,
-	Injectable,
-	InternalServerErrorException,
-	NotFoundException,
-	UnauthorizedException
-} from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { JwtService } from '@nestjs/jwt'
-import * as argon from 'argon2'
-import { Request, Response } from 'express'
-import { User } from 'generated/prisma'
-import { SignInDto, SignUpDto } from 'src/api/auth/dto'
-import { PrismaService } from 'src/api/prisma/prisma.service'
-import { UserService } from 'src/api/user/user.service'
-import { isDev } from 'src/common/helpers'
-import { IPayload } from 'src/common/types'
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import * as argon from 'argon2';
+import { Request, Response } from 'express';
+import { User } from 'generated/prisma';
+import { SignInDto, SignUpDto } from 'src/api/auth/dto';
+import { PrismaService } from 'src/api/prisma/prisma.service';
+import { UserService } from 'src/api/user/user.service';
+import { isDev } from 'src/common/helpers';
+import { IPayload } from 'src/common/types';
+
+
+
+
 
 @Injectable()
 export class AuthService {
@@ -78,7 +76,7 @@ export class AuthService {
 				followingGroups: { include: { group: true } },
 				userSubscription: {
 					where: {
-						status: "ACTIVE"
+						status: 'ACTIVE'
 					}
 				}
 			},
@@ -97,14 +95,14 @@ export class AuthService {
 	public async googleLogin(req: any, res: Response) {
 		const { user } = req
 		const userInDB = await this.userService.findUserByEmail(user.email)
-		let accessToken: string
+		let tokens
 
 		if (userInDB && userInDB.provider !== 'GOOGLE') {
 			return res.redirect(
 				`${this.configService.getOrThrow('HTTP_CORS')}/auth/sign-in?message=Почта уже занята`
 			)
 		} else if (userInDB && userInDB.provider === 'GOOGLE') {
-			accessToken = await this.auth(res, userInDB)
+			tokens = await this.generateToken(userInDB)
 		} else {
 			const newUser = await this.prismaService.user.create({
 				data: {
@@ -114,10 +112,16 @@ export class AuthService {
 					provider: 'GOOGLE'
 				}
 			})
-			accessToken = await this.auth(res, newUser)
+			tokens = await this.generateToken(newUser)
 		}
+		console.log(tokens)
+		this.setCookie(
+			res,
+			tokens.refresh_token,
+			new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+		)
 		return res.redirect(
-			`${this.configService.getOrThrow('HTTP_CORS')}/auth/callback/google?token=${accessToken}`
+			`${this.configService.getOrThrow('HTTP_CORS')}/callback/google?token=${tokens.access_token}`
 		)
 	}
 

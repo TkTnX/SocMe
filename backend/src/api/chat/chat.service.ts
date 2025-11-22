@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+	Injectable,
+	NotFoundException,
+	UnauthorizedException
+} from '@nestjs/common'
+import { Response } from 'express'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 import { UserService } from 'src/api/user/user.service'
 
@@ -31,7 +36,15 @@ export class ChatService {
 
 		return chats
 	}
-	public async getChat(chatId: string) {
+	public async getChat(chatId: string, userId: string) {
+		const user = await this.userService.findUserById(userId)
+		const isMember =
+			user.chatsAsUserOne.some(chat => chat.id === chatId) ||
+			user.chatsAsUserTwo.some(chat => chat.id === chatId)
+		if (!isMember) {
+			throw new UnauthorizedException('Чат недоступен')
+		}
+
 		const chat = await this.prismaService.chat.findUnique({
 			where: { id: chatId },
 			include: {
@@ -46,7 +59,6 @@ export class ChatService {
 		})
 
 		if (!chat) throw new NotFoundException('Чат не найден!')
-
 		return chat
 	}
 

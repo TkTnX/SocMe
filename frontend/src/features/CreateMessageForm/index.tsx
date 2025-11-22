@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Send } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
-import { useMessages } from '@/api/hooks'
 import { getSocket } from '@/api/socket-api'
 import { Button, Form } from '@/shared/components'
 import { MessageSchema, messageSchema } from '@/shared/schemas'
@@ -15,8 +14,6 @@ interface Props {
 }
 
 export const CreateMessageForm = ({ chatId }: Props) => {
-	const { createMessageMutation } = useMessages()
-	const { mutate, isPending } = createMessageMutation(chatId)
 	const form = useForm<MessageSchema>({
 		resolver: zodResolver(messageSchema),
 		defaultValues: {
@@ -47,7 +44,6 @@ export const CreateMessageForm = ({ chatId }: Props) => {
 					isShowErrorMessage={false}
 				/>
 				<Button
-					disabled={isPending}
 					type='submit'
 					className='rounded-l-none'
 					size={'icon'}

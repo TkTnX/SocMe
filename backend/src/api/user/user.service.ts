@@ -126,7 +126,9 @@ export class UserService {
 					where: {
 						status: 'ACTIVE'
 					}
-				}
+				},
+				chatsAsUserOne: true,
+				chatsAsUserTwo: true
 			},
 			omit: {
 				password: !takePassword ? true : false,

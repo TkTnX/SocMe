@@ -3,8 +3,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
-import { useUser } from '@/api/hooks'
 import { navbarItems } from '@/shared/data'
 import { cn } from '@/shared/lib/utils'
 
@@ -19,7 +17,7 @@ export const Navbar = ({ isMobile = false }: Props) => {
 			className={cn(
 				'mx-auto hidden md:block',
 				isMobile &&
-					'vsm:justify-center vsm:px-0 fixed right-0 bottom-0 left-0 flex h-[50px] justify-between bg-white px-3 md:hidden'
+					'vsm:justify-center vsm:px-0 fixed right-0 bottom-0 left-0 flex h-[50px] justify-between bg-white px-3 md:hidden dark:bg-black'
 			)}
 		>
 			<ul className='vsm:gap-10 vsm:justify-center flex w-full items-center justify-between lg:gap-[70px]'>

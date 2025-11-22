@@ -1,22 +1,9 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query'
+import {  useMutation } from '@tanstack/react-query'
 
-import { createMessage, deleteMessage, editMessage } from '@/api/requests'
-import { IMessage } from '@/api/types'
+import { deleteMessage, editMessage } from '@/api/requests'
 import { MessageSchema } from '@/shared/schemas'
 
 export function useMessages() {
-	const createMessageMutation = (
-		chatId: string,
-		options?: Omit<
-			UseMutationOptions<IMessage, any, unknown>,
-			'mutationFn' | 'mutationKey'
-		>
-	) =>
-		useMutation({
-			mutationFn: (data: MessageSchema) => createMessage(chatId, data),
-			mutationKey: ['create message'],
-			...options
-		})
 
 	const deleteMessageMutation = () =>
 		useMutation({
@@ -31,7 +18,6 @@ export function useMessages() {
 		})
 
 	return {
-		createMessageMutation,
 		deleteMessageMutation,
 		editMessageMutation
 	}

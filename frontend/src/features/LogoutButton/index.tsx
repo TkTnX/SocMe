@@ -1,20 +1,23 @@
 'use client'
 
-import { useAuth } from '@/api/hooks'
-import { Button } from '@/shared/components'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
-export const LogoutButton = () => {
-    const { logoutMutation } = useAuth()
-    const router = useRouter()
+import { useAuth } from '@/api/hooks'
+import { Button } from '@/shared/components'
+import { removeToken } from '@/shared/lib'
 
-    const { mutate, isPending } = logoutMutation({
-        onSuccess: () => {
-            toast.success("Успешный выход из аккаунта")
-            router.push('/')
-        }
-    })
+export const LogoutButton = () => {
+	const { logoutMutation } = useAuth()
+	const router = useRouter()
+
+	const { mutate, isPending } = logoutMutation({
+		onSuccess: () => {
+			removeToken()
+			toast.success('Успешный выход из аккаунта')
+			router.push('/')
+		}
+	})
 
 	return (
 		<Button disabled={isPending} className='bg-red-500' onClick={mutate}>

@@ -1,5 +1,14 @@
-import { Input } from '@/shared/components'
+import { Input } from '@/shared/components';
 
-export const ChatsSearch = () => {
-	return <Input className='mt-4 border' placeholder='Найти собеседника...' />
+
+
+
+
+interface Props {
+	setSearch: (value: string) => void
+	search: string
+}
+
+export const ChatsSearch = ({ setSearch, search }: Props) => {
+	return <Input onChange={(e) => setSearch(e.target.value)} value={search} className='mt-4 border' placeholder='Найти собеседника...' />
 }

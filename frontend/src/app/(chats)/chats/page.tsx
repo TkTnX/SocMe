@@ -1,6 +1,6 @@
 const ChatsPage = () => {
 	return (
-		<div className='flex min-h-[calc(100vh-180px)] flex-1 items-center justify-center text-center'>
+		<div className='hidden min-h-[calc(100vh-180px)] flex-1 items-center justify-center text-center md:flex'>
 			Выберите собеседника, чтобы начать диалог
 		</div>
 	)

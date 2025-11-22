@@ -1,34 +1,33 @@
 'use client'
 
 import { MoreHorizontal } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 import { useChats, useConnectSocket, useUser } from '@/api/hooks'
 import { Message, UserTitle } from '@/entities'
 import { CreateMessageForm } from '@/features'
-import { ErrorMessage, Skeleton } from '@/shared/components'
-import { ErrorType } from '@/shared/types'
+import { Skeleton } from '@/shared/components'
 
 interface Props {
 	chatId: string
 }
 
-// TODO: websockets
 // TODO: Редактирование сообщения
 // TODO: Удаление сообщения
-// TODO: Добавление изображений
 // TODO: Удаление чата
-// TODO: В чат могут заходить только 2 пользователя, для которых создан чат
-// TODO: Поиск собеседника
+// TODO: Добавление изображений
 
 export const Chat = ({ chatId }: Props) => {
 	const { getChatQuery } = useChats()
 	const { user } = useUser()
 	const { data, isPending, error } = getChatQuery(chatId)
+	const router = useRouter()
 	useConnectSocket(chatId)
+
 	const interlocutor =
 		user?.id === data?.userOneId ? data?.userTwo : data?.userOne
 
-	if (error) return <ErrorMessage error={error as ErrorType} />
+	if (error) return router.push('/profile')
 	return (
 		<div className='flex h-full flex-col'>
 			<div className='bg-main/70 flex items-center justify-between p-4'>
@@ -43,6 +42,12 @@ export const Chat = ({ chatId }: Props) => {
 			</div>
 
 			<div className='flex flex-1 flex-col-reverse overflow-y-auto p-4'>
+				{data?.messages.length === 0 && (
+					<p className='flex h-full items-center justify-center gap-1 text-center'>
+						Начните общение с
+						<span className='text-main'> {interlocutor?.name}</span>
+					</p>
+				)}
 				<div className='flex flex-col gap-2'>
 					{data?.messages.map(message => (
 						<Message message={message} key={message.id} />

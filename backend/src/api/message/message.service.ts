@@ -19,7 +19,7 @@ export class MessageService {
 	public async create( dto: MessageDto, userId: string) {
 		const user = await this.userService.findUserById(userId)
 
-		const chat = await this.chatService.getChat(dto.chatId)
+		const chat = await this.chatService.getChat(dto.chatId, userId)
 
 		if (chat.userOneId === user.id || chat.userTwoId === user.id) {
 			const message = await this.prismaService.message.create({
