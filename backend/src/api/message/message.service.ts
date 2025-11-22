@@ -1,8 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { ChatService } from 'src/api/chat/chat.service'
-import { MessageDto } from 'src/api/message/dto'
-import { PrismaService } from 'src/api/prisma/prisma.service'
-import { UserService } from 'src/api/user/user.service'
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ChatService } from 'src/api/chat/chat.service';
+import { MessageDto } from 'src/api/message/dto';
+import { PrismaService } from 'src/api/prisma/prisma.service';
+import { UserService } from 'src/api/user/user.service';
+
+
+
+
 
 @Injectable()
 export class MessageService {
@@ -12,10 +16,10 @@ export class MessageService {
 		private readonly chatService: ChatService
 	) {}
 
-	public async create(chatId: string, dto: MessageDto, userId: string) {
+	public async create( dto: MessageDto, userId: string) {
 		const user = await this.userService.findUserById(userId)
 
-		const chat = await this.chatService.getChat(chatId)
+		const chat = await this.chatService.getChat(dto.chatId)
 
 		if (chat.userOneId === user.id || chat.userTwoId === user.id) {
 			const message = await this.prismaService.message.create({

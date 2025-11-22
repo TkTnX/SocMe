@@ -1,9 +1,7 @@
-import { IsNotEmpty, IsString } from "class-validator";
-
 export class MessageDto {
-    @IsNotEmpty({message: "Текст обязателен"})
-    @IsString({message: "Текст должен быть строкой"})
-    text: string
+	text: string
 
-    image: string
+	image?: string
+	chatId: string
+
 }

@@ -1,16 +1,19 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
-import { MessageService } from './message.service';
-import { Authorized, Protected } from 'src/common/decorators';
-import { MessageDto } from 'src/api/message/dto';
+import { Body, Controller, Param, Post } from '@nestjs/common'
+import { MessageDto } from 'src/api/message/dto'
+import { Authorized, Protected } from 'src/common/decorators'
+
+import { MessageService } from './message.service'
 
 @Controller('messages')
 export class MessageController {
-  constructor(private readonly messageService: MessageService) {}
+	constructor(private readonly messageService: MessageService) {}
 
-
-  @Protected()
-  @Post(":chatId")
-  public async create(@Param("chatId") chatId: string, @Body() dto: MessageDto, @Authorized("userId") userId:string ) {
-    return await this.messageService.create(chatId, dto, userId)
-  }
+	@Protected()
+	@Post()
+	public async create(
+		@Body() dto: MessageDto,
+		@Authorized('userId') userId: string
+	) {
+		return await this.messageService.create(dto, userId)
+	}
 }

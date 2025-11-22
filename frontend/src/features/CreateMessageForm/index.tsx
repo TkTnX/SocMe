@@ -1,25 +1,22 @@
-'use client';
+'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Send } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Send } from 'lucide-react'
+import { useForm } from 'react-hook-form'
 
-
-
-import { useMessages } from '@/api/hooks';
-import { Button, Form } from '@/shared/components';
-import { MessageSchema, messageSchema } from '@/shared/schemas';
-import { FormInput } from '@/widgets/AuthForm/components';
-
-
+import { useMessages } from '@/api/hooks'
+import { getSocket } from '@/api/socket-api'
+import { Button, Form } from '@/shared/components'
+import { MessageSchema, messageSchema } from '@/shared/schemas'
+import { FormInput } from '@/widgets/AuthForm/components'
 
 interface Props {
-  chatId: string
+	chatId: string
 }
 
-export const CreateMessageForm = ({chatId}: Props) => {
-  const { createMessageMutation } = useMessages()
-  const {mutate, isPending} = createMessageMutation(chatId)
+export const CreateMessageForm = ({ chatId }: Props) => {
+	const { createMessageMutation } = useMessages()
+	const { mutate, isPending } = createMessageMutation(chatId)
 	const form = useForm<MessageSchema>({
 		resolver: zodResolver(messageSchema),
 		defaultValues: {
@@ -29,10 +26,13 @@ export const CreateMessageForm = ({chatId}: Props) => {
 	})
 
 	const onSubmit = async (values: MessageSchema) => {
-    if (values.text.length === 0) return
-    
-    mutate(values)
-  }
+		if (values.text.length === 0) return
+		const socket = getSocket()
+
+		socket.emit('send-message', { ...values, chatId })
+		socket.emit('new-message')
+		form.reset()
+	}
 	return (
 		<Form {...form}>
 			<form
@@ -46,7 +46,12 @@ export const CreateMessageForm = ({chatId}: Props) => {
 					placeholder='Написать...'
 					isShowErrorMessage={false}
 				/>
-				<Button disabled={isPending} type='submit' className='rounded-l-none' size={'icon'}>
+				<Button
+					disabled={isPending}
+					type='submit'
+					className='rounded-l-none'
+					size={'icon'}
+				>
 					<Send />
 				</Button>
 			</form>

@@ -2,7 +2,7 @@
 
 import { MoreHorizontal } from 'lucide-react'
 
-import { useChats, useUser } from '@/api/hooks'
+import { useChats, useConnectSocket, useUser } from '@/api/hooks'
 import { Message, UserTitle } from '@/entities'
 import { CreateMessageForm } from '@/features'
 import { ErrorMessage, Skeleton } from '@/shared/components'
@@ -12,10 +12,19 @@ interface Props {
 	chatId: string
 }
 
+// TODO: websockets
+// TODO: Редактирование сообщения
+// TODO: Удаление сообщения
+// TODO: Добавление изображений
+// TODO: Удаление чата
+// TODO: В чат могут заходить только 2 пользователя, для которых создан чат
+// TODO: Поиск собеседника
+
 export const Chat = ({ chatId }: Props) => {
 	const { getChatQuery } = useChats()
 	const { user } = useUser()
 	const { data, isPending, error } = getChatQuery(chatId)
+	useConnectSocket(chatId)
 	const interlocutor =
 		user?.id === data?.userOneId ? data?.userTwo : data?.userOne
 
