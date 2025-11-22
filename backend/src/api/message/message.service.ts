@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ChatService } from 'src/api/chat/chat.service';
-import { MessageDto } from 'src/api/message/dto';
+import { MessageDto, PartialMessageDto } from 'src/api/message/dto';
 import { PrismaService } from 'src/api/prisma/prisma.service';
 import { UserService } from 'src/api/user/user.service';
 
@@ -16,7 +16,7 @@ export class MessageService {
 		private readonly chatService: ChatService
 	) {}
 
-	public async create( dto: MessageDto, userId: string) {
+	public async create(dto: MessageDto, userId: string) {
 		const user = await this.userService.findUserById(userId)
 
 		const chat = await this.chatService.getChat(dto.chatId, userId)
@@ -40,5 +40,44 @@ export class MessageService {
 		} else {
 			throw new UnauthorizedException('Вы не можете отправить сообщение!')
 		}
+	}
+
+	public async edit(dto: PartialMessageDto, userId: string) {
+		const { chatId, messageId, ...restDto } = dto
+		const user = await this.userService.findUserById(userId)
+		const message = await this.getMessageById(messageId)
+		if (message.userId !== user.id)
+			throw new UnauthorizedException('Невозможно изменить сообщение')
+
+		const editedMessage = await this.prismaService.message.update({
+			where: { id: message.id },
+			data: {
+				...restDto,
+				updatedAt: new Date()
+			}
+		})
+
+		return editedMessage
+	}
+
+	public async delete(messageId: string, userId: string) {
+		const user = await this.userService.findUserById(userId)
+
+		const message = await this.getMessageById(messageId)
+
+		if (message.userId !== user.id)
+			throw new UnauthorizedException('Невозможно удалить сообщение')
+
+		return await this.prismaService.message.delete({
+			where: { id: message.id }
+		})
+	}
+
+	private async getMessageById(messageId: string) {
+		const message = await this.prismaService.message.findUnique({
+			where: { id: messageId }
+		})
+		if (!message) throw new NotFoundException('Сообщение не найдено')
+		return message
 	}
 }

@@ -106,4 +106,11 @@ export class ChatService {
 
 		return chat
 	}
+
+	public async deleteChat(chatId: string, userId: string) {
+		const user = await this.userService.findUserById(userId)
+		const chat = await this.getChat(chatId, user.id)
+
+		return await this.prismaService.chat.delete({ where: { id: chat.id } })
+	}
 }

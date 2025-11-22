@@ -5,20 +5,23 @@ import { Send } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 import { getSocket } from '@/api/socket-api'
+import { IMessage } from '@/api/types'
 import { Button, Form } from '@/shared/components'
 import { MessageSchema, messageSchema } from '@/shared/schemas'
 import { FormInput } from '@/widgets/AuthForm/components'
 
 interface Props {
 	chatId: string
+	message?: IMessage
+	setOpenEdit?: (bool: boolean) => void
 }
 
-export const CreateMessageForm = ({ chatId }: Props) => {
+export const CreateMessageForm = ({ chatId, message, setOpenEdit }: Props) => {
 	const form = useForm<MessageSchema>({
 		resolver: zodResolver(messageSchema),
 		defaultValues: {
-			text: '',
-			image: null
+			text: message?.text || '',
+			image: message?.image || null
 		}
 	})
 
@@ -26,9 +29,17 @@ export const CreateMessageForm = ({ chatId }: Props) => {
 		if (values.text.length === 0) return
 		const socket = getSocket()
 
-		socket.emit('send-message', { ...values, chatId })
-		socket.emit('new-message')
+		if (message) {
+			socket.emit('edit-message', {
+				...values,
+				chatId,
+				messageId: message.id
+			})
+		} else {
+			socket.emit('send-message', { ...values, chatId })
+		}
 		form.reset()
+		setOpenEdit?.(false)
 	}
 	return (
 		<Form {...form}>
@@ -43,11 +54,7 @@ export const CreateMessageForm = ({ chatId }: Props) => {
 					placeholder='Написать...'
 					isShowErrorMessage={false}
 				/>
-				<Button
-					type='submit'
-					className='rounded-l-none'
-					size={'icon'}
-				>
+				<Button type='submit' className='rounded-l-none' size={'icon'}>
 					<Send />
 				</Button>
 			</form>

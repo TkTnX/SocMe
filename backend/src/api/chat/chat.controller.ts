@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Res } from '@nestjs/common';
 import { Authorized, Protected } from 'src/common/decorators';
 
 
@@ -36,5 +36,11 @@ export class ChatController {
 		@Authorized('userId') userId: string
 	) {
 		return await this.chatService.createChat(profileId, userId)
+	}
+
+	@Protected()
+	@Delete(':chatId')
+	public async deleteChat(@Param('chatId') chatId: string, @Authorized('userId') userId: string) {
+		return await this.chatService.deleteChat(chatId, userId)
 	}
 }

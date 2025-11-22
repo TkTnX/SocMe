@@ -10,19 +10,30 @@ export function useConnectSocket(chatId: string) {
 	const socket = getSocket()
 
 	useEffect(() => {
+		socket.emit('join-room', chatId)
+
 		const handleConnect = () => {
 			socket.emit('join-room', chatId)
 		}
 
 		socket.on('connect', handleConnect)
 
-		socket.on('new-message', () => {
+		socket.on('send-message', () => {
+			queryClient.invalidateQueries({ queryKey: ['chat', chatId] })
+		})
+		socket.on('edit-message', edited => {
+			console.log(edited)
+			queryClient.invalidateQueries({ queryKey: ['chat', chatId] })
+		})
+		socket.on('delete-message', () => {
 			queryClient.invalidateQueries({ queryKey: ['chat', chatId] })
 		})
 
 		return () => {
 			socket.off('connect', handleConnect)
-			socket.off('new-message')
+			socket.off('send-message')
+			socket.off('edit-message')
+			socket.off('delete-message')
 		}
 	}, [chatId])
 }

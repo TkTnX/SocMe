@@ -17,3 +17,8 @@ export const createChat = async (profileId: string): Promise<IChat> => {
 	const { data } = await axiosInstance.post(`/chats/${profileId}`)
 	return data
 }
+
+export const deleteChat = async (chatId: string): Promise<IChat> => {
+	const { data } = await axiosInstance.delete(`/chats/${chatId}`)
+	return data
+}

@@ -1,17 +1,13 @@
-import { JwtService } from '@nestjs/jwt'
-import {
-	ConnectedSocket,
-	MessageBody,
-	OnGatewayConnection,
-	OnGatewayDisconnect,
-	SubscribeMessage,
-	WebSocketGateway,
-	WebSocketServer
-} from '@nestjs/websockets'
-import { Server, Socket } from 'socket.io'
-import { MessageDto } from 'src/api/message/dto'
-import { MessageService } from 'src/api/message/message.service'
-import { Authorized } from 'src/common/decorators'
+import { JwtService } from '@nestjs/jwt';
+import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { MessageDto, PartialMessageDto } from 'src/api/message/dto';
+import { MessageService } from 'src/api/message/message.service';
+import { Authorized } from 'src/common/decorators';
+
+
+
+
 
 @WebSocketGateway({
 	cors: {
@@ -44,8 +40,35 @@ export class MessageGateway
 	) {
 		const userId = client.data.userId
 		const message = await this.messageService.create(dto, userId)
-		this.server.to(dto.chatId).emit('new-message', message)
+		this.server.to(dto.chatId).emit('send-message', message)
 		return message
+	}
+
+	@SubscribeMessage('edit-message')
+	async handleEditMessage(
+		@MessageBody() dto: PartialMessageDto,
+		@ConnectedSocket() client: Socket
+	) {
+		const userId = client.data.userId
+		const editedMessage = await this.messageService.edit(dto, userId)
+		this.server.to(dto.chatId!).emit('edit-message', editedMessage)
+		console.log(editedMessage)
+		return editedMessage
+	}
+
+	@SubscribeMessage('delete-message')
+	async handleDeleteMessage(
+		@MessageBody() dto: { messageId: string; chatId: string },
+		@ConnectedSocket() client: Socket
+	) {
+		const userId = client.data.userId
+		const deletedMessage = await this.messageService.delete(
+			dto.messageId,
+			userId
+		)
+		this.server.to(dto.chatId).emit('delete-message')
+
+		return deletedMessage
 	}
 
 	handleDisconnect(client: Socket) {

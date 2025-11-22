@@ -13,9 +13,8 @@ interface Props {
 }
 
 // TODO: Редактирование сообщения
-// TODO: Удаление сообщения
-// TODO: Удаление чата
 // TODO: Добавление изображений
+// TODO: Сейчас JWT токен не обновляется
 
 export const Chat = ({ chatId }: Props) => {
 	const { getChatQuery } = useChats()

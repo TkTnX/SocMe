@@ -2,7 +2,7 @@ import { UseMutationOptions, useMutation, useQuery } from '@tanstack/react-query
 
 
 
-import { createChat, getChat, getChats } from '@/api/requests';
+import { createChat, deleteChat, getChat, getChats } from '@/api/requests';
 import { IChat } from '@/api/types';
 
 
@@ -33,10 +33,21 @@ export function useChats() {
 			mutationFn: (profileId: string) => createChat(profileId),
 			...options
 		})
+	
+	
+	const deleteChatMutation = (		options?: Omit<
+			UseMutationOptions<IChat | { chatId: string }, any, unknown>,
+			'mutationKey' | 'mutationFn'
+		>) => useMutation({
+			mutationKey: ['delete chat'],
+			mutationFn: (chatId: string) => deleteChat(chatId),
+			...options
+		})
 
 	return {
 		getChatsQuery,
 		getChatQuery,
-		createChatMutation
+		createChatMutation,
+		deleteChatMutation
 	}
 }
