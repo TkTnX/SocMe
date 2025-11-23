@@ -1,6 +1,7 @@
 'use client'
 
 import { X } from 'lucide-react'
+import Image from 'next/image'
 import { useState } from 'react'
 
 import { useUser } from '@/api/hooks'
@@ -24,8 +25,17 @@ export const Message = ({ message }: Props) => {
 				{ 'bg-main ml-auto text-white': isUserMessage }
 			)}
 		>
+			{message.image && (
+				<div className='vsm:w-[300px] relative aspect-square w-[150px]'>
+					<Image src={message.image} fill alt='image' />
+				</div>
+			)}
 			{openEdit ? (
-				<CreateMessageForm setOpenEdit={setOpenEdit} chatId={message.id} message={message} />
+				<CreateMessageForm
+					setOpenEdit={setOpenEdit}
+					chatId={message.id}
+					message={message}
+				/>
 			) : (
 				<p>{message.text}</p>
 			)}
@@ -37,6 +47,15 @@ export const Message = ({ message }: Props) => {
 			>
 				{new Date(message.createdAt).toLocaleDateString('ru-RU')}
 			</span>
+			{message.updatedAt && (
+				<span
+					className={cn('block text-left text-[8px] text-gray-300', {
+						'text-right': isUserMessage
+					})}
+				>
+					Обновлено
+				</span>
+			)}
 			{openEdit && (
 				<button
 					className='absolute top-3 right-3'

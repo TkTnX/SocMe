@@ -1,3 +1,4 @@
+import { getSocket } from '@/api/socket-api'
 import axios, { CreateAxiosDefaults } from 'axios'
 
 const options: CreateAxiosDefaults = {
@@ -70,6 +71,12 @@ axiosInstance.interceptors.response.use(
 			try {
 				const { data } = await axiosInstance.get('/auth/refresh')
 				accessToken = data.access_token
+				const socket = getSocket()
+				if (socket) {
+					// @ts-ignore
+					socket.auth.token = accessToken
+					socket.connect()
+				}
 
 				processQueue(null, accessToken)
 
