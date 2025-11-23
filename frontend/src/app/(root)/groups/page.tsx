@@ -1,6 +1,13 @@
-import { AddGroupForm, GroupsSearch } from '@/features'
-import { Block, Button } from '@/shared/components'
+import { AddGroupForm, GroupsSearch } from '@/features';
+import { Block, Button } from '@/shared/components';
 import { GroupsList, PopularGroups, UserGroups } from '@/widgets'
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'Сообщества | SocMe',
+	description: 'SocMe - делитесь новостями, общайтесь и находите друзей!'
+}
+
 
 const GroupsPage = () => {
 	return (

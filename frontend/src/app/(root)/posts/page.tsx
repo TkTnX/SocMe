@@ -1,4 +1,15 @@
-import { PostsList, RightMenu } from '@/widgets'
+import { PostsList, RightMenu } from '@/widgets';
+import { Metadata } from 'next';
+
+
+
+
+
+export const metadata: Metadata = {
+	title: 'Лента | SocMe',
+	description: 'SocMe - делитесь новостями, общайтесь и находите друзей!'
+}
+
 
 const PostsPage = () => {
 	return (

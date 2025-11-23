@@ -1,8 +1,14 @@
-import Image from 'next/image'
+import { SubscriptionList } from '@/widgets';
+import { Metadata } from 'next';
 
-import { CreatePaymentButton } from '@/features'
-import { Block } from '@/shared/components'
-import { SubscriptionList } from '@/widgets'
+
+
+
+
+export const metadata: Metadata = {
+	title: 'Оформите подписку | SocMe',
+	description: 'SocMe - делитесь новостями, общайтесь и находите друзей!'
+}
 
 const PremiumPage = () => {
 	return (

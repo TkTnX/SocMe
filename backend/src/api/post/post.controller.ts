@@ -1,25 +1,25 @@
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	Patch,
-	Post,
-	Query
-} from '@nestjs/common'
-import { PostDto } from 'src/api/post/dto'
-import { Authorized, Protected } from 'src/common/decorators'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { PostDto, PostResponseDto } from 'src/api/post/dto';
+import { Authorized, Protected } from 'src/common/decorators';
 
-import { PostService } from './post.service'
+
+
+import { PostService } from './post.service';
+
+
+
+
 
 @Controller('posts')
+@ApiTags('Posts')
 export class PostController {
 	constructor(private readonly postService: PostService) {}
 
 	// Создание постов
 	@Protected()
 	@Post()
+	@ApiCreatedResponse({ type: PostResponseDto })
 	public async create(
 		@Body() dto: PostDto,
 		@Authorized('userId') userId: string
@@ -31,6 +31,7 @@ export class PostController {
 
 	@Protected()
 	@Patch(':postId')
+	@ApiCreatedResponse({ type: PostResponseDto })
 	public async edit(
 		@Body() dto: PostDto,
 		@Param('postId') postId: string,
@@ -42,6 +43,7 @@ export class PostController {
 	// Удаление постов
 	@Protected()
 	@Delete(':postId')
+	@ApiOkResponse({ type: PostResponseDto })
 	public async delete(
 		@Param('postId') postId: string,
 		@Authorized('userId') userId: string
@@ -52,13 +54,17 @@ export class PostController {
 	// Получение постов
 	@Protected()
 	@Get()
-	public async getPosts(@Authorized('userId') userId: string, @Query() query?:Record<string,string>) {
+	@ApiOkResponse({ type: [PostResponseDto] })
+	public async getPosts(
+		@Authorized('userId') userId: string,
+		@Query() query?: Record<string, string>
+	) {
 		return await this.postService.getPosts(userId, query)
 	}
 
-
 	@Get(':postId')
-	public async getPostById(@Param("postId") postId: string) {
+	@ApiOkResponse({ type: PostResponseDto })
+	public async getPostById(@Param('postId') postId: string) {
 		return await this.postService.getPostById(postId)
 	}
 }

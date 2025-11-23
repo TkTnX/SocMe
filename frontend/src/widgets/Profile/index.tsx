@@ -1,6 +1,6 @@
 'use client'
 
-import { Briefcase, LinkIcon } from 'lucide-react'
+import { Briefcase, LinkIcon, Settings } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -29,14 +29,13 @@ export const Profile = ({ userId }: Props) => {
 	} = getUserByIdQuery(userId)
 
 	if (userError) return <ErrorMessage error={userError as ErrorType} />
-	console.log(profile)
 	return (
 		<div className='flex-1'>
 			<div
 				className={`relative flex w-full flex-col items-center justify-center`}
 			>
 				<Cover coverUrl={user?.cover} isPending={isUserPending} />
-				<div className='absolute -bottom-15 left-1/2 mt-20 h-[150px] w-[150px] -translate-x-1/2 overflow-hidden rounded-full border-2 bg-white'>
+				<div className='absolute -bottom-15 left-1/2 z-20 mt-20 h-[150px] w-[150px] -translate-x-1/2 overflow-hidden rounded-full border-2 bg-white'>
 					{isUserPending ? (
 						<Skeleton className='h-full w-full' />
 					) : (
@@ -51,7 +50,10 @@ export const Profile = ({ userId }: Props) => {
 					)}
 				</div>
 			</div>
-			<div className='mb-6 rounded-b-2xl bg-white px-4 pt-16 pb-4 dark:bg-[#0e0e0e]'>
+			<div className='relative mb-6 rounded-b-2xl bg-white px-4 pt-16 pb-4 dark:bg-[#0e0e0e]'>
+				<Link className='absolute top-2 right-2' href={'/settings'}>
+					<Settings />
+				</Link>
 				<h3 className='flex items-center justify-center gap-1 text-center text-2xl font-bold text-black dark:text-white'>
 					{isUserPending ? (
 						<Skeleton className='h-[20px] w-[50px]' />

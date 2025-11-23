@@ -1,5 +1,15 @@
-import { Chat } from '@/entities'
-import { Block } from '@/shared/components'
+import { Chat } from '@/entities';
+import { Block } from '@/shared/components';
+import { Metadata } from 'next';
+
+
+
+
+
+export const metadata: Metadata = {
+	title: 'Чат | SocMe',
+	description: 'SocMe - делитесь новостями, общайтесь и находите друзей!'
+}
 
 const ChatPage = async ({
 	params

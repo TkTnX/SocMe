@@ -1,5 +1,15 @@
-import { Block } from '@/shared/components'
-import { EditProfile } from '@/widgets'
+import { Block } from '@/shared/components';
+import { EditProfile } from '@/widgets';
+import { Metadata } from 'next';
+
+
+
+
+
+export const metadata: Metadata = {
+	title: 'Редактирование профиля | SocMe',
+	description: 'SocMe - делитесь новостями, общайтесь и находите друзей!'
+}
 
 const ProfileEditPage = () => {
 	return (

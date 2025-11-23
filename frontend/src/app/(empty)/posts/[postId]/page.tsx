@@ -1,4 +1,14 @@
-import { BigPost } from '@/widgets'
+import { BigPost } from '@/widgets';
+import { Metadata } from 'next';
+
+
+
+
+
+export const metadata: Metadata = {
+	title: 'Страница поста | SocMe',
+	description: 'SocMe - делитесь новостями, общайтесь и находите друзей!'
+}
 
 const PostPage = async ({
 	params

@@ -1,5 +1,12 @@
 import { LogoutButton } from '@/features'
 import { Block, ThemeButton } from '@/shared/components'
+import { Metadata } from 'next'
+
+
+export const metadata: Metadata = {
+	title: 'Настройки | SocMe',
+	description: 'SocMe - делитесь новостями, общайтесь и находите друзей!'
+}
 
 const SettingsPage = () => {
 	return (

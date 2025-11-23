@@ -1,13 +1,21 @@
-import { JwtService } from '@nestjs/jwt';
-import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { MessageDto, PartialMessageDto } from 'src/api/message/dto';
-import { MessageService } from 'src/api/message/message.service';
-import { Authorized } from 'src/common/decorators';
-
-
-
-
+import { JwtService } from '@nestjs/jwt'
+import { ApiBody, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger'
+import {
+	ConnectedSocket,
+	MessageBody,
+	OnGatewayConnection,
+	OnGatewayDisconnect,
+	SubscribeMessage,
+	WebSocketGateway,
+	WebSocketServer
+} from '@nestjs/websockets'
+import { Server, Socket } from 'socket.io'
+import {
+	MessageDto,
+	MessageResponseDto,
+	PartialMessageDto
+} from 'src/api/message/dto'
+import { MessageService } from 'src/api/message/message.service'
 
 @WebSocketGateway({
 	cors: {
@@ -34,6 +42,8 @@ export class MessageGateway
 	}
 
 	@SubscribeMessage('send-message')
+	@ApiCreatedResponse({ type: MessageResponseDto })
+	@ApiBody({ type: MessageDto })
 	async handleSendMessage(
 		@MessageBody() dto: MessageDto,
 		@ConnectedSocket() client: Socket
@@ -45,6 +55,8 @@ export class MessageGateway
 	}
 
 	@SubscribeMessage('edit-message')
+	@ApiCreatedResponse({ type: MessageResponseDto })
+	@ApiBody({ type: MessageDto })
 	async handleEditMessage(
 		@MessageBody() dto: PartialMessageDto,
 		@ConnectedSocket() client: Socket
@@ -57,6 +69,7 @@ export class MessageGateway
 	}
 
 	@SubscribeMessage('delete-message')
+	@ApiOkResponse({ type: MessageDto })
 	async handleDeleteMessage(
 		@MessageBody() dto: { messageId: string; chatId: string },
 		@ConnectedSocket() client: Socket

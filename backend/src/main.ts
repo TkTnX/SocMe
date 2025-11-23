@@ -1,6 +1,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import { join } from 'path'
@@ -21,6 +22,15 @@ async function bootstrap() {
 
 	const port = config.getOrThrow('HTTP_PORT')
 	const host = config.getOrThrow('HTTP_HOST')
+
+	const swaggerConfig = new DocumentBuilder()
+		.setTitle('SocMe')
+		.setDescription('API Сервиса SocMe')
+		.setVersion('1.0')
+		.build()
+	const document = SwaggerModule.createDocument(app, swaggerConfig)
+	SwaggerModule.setup('api', app, document)
+
 	try {
 		await app.listen(port)
 

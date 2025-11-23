@@ -114,7 +114,7 @@ export class AuthService {
 			})
 			tokens = await this.generateToken(newUser)
 		}
-		console.log(tokens)
+
 		this.setCookie(
 			res,
 			tokens.refresh_token,

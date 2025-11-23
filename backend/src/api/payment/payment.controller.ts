@@ -1,15 +1,19 @@
 import { Body, Controller, Headers, Post } from '@nestjs/common'
-import { PaymentDto } from 'src/api/payment/dto'
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
+import { PaymentDto, PaymentResponseDto } from 'src/api/payment/dto'
 import { Authorized, Protected } from 'src/common/decorators'
 
 import { PaymentService } from './payment.service'
 
 @Controller('payments')
+@ApiTags('Payments')
 export class PaymentController {
 	constructor(private readonly paymentService: PaymentService) {}
 
 	@Protected()
 	@Post()
+	@ApiCreatedResponse({ type: PaymentResponseDto })
+	@ApiBody({ type: PaymentDto })
 	public async create(
 		@Body() dto: PaymentDto,
 		@Authorized('userId') userId: string
@@ -23,7 +27,6 @@ export class PaymentController {
 		@Headers('x-real-ip') realIp: string,
 		@Headers('x-forwarded-for') forwardedFor: string
 	) {
-
 		const ip = realIp ?? (forwardedFor ? forwardedFor.split(',')[0] : null)
 
 		return await this.paymentService.webhook(body, ip)
