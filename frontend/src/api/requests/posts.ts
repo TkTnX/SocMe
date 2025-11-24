@@ -1,9 +1,10 @@
-import { IPost, IPostRequest } from '@/api/types';
-import { axiosInstance } from '@/shared/lib';
+import { IPost, IPostRequest } from '@/api/types'
+import { axiosInstance } from '@/shared/lib'
 
-
-
-
+type PostsResponse = {
+	totalPages: number
+	posts: IPost[]
+}
 
 export const getPosts = async (query?: Record<string, string>) => {
 	const params = new URLSearchParams()
@@ -12,8 +13,7 @@ export const getPosts = async (query?: Record<string, string>) => {
 		if (value) params.append(key, value)
 	})
 
-
-	const { data } = await axiosInstance.get<IPost[]>(
+	const { data } = await axiosInstance.get<PostsResponse>(
 		`/posts?${[params.toString()]}`
 	)
 

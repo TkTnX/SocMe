@@ -1,15 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { PostDto, PostResponseDto } from 'src/api/post/dto';
-import { Authorized, Protected } from 'src/common/decorators';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query
+} from '@nestjs/common'
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import { PostDto, PostResponseDto } from 'src/api/post/dto'
+import { Authorized, Protected } from 'src/common/decorators'
 
-
-
-import { PostService } from './post.service';
-
-
-
-
+import { PostService } from './post.service'
 
 @Controller('posts')
 @ApiTags('Posts')

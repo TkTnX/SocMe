@@ -2,6 +2,7 @@
 
 import { X } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
 
 import { usePosts } from '@/api/hooks'
 import { IPost } from '@/api/types'
@@ -14,24 +15,60 @@ interface Props {
 	className?: string
 }
 
-export const PostsList = ({
-	userPosts,
-	className,
-}: Props) => {
+export const PostsList = ({ userPosts, className }: Props) => {
+	const [postsList, setPostsList] = useState<IPost[]>([])
+	const [page, setPage] = useState(0)
 	const searchParams = useSearchParams()
+	const bottomRef = useRef<null | HTMLDivElement>(null)
 	const hashtag = searchParams.get('hashtag') || undefined
 
-	const { posts, error, isLoading } = usePosts(
-		userPosts,
-		Object.fromEntries(searchParams)
-	)
+	const { pageData, error, isLoading, refetch } = usePosts(userPosts, {
+		...Object.fromEntries(searchParams),
+		page: String(page)
+	})
 
 	const router = useRouter()
 	const pathname = usePathname()
-	if (!posts && error) <ErrorMessage error={error as ErrorType} />
-
-	if (posts?.length === 0)
+	if (!pageData && error) <ErrorMessage error={error as ErrorType} />
+	if (pageData?.posts?.length === 0)
 		return <p className='mt-6 flex-1 text-center'>Постов нет</p>
+
+	useEffect(() => {
+		if (pageData?.posts) {
+			setPostsList(prev => [...prev, ...pageData.posts])
+		}
+	}, [pageData?.posts.length])
+
+	useEffect(() => {
+		const bottomElement = bottomRef.current
+
+		if (!bottomElement) return
+
+		const observer = new IntersectionObserver(
+			entries => {
+				if (
+					!isLoading &&
+					entries[0].isIntersecting &&
+					page !== pageData?.totalPages
+				) {
+					setPage(prev => prev + 1)
+				}
+			},
+			{
+				rootMargin: '100px'
+			}
+		)
+
+		observer.observe(bottomElement)
+
+		return () => observer.disconnect()
+	}, [isLoading, page, pageData?.totalPages])
+
+	useEffect(() => {
+		if (pageData?.totalPages !== page) {
+			refetch()
+		}
+	}, [page])
 
 	return (
 		<div className={className}>
@@ -54,10 +91,13 @@ export const PostsList = ({
 								className='h-[500px] w-full'
 							/>
 						))
-					: (userPosts ? userPosts : posts)?.map(post => (
+					: (userPosts ? userPosts : postsList)?.map(post => (
 							<Post key={post.id} post={post} />
 						))}
 			</div>
+			<div ref={bottomRef} className='h-5' />
+			<div>{isLoading && <p>Fetching...</p>}</div>
+			<button onClick={() => refetch()}>123</button>
 		</div>
 	)
 }

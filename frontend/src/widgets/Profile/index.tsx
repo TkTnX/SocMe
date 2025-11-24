@@ -51,9 +51,11 @@ export const Profile = ({ userId }: Props) => {
 				</div>
 			</div>
 			<div className='relative mb-6 rounded-b-2xl bg-white px-4 pt-16 pb-4 dark:bg-[#0e0e0e]'>
-				<Link className='absolute top-2 right-2' href={'/settings'}>
-					<Settings />
-				</Link>
+				{user?.id === userId && (
+					<Link className='absolute top-2 right-2' href={'/settings'}>
+						<Settings />
+					</Link>
+				)}
 				<h3 className='flex items-center justify-center gap-1 text-center text-2xl font-bold text-black dark:text-white'>
 					{isUserPending ? (
 						<Skeleton className='h-[20px] w-[50px]' />

@@ -5,10 +5,10 @@ import {
 	NotFoundException,
 	UnauthorizedException
 } from '@nestjs/common'
+import { Prisma } from 'generated/prisma'
 import { PostDto } from 'src/api/post/dto'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 import { UserService } from 'src/api/user/user.service'
-
 
 @Injectable()
 export class PostService {
@@ -20,6 +20,60 @@ export class PostService {
 
 	public async getPosts(userId: string, query?: Record<string, string>) {
 		const user = await this.userService.findUserById(userId)
+		const page = Number(query?.page) || 0
+		const limit = 8
+
+		const where: Prisma.PostWhereInput = {
+			OR: [
+				{
+					groupId: {
+						in: user.followingGroups.map(group => group.groupId)
+					}
+				},
+				{
+					AND: [
+						{ groupId: null },
+						{
+							user: {
+								OR: [
+									{
+										followers: {
+											some: { followerId: user.id }
+										}
+									},
+									{ id: user.id }
+								]
+							}
+						}
+					]
+				}
+			],
+			...(query?.text
+				? {
+						text: {
+							contains: query.text,
+							mode: 'insensitive'
+						}
+					}
+				: {}),
+			...(query?.hashtag
+				? {
+						hashtags: {
+							some: {
+								name: {
+									equals: query?.hashtag
+										? `#${query.hashtag}`
+										: undefined,
+									mode: 'insensitive'
+								}
+							}
+						}
+					}
+				: {})
+		}
+
+		const totalPosts = await this.prismaService.post.count({ where })
+		const totalPages = Math.round(totalPosts / limit)
 		const posts = await this.prismaService.post.findMany({
 			include: {
 				user: {
@@ -33,62 +87,17 @@ export class PostService {
 				favorites: true,
 				group: true
 			},
+			where,
 			orderBy: {
 				createdAt: 'desc'
 			},
-			where: {
-				OR: [
-					{
-						groupId: {
-							in: user.followingGroups.map(group => group.groupId)
-						}
-					},
-					{
-						AND: [
-							{ groupId: null },
-							{
-								user: {
-									OR: [
-										{
-											followers: {
-												some: { followerId: user.id }
-											}
-										},
-										{ id: user.id }
-									]
-								}
-							}
-						]
-					}
-				],
-				...(query?.text
-					? {
-							text: {
-								contains: query.text,
-								mode: 'insensitive'
-							}
-						}
-					: {}),
-				...(query?.hashtag
-					? {
-							hashtags: {
-								some: {
-									name: {
-										equals: query?.hashtag
-											? `#${query.hashtag}`
-											: undefined,
-										mode: 'insensitive'
-									}
-								}
-							}
-						}
-					: {})
-			},
+
 			// TODO: Add pagination
-			take: 8
+			take: limit,
+			skip: limit * page
 		})
 
-		return posts
+		return { posts, totalPages }
 	}
 
 	public async getPostById(id: string) {

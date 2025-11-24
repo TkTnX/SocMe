@@ -12,14 +12,15 @@ import { PostSchema } from '@/shared/schemas';
 
 export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 	const {
-		data: posts,
+		data: pageData,
 		isLoading,
-		error
+		error,
+		refetch
 	} = useQuery({
 		queryKey: ['posts', userPosts, query],
 		queryFn: () => getPosts(query),
 		enabled: !userPosts,
-		initialData: userPosts
+		// initialData: userPosts
 	})
 
 	const getPostByIdQuery = (
@@ -80,12 +81,13 @@ export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 		})
 
 	return {
-		posts,
+		pageData,
 		isLoading,
 		error,
 		getPostByIdQuery,
 		createPostMutation,
 		editPostMutation,
-		deletePostMutation
+		deletePostMutation,
+		refetch
 	}
 }
