@@ -34,6 +34,7 @@ export const PostsList = ({ userPosts, className }: Props) => {
 		return <p className='mt-6 flex-1 text-center'>Постов нет</p>
 
 	useEffect(() => {
+		console.log(pageData?.posts)
 		if (pageData?.posts) {
 			setPostsList(prev => [...prev, ...pageData.posts])
 		}
@@ -51,7 +52,9 @@ export const PostsList = ({ userPosts, className }: Props) => {
 					entries[0].isIntersecting &&
 					page !== pageData?.totalPages
 				) {
-					setPage(prev => prev + 1)
+					if (pageData && pageData.totalPages !== page + 1) {
+						setPage(prev => prev + 1)
+					}
 				}
 			},
 			{
@@ -65,11 +68,13 @@ export const PostsList = ({ userPosts, className }: Props) => {
 	}, [isLoading, page, pageData?.totalPages])
 
 	useEffect(() => {
-		if (pageData?.totalPages !== page) {
+		if (pageData && pageData.totalPages !== page + 1) {
 			refetch()
 		}
-	}, [page])
+	}, [page, pageData])
 
+
+	
 	return (
 		<div className={className}>
 			{hashtag && (
@@ -96,8 +101,6 @@ export const PostsList = ({ userPosts, className }: Props) => {
 						))}
 			</div>
 			<div ref={bottomRef} className='h-5' />
-			<div>{isLoading && <p>Fetching...</p>}</div>
-			<button onClick={() => refetch()}>123</button>
 		</div>
 	)
 }
