@@ -3,6 +3,7 @@
 import { X } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { usePosts } from '@/api/hooks'
 import { IPost } from '@/api/types'
@@ -32,49 +33,21 @@ export const PostsList = ({ userPosts, className }: Props) => {
 	if (!pageData && error) <ErrorMessage error={error as ErrorType} />
 	if (pageData?.posts?.length === 0)
 		return <p className='mt-6 flex-1 text-center'>Постов нет</p>
+	const hasMore = pageData?.totalPages !== page + 1
 
 	useEffect(() => {
-		console.log(pageData?.posts)
-		if (pageData?.posts) {
-			setPostsList(prev => [...prev, ...pageData.posts])
+		if (!pageData) return
+		if (page === 0) {
+			setPostsList(pageData.posts)
+		} else {
+			setPostsList([...postsList, ...pageData.posts])
 		}
-	}, [pageData?.posts.length])
+	}, [pageData])
 
 	useEffect(() => {
-		const bottomElement = bottomRef.current
+		refetch()
+	}, [page])
 
-		if (!bottomElement) return
-
-		const observer = new IntersectionObserver(
-			entries => {
-				if (
-					!isLoading &&
-					entries[0].isIntersecting &&
-					page !== pageData?.totalPages
-				) {
-					if (pageData && pageData.totalPages !== page + 1) {
-						setPage(prev => prev + 1)
-					}
-				}
-			},
-			{
-				rootMargin: '100px'
-			}
-		)
-
-		observer.observe(bottomElement)
-
-		return () => observer.disconnect()
-	}, [isLoading, page, pageData?.totalPages])
-
-	useEffect(() => {
-		if (pageData && pageData.totalPages !== page + 1) {
-			refetch()
-		}
-	}, [page, pageData])
-
-
-	
 	return (
 		<div className={className}>
 			{hashtag && (
@@ -88,7 +61,14 @@ export const PostsList = ({ userPosts, className }: Props) => {
 					</button>
 				</div>
 			)}
-			<div className='mt-4 flex flex-col gap-6'>
+			<InfiniteScroll
+				className='mt-4 flex flex-col gap-6'
+				dataLength={pageData?.posts.length || 0}
+				next={() => setPage(prev => prev + 1)}
+				hasMore={hasMore}
+				loader={<p>Загрузка...</p>}
+				endMessage={<p>Вы дошли до конца!</p>}
+			>
 				{isLoading
 					? [...new Array(5)].map((_, index) => (
 							<Skeleton
@@ -99,7 +79,7 @@ export const PostsList = ({ userPosts, className }: Props) => {
 					: (userPosts ? userPosts : postsList)?.map(post => (
 							<Post key={post.id} post={post} />
 						))}
-			</div>
+			</InfiniteScroll>
 			<div ref={bottomRef} className='h-5' />
 		</div>
 	)

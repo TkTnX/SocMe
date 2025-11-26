@@ -1,14 +1,19 @@
-import { UseMutationOptions, UseQueryOptions, useMutation, useQuery } from '@tanstack/react-query';
+import {
+	UseMutationOptions,
+	UseQueryOptions,
+	useMutation,
+	useQuery
+} from '@tanstack/react-query'
 
-
-
-import { createPost, deletePost, editPost, getPostById, getPosts } from '@/api/requests';
-import { IPost, IPostRequest } from '@/api/types';
-import { PostSchema } from '@/shared/schemas';
-
-
-
-
+import {
+	createPost,
+	deletePost,
+	editPost,
+	getPostById,
+	getPosts
+} from '@/api/requests'
+import { IPost, IPostRequest } from '@/api/types'
+import { PostSchema } from '@/shared/schemas'
 
 export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 	const {
@@ -19,7 +24,7 @@ export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 	} = useQuery({
 		queryKey: ['posts', userPosts, query],
 		queryFn: () => getPosts(query),
-		enabled: !userPosts,
+		enabled: !userPosts
 		// initialData: userPosts
 	})
 
@@ -50,7 +55,6 @@ export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 			...options
 		})
 
-	
 	// МУТАЦИЯ РЕДАКТИРОВАНИЯ ПОСТА
 	const editPostMutation = (
 		postId: string,
@@ -66,7 +70,6 @@ export function usePosts(userPosts?: IPost[], query?: Record<string, string>) {
 			...options
 		})
 
-	
 	// МУТАЦИЯ УДАЛЕНИЯ ПОСТА
 	const deletePostMutation = (
 		options?: Omit<
