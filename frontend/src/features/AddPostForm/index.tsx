@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { UploadPostImages } from './components'
+import { AddPostControls, UploadPostImages } from './components'
 import { usePosts, useUploads, useUser } from '@/api/hooks'
 import { IPost } from '@/api/types'
 import {
@@ -34,6 +34,7 @@ interface Props {
 
 export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 	const [images, setImages] = useState<File[]>([])
+	const [videoUrl, setVideoUrl] = useState<string>('')
 	const [imagesUrls, setImagesUrls] = useState<string[]>(post?.images || [])
 	const { user } = useUser()
 	const { uploadMutation } = useUploads()
@@ -98,29 +99,39 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 			? edit({
 					text,
 					images: [...post.images, ...imagesUrls],
-					hashtags
+					hashtags,
+					video: videoUrl
 				})
-			: create({ text, images: imagesUrls, hashtags, groupId })
+			: create({
+					text,
+					images: imagesUrls,
+					hashtags,
+					groupId,
+					video: videoUrl
+				})
 	}
 
 	return (
 		<Block className='mb-6 p-0'>
 			{post || imagesUrls.length ? (
 				<div className='flex flex-wrap items-stretch gap-2'>
-					{[...(post?.images || []), ...imagesUrls].map(image => (
-						<Image
-							key={image}
-							src={image}
-							alt='preview'
-							width={100}
-							height={100}
-							className='object-cover'
-						/>
-					))}
+					{[...(post?.images || []), ...imagesUrls].map(
+						(image, index) => (
+							<Image
+								key={index}
+								src={image}
+								alt='preview'
+								width={100}
+								height={100}
+								className='object-cover'
+							/>
+						)
+					)}
 				</div>
 			) : (
 				''
 			)}
+			{(post || videoUrl) && <video src={post?.video || videoUrl} controls />}
 			<Form key={'addPostForm'} {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className='flex w-full items-start gap-4 px-6 py-4'>
@@ -156,39 +167,11 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 							)}
 						/>
 					</div>
-					<div className='flex items-center justify-between bg-[#ecf9ff] pl-6 dark:bg-black/20'>
-						<UploadPostImages setImages={setImages} />
-						<button
-							type='button'
-							className='flex items-center gap-1.5'
-						>
-							<Image
-								width={24}
-								height={24}
-								alt='Видео'
-								src={'/images/icons/videoIcon.svg'}
-							/>
-							<span className='hidden lg:inline'>Видео</span>
-						</button>
-						<button
-							type='button'
-							className='flex items-center gap-1.5'
-						>
-							<Image
-								width={24}
-								height={24}
-								alt='Событие'
-								src={'/images/icons/eventIcon.svg'}
-							/>
-							<span className='hidden lg:inline'>Событие</span>
-						</button>
-						<button
-							disabled={isCreatePending || isEditPending}
-							className='flex h-full w-full max-w-[70px] items-center justify-center bg-[#c7edff] p-6 hover:opacity-80 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-300'
-						>
-							<Send size={24} color='var(--color-text)' />
-						</button>
-					</div>
+					<AddPostControls
+						setVideoUrl={setVideoUrl}
+						isPending={isCreatePending || isEditPending}
+						setImages={setImages}
+					/>
 				</form>
 			</Form>
 		</Block>

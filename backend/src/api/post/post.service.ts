@@ -78,7 +78,8 @@ export class PostService {
 			include: {
 				user: {
 					include: {
-						followers: true
+						followers: true,
+						userSubscription: true
 					}
 				},
 				hashtags: true,
@@ -92,7 +93,6 @@ export class PostService {
 				createdAt: 'desc'
 			},
 
-			// TODO: Add pagination
 			take: limit,
 			skip: limit * page
 		})

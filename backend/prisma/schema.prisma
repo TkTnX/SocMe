@@ -90,6 +90,7 @@ model Post {
 
   text   String
   images String[]
+  video  String?
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String

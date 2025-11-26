@@ -13,9 +13,10 @@ import { cn } from '@/shared/lib'
 
 interface Props {
 	images: string[]
+	video?: string
 }
 
-export const PostImages = ({ images }: Props) => {
+export const PostImages = ({ images, video }: Props) => {
 	const [api, setApi] = useState<CarouselApi>()
 	const [current, setCurrent] = useState(0)
 	const [count, setCount] = useState(0)
@@ -29,10 +30,14 @@ export const PostImages = ({ images }: Props) => {
 			setCurrent(api.selectedScrollSnap() + 1)
 		})
 	}, [api])
-
 	return (
 		<Carousel setApi={setApi}>
-			<CarouselContent>
+			<CarouselContent className='flex items-center'>
+				{video && (
+					<CarouselItem>
+						<video src={video} controls />
+					</CarouselItem>
+				)}
 				{images.map(image => (
 					<CarouselItem key={image}>
 						<div

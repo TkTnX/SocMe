@@ -4,6 +4,7 @@ export interface IPost {
 	id: string
 	text: string
 	images: string[]
+	video?: string
 
 	user: IUser
 	userId: string
@@ -23,6 +24,7 @@ export interface IPost {
 export interface IPostRequest {
 	text: string
 	images: string[]
+	video?: string
 	hashtags: string[]
 	groupId?: string
 }

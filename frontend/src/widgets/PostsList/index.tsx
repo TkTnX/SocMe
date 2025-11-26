@@ -30,7 +30,7 @@ export const PostsList = ({ userPosts, className }: Props) => {
 
 	const router = useRouter()
 	const pathname = usePathname()
-	if (!pageData && error) <ErrorMessage error={error as ErrorType} />
+	if (!pageData && error) return <ErrorMessage error={error as ErrorType} />
 	if (pageData?.posts?.length === 0)
 		return <p className='mt-6 flex-1 text-center'>Постов нет</p>
 	const hasMore = pageData?.totalPages !== page + 1

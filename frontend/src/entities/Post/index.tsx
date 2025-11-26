@@ -27,6 +27,7 @@ export const Post = ({ post, className }: Props) => {
 	const isGroupPost = !!post.groupId
 	const { user } = useUser()
 	const [openComments, setOpenComments] = useState(false)
+	console.log(post)
 	return (
 		<Block className={cn('pt-3.5 pb-2', className)}>
 			<div className='flex items-center justify-between'>
@@ -47,7 +48,11 @@ export const Post = ({ post, className }: Props) => {
 			<div className='mt-3.5'>
 				<h2 className='mt-4 text-sm text-inherit'>{post.text}</h2>
 
-				{post.images.length ? <PostImages images={post.images} /> : ''}
+				{post.images.length || post.video ? (
+					<PostImages video={post.video} images={post.images} />
+				) : (
+					''
+				)}
 			</div>
 			{post.hashtags && <PostHashtags hashtags={post.hashtags} />}
 			<div className='flex items-center justify-between'>
