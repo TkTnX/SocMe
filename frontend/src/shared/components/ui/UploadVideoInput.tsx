@@ -32,7 +32,6 @@ export const UploadVideoInput = ({ children, setVideoUrl }: Props) => {
 		if (!video) return
 		const formData = new FormData()
 		formData.append('file', video)
-		console.log(formData.get('file'))
 		mutate(formData, {
 			onSuccess: data => {
 				setVideoUrl(data)

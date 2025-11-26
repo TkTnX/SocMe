@@ -9,10 +9,13 @@ import { ErrorType } from '@/shared/types'
 
 export const PopularGroups = () => {
 	const { getGroupsQuery } = useGroups()
-	const { data, isPending, error } = getGroupsQuery({ followers: 'asc' })
+	const { data, isPending, error } = getGroupsQuery({
+		followers: 'asc',
+		page: '0'
+	})
 
 	return (
-		<Block >
+		<Block>
 			<h3>Популярное</h3>
 			<div className='mt-4 flex flex-col gap-2'>
 				{error ? (
@@ -22,7 +25,7 @@ export const PopularGroups = () => {
 						<Skeleton key={index} className='h-9 w-full' />
 					))
 				) : (
-					data.map(group => (
+					data.groups.map(group => (
 						<div
 							key={group.id}
 							className='flex items-center justify-between'

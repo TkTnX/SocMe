@@ -27,7 +27,6 @@ export const Post = ({ post, className }: Props) => {
 	const isGroupPost = !!post.groupId
 	const { user } = useUser()
 	const [openComments, setOpenComments] = useState(false)
-	console.log(post)
 	return (
 		<Block className={cn('pt-3.5 pb-2', className)}>
 			<div className='flex items-center justify-between'>

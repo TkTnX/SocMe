@@ -57,7 +57,6 @@ export class PaymentService {
 			}
 		})
 
-		console.log(user)
 		const userSubscription =
 			await this.prismaService.userSubscription.findFirst({
 				where: { userId }

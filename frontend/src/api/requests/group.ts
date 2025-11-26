@@ -6,6 +6,11 @@ import { CreateGroupSchema, EditGroupSchema } from '@/shared/schemas';
 
 
 
+type GroupsResponseType = {
+	totalPages: number
+	groups: IGroup[]
+}
+
 export const getGroups = async (query?: Record<string, string>) => {
 	const params = new URLSearchParams()
 
@@ -13,7 +18,9 @@ export const getGroups = async (query?: Record<string, string>) => {
 		if (value) params.append(key, value)
 	})
 
-	const { data } = await axiosInstance.get<Promise<IGroup[]>>(`/groups?${params.toString()}`)
+	const { data } = await axiosInstance.get<Promise<GroupsResponseType>>(
+		`/groups?${params.toString()}`
+	)
 	return data
 }
 

@@ -15,6 +15,8 @@ export const GroupsSearch = () => {
 	useEffect(() => {
 		if (value !== '') {
 			router.push(`/groups?name=${value}`)
+		} else {
+			router.push('/groups')
 		}
 	}, [value])
 

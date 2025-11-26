@@ -1,11 +1,10 @@
 import {
 	BadGatewayException,
 	Injectable,
-	NotFoundException,
-	UnauthorizedException
+	NotFoundException
 } from '@nestjs/common'
 import { Prisma } from 'generated/prisma'
-import { EditGroupDto, GroupDto, PartialEditGroupDto } from 'src/api/group/dto'
+import { GroupDto, PartialEditGroupDto } from 'src/api/group/dto'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 
 @Injectable()
@@ -13,6 +12,8 @@ export class GroupService {
 	public constructor(private readonly prismaService: PrismaService) {}
 
 	public async getGroups(query?: Record<string, string>) {
+		const limit = 8
+		const page = Number(query?.page) || 0
 		let where: Prisma.GroupWhereInput = {
 			name: {
 				contains: query?.name ? query.name : undefined,
@@ -29,15 +30,19 @@ export class GroupService {
 			}
 		}
 
-		return await this.prismaService.group.findMany({
+		const totalGroups = await this.prismaService.group.count()
+		const totalPages = Math.ceil(totalGroups / limit)
+		const groups = await this.prismaService.group.findMany({
 			where,
 			include: {
 				followers: true
 			},
 			orderBy,
-			// TODO: Пагинация
-			take: 8
+			take: limit,
+			skip: limit * page
 		})
+
+		return { groups, totalPages }
 	}
 
 	public async createGroups(dto: GroupDto, userId: string) {
