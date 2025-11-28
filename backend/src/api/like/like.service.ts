@@ -1,10 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { Comment, ELikeType, Hashtag, Post } from 'generated/prisma'
+import { NotificationService } from 'src/api/notification/notification.service'
 import { PrismaService } from 'src/api/prisma/prisma.service'
+import { likeNotification } from 'src/configs'
 
 @Injectable()
 export class LikeService {
-	public constructor(private readonly prismaService: PrismaService) {}
+	public constructor(
+		private readonly prismaService: PrismaService,
+		private readonly notificationService: NotificationService
+	) {}
 
 	public async like(type: ELikeType, id: string, userId: string) {
 		let likedItem: null | Comment | Post | Hashtag = null
@@ -38,15 +43,20 @@ export class LikeService {
 				likedItem = await this.prismaService.post.findUnique({
 					where: { id }
 				})
+
+				await this.notificationService.createNotification({
+					...likeNotification,
+					userId: likedItem?.userId!
+				})
 				break
 			case 'HASHTAG':
 				likedItem = await this.prismaService.hashtag.findUnique({
 					where: { id }
 				})
 				break
-        }
-        
-        if(!likedItem) throw new NotFoundException("id не найден!")
+		}
+
+		if (!likedItem) throw new NotFoundException('id не найден!')
 
 		const like = await this.prismaService.like.create({
 			data: {

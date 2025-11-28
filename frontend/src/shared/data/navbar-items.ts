@@ -10,11 +10,7 @@ export const navbarItems = [
 		filledImage: '/images/icons/navbar/02-filled.svg'
 	},
 
-	{
-		href: '/notifications',
-		image: '/images/icons/navbar/04.svg',
-		filledImage: '/images/icons/navbar/04-filled.svg'
-	},
+
 	{
 		href: '/chats',
 		image: '/images/icons/navbar/05.svg',

@@ -40,7 +40,6 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 	const { uploadMutation } = useUploads()
 	const queryClient = useQueryClient()
 	const { createPostMutation, editPostMutation } = usePosts()
-
 	const form = useForm<PostSchema>({
 		resolver: zodResolver(postSchema),
 		defaultValues: {
@@ -131,7 +130,9 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 			) : (
 				''
 			)}
-			{(post || videoUrl) && <video src={post?.video || videoUrl} controls />}
+			{(post || videoUrl) && (
+				<video src={post?.video || videoUrl} controls />
+			)}
 			<Form key={'addPostForm'} {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className='flex w-full items-start gap-4 px-6 py-4'>

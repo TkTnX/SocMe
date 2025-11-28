@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { GroupService } from 'src/api/group/group.service'
+import { NotificationService } from 'src/api/notification/notification.service'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 import { UserService } from 'src/api/user/user.service'
+import { followNotification } from 'src/configs'
 
 @Injectable()
 export class FollowerService {
 	public constructor(
 		private readonly prismaService: PrismaService,
 		private readonly userService: UserService,
-		private readonly groupService: GroupService
+		private readonly groupService: GroupService,
+		private readonly notificationService: NotificationService
 	) {}
 
 	public async follow(
@@ -51,6 +54,11 @@ export class FollowerService {
 		}
 
 		if (isUserFollow) {
+			await this.notificationService.createNotification({
+				...followNotification,
+				userId: target.id
+			})
+
 			return await this.prismaService.follower.create({
 				data: {
 					followerId: user.id,

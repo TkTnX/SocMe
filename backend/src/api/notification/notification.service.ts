@@ -33,6 +33,15 @@ export class NotificationService {
 		return newNotification
 	}
 
+	public async updateNotificationStatus(notificationId: string) {
+		const notification = await this.getNotificationById(notificationId)
+
+		return await this.prismaService.notification.update({
+			where: { id: notification.id },
+			data: { isRead: true }
+		})
+	}
+
 	public async deleteNotification(notificationId: string) {
 		const notification = await this.getNotificationById(notificationId)
 

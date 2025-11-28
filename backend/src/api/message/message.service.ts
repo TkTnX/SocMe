@@ -1,19 +1,22 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { ChatService } from 'src/api/chat/chat.service';
-import { MessageDto, PartialMessageDto } from 'src/api/message/dto';
-import { PrismaService } from 'src/api/prisma/prisma.service';
-import { UserService } from 'src/api/user/user.service';
-
-
-
-
+import {
+	Injectable,
+	NotFoundException,
+	UnauthorizedException
+} from '@nestjs/common'
+import { ChatService } from 'src/api/chat/chat.service'
+import { MessageDto, PartialMessageDto } from 'src/api/message/dto'
+import { NotificationService } from 'src/api/notification/notification.service'
+import { PrismaService } from 'src/api/prisma/prisma.service'
+import { UserService } from 'src/api/user/user.service'
+import { messageNotification } from 'src/configs'
 
 @Injectable()
 export class MessageService {
 	public constructor(
 		private readonly prismaService: PrismaService,
 		private readonly userService: UserService,
-		private readonly chatService: ChatService
+		private readonly chatService: ChatService,
+		private readonly notificationService: NotificationService
 	) {}
 
 	public async create(dto: MessageDto, userId: string) {
@@ -34,6 +37,12 @@ export class MessageService {
 			await this.prismaService.chat.update({
 				where: { id: chat.id },
 				data: { lastMessage: message.text }
+			})
+
+			await this.notificationService.createNotification({
+				...messageNotification,
+				userId:
+					user.id === chat.userOneId ? chat.userTwoId : chat.userOneId
 			})
 
 			return message

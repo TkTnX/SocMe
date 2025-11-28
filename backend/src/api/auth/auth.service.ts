@@ -80,7 +80,8 @@ export class AuthService {
 					where: {
 						status: 'ACTIVE'
 					}
-				}
+				},
+				notifications: true,
 			},
 			omit: {
 				password: true

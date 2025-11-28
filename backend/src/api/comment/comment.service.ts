@@ -1,13 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { CommentDto } from 'src/api/comment/dto'
+import { NotificationService } from 'src/api/notification/notification.service'
 import { PostService } from 'src/api/post/post.service'
 import { PrismaService } from 'src/api/prisma/prisma.service'
+import { commentNotification } from 'src/configs'
 
 @Injectable()
 export class CommentService {
 	public constructor(
 		private readonly prismaService: PrismaService,
-		private readonly postService: PostService
+		private readonly postService: PostService,
+		private readonly notificationService: NotificationService
 	) {}
 
 	public async getPostComments(postId: string) {
@@ -32,7 +35,7 @@ export class CommentService {
 		const roots: any[] = []
 
 		for (const comment of comments) {
-			map.set(comment.id, {...comment, replies: []})
+			map.set(comment.id, { ...comment, replies: [] })
 		}
 
 		for (const comment of comments) {
@@ -63,6 +66,11 @@ export class CommentService {
 				...dto,
 				userId
 			}
+		})
+
+		await this.notificationService.createNotification({
+			...commentNotification,
+			userId: post.userId
 		})
 
 		return newComment
