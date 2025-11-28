@@ -46,6 +46,7 @@ export const PostsList = ({ userPosts, className }: Props) => {
 		refetch()
 	}, [page])
 
+
 	if (!pageData && error) return <ErrorMessage error={error as ErrorType} />
 	if (pageData?.posts?.length === 0)
 		return <p className='mt-6 flex-1 text-center'>Постов нет</p>
@@ -66,7 +67,7 @@ export const PostsList = ({ userPosts, className }: Props) => {
 			<InfiniteScroll
 				className='mt-4 flex flex-col gap-6'
 				dataLength={pageData?.posts.length || 0}
-				next={() => setPage(prev => prev + 1)}
+				next={() => setPage(prev => (hashtag ? prev : prev + 1))}
 				hasMore={hasMore}
 				loader={<p>Загрузка...</p>}
 				endMessage={<p>Вы дошли до конца!</p>}

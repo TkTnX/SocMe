@@ -24,30 +24,38 @@ export class PostService {
 		const limit = 8
 
 		const where: Prisma.PostWhereInput = {
-			OR: [
-				{
-					groupId: {
-						in: user.followingGroups.map(group => group.groupId)
-					}
-				},
-				{
-					AND: [
-						{ groupId: null },
-						{
-							user: {
-								OR: [
+			...(!query?.hashtag
+				? {
+						OR: [
+							{
+								groupId: {
+									in: user.followingGroups.map(
+										group => group.groupId
+									)
+								}
+							},
+							{
+								AND: [
+									{ groupId: null },
 									{
-										followers: {
-											some: { followerId: user.id }
+										user: {
+											OR: [
+												{
+													followers: {
+														some: {
+															followerId: user.id
+														}
+													}
+												},
+												{ id: user.id }
+											]
 										}
-									},
-									{ id: user.id }
+									}
 								]
 							}
-						}
-					]
-				}
-			],
+						]
+					}
+				: {}),
 			...(query?.text
 				? {
 						text: {
@@ -71,6 +79,7 @@ export class PostService {
 					}
 				: {})
 		}
+
 
 		const totalPosts = await this.prismaService.post.count({ where })
 		const totalPages = Math.round(totalPosts / limit)

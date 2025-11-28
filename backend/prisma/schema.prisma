@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // url      = env("POSTGRES_URI")
+  url      = env("POSTGRES_URI")
 }
 
 model User {
@@ -41,6 +41,7 @@ model User {
   chatsAsUserOne   Chat[]            @relation("ChatUserOne")
   chatsAsUserTwo   Chat[]            @relation("ChatUserTwo")
   messages         Message[]
+  notifications    Notification[]
 
   createdAt DateTime @default(now())
 }
@@ -248,6 +249,21 @@ model Message {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime?
+}
+
+model Notification {
+  id String @id @default(uuid())
+
+  title   String
+  content String?
+  icon    String?
+
+  isRead Boolean @default(false)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
 }
 
 enum ELikeType {

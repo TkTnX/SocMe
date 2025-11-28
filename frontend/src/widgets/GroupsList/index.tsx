@@ -49,7 +49,6 @@ export const GroupsList = () => {
 		}
 	}, [name])
 
-	console.log(data)
 
 	return (
 		<Block>

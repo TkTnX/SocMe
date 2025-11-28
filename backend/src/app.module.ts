@@ -22,6 +22,7 @@ import { PrismaModule } from './api/prisma/prisma.module'
 import { StoryModule } from './api/story/story.module'
 import { SubscriptionModule } from './api/subscription/subscription.module'
 import { UserModule } from './api/user/user.module'
+import { NotificationModule } from './api/notification/notification.module';
 
 @Module({
 	imports: [
@@ -51,7 +52,8 @@ import { UserModule } from './api/user/user.module'
 		SchedulerModule,
 		SubscriptionModule,
 		ChatModule,
-		WebsocketMessageModule
+		WebsocketMessageModule,
+		NotificationModule,
 	]
 })
 export class AppModule {}
