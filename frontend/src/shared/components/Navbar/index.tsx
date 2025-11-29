@@ -3,11 +3,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { navbarItems } from '@/shared/data'
-import { cn } from '@/shared/lib/utils'
+
+import { useUser } from '@/api/hooks'
 import { Notification } from '@/entities'
 import { NotificationsDropdown } from '@/shared/components/dropdowns'
-import { useUser } from '@/api/hooks'
+import { navbarItems } from '@/shared/data'
+import { cn } from '@/shared/lib/utils'
 
 interface Props {
 	isMobile?: boolean
@@ -15,7 +16,7 @@ interface Props {
 
 export const Navbar = ({ isMobile = false }: Props) => {
 	const pathname = usePathname()
-	const {user} = useUser()
+	const { user } = useUser()
 	return (
 		<nav
 			className={cn(
@@ -53,8 +54,9 @@ export const Navbar = ({ isMobile = false }: Props) => {
 						</li>
 					)
 				})}
-				{user &&<NotificationsDropdown notifications={user.notifications} /> }
-				
+				{user && (
+					<NotificationsDropdown notifications={user.notifications} />
+				)}
 			</ul>
 		</nav>
 	)

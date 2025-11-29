@@ -1,6 +1,6 @@
 'use client'
 
-import { Filter, Search } from 'lucide-react'
+import {  Search } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'

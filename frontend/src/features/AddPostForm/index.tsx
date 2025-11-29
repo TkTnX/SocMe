@@ -1,15 +1,12 @@
 'use client'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
-import { Send } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { AddPostControls, UploadPostImages } from './components'
+import { AddPostControls } from './components'
 import { usePosts, useUploads, useUser } from '@/api/hooks'
 import { IPost } from '@/api/types'
 import {
@@ -19,12 +16,11 @@ import {
 	FormField,
 	FormItem,
 	FormMessage,
+	ImagesPreview,
 	Textarea
 } from '@/shared/components'
-import { showErrorMessage } from '@/shared/helpers'
+import { extractHashtags } from '@/shared/helpers'
 import { PostSchema, postSchema } from '@/shared/schemas'
-
-// TODO: Сократить количество кода
 
 interface Props {
 	post?: IPost | null
@@ -37,9 +33,10 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 	const [videoUrl, setVideoUrl] = useState<string>('')
 	const [imagesUrls, setImagesUrls] = useState<string[]>(post?.images || [])
 	const { user } = useUser()
-	const { uploadMutation } = useUploads()
+	const { uploadImages } = useUploads()
 	const queryClient = useQueryClient()
 	const { createPostMutation, editPostMutation } = usePosts()
+
 	const form = useForm<PostSchema>({
 		resolver: zodResolver(postSchema),
 		defaultValues: {
@@ -48,88 +45,46 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 		}
 	})
 
-	const { mutate: upload } = uploadMutation(true)
-
-	useEffect(() => {
-		const formData = new FormData()
-		for (const file of images) {
-			formData.append('files', file)
-		}
-		upload(formData, {
-			onSuccess: data => {
-				setImagesUrls(data)
-			}
-		})
-	}, [images])
-
-	const getMutationHandlers = (
-		successMessage: string,
-		onSuccess?: () => void
-	) => ({
+	const handlers = (msg: string, cb?: () => void) => ({
 		onSuccess: () => {
 			form.reset({ text: '' })
-			queryClient.invalidateQueries({ queryKey: ['posts'] })
-			queryClient.invalidateQueries({ queryKey: ['group', groupId] })
-			toast.success(successMessage)
-			onSuccess?.()
-		},
-		onError: (error: unknown) => showErrorMessage(error)
+			queryClient.invalidateQueries()
+			toast.success(msg)
+			cb?.()
+		}
 	})
 
-	const { mutate: create, isPending: isCreatePending } = createPostMutation(
-		getMutationHandlers('Успешное создание поста!')
-	)
+	const { mutate, isPending } = post
+		? editPostMutation(post.id, handlers('Пост изменён!', onSuccess))
+		: createPostMutation(handlers('Пост создан!'))
 
-	const { mutate: edit, isPending: isEditPending } = editPostMutation(
-		post?.id!,
-		getMutationHandlers('Пост успешно изменён!', onSuccess)
-	)
+	useEffect(() => {
+		if (images.length) uploadImages(images, setImagesUrls)
+	}, [images])
 
 	const onSubmit = (values: PostSchema) => {
-		const hashtags = values.text
-			.split(' ')
-			.filter(word => word.includes('#'))
-		const text = values.text
-			.split(' ')
-			.filter(word => !word.includes('#'))
-			.join(' ')
-
-		return post
-			? edit({
-					text,
+		const { hashtags, cleanText } = extractHashtags(values.text)
+		const payload = post
+			? {
+					text: cleanText,
 					images: [...post.images, ...imagesUrls],
 					hashtags,
 					video: videoUrl
-				})
-			: create({
-					text,
+				}
+			: {
+					text: cleanText,
 					images: imagesUrls,
 					hashtags,
-					groupId,
-					video: videoUrl
-				})
+					video: videoUrl,
+					groupId
+				}
+
+		mutate(payload)
 	}
 
 	return (
 		<Block className='mb-6 p-0'>
-			{post || imagesUrls.length ? (
-				<div className='flex flex-wrap items-stretch gap-2'>
-					{[...(post?.images || []), ...imagesUrls].map(
-						(image, index) => (
-							<Image
-								key={index}
-								src={image}
-								alt='preview'
-								width={100}
-								height={100}
-								className='object-cover'
-							/>
-						)
-					)}
-				</div>
-			) : (
-				''
-			)}
+			<ImagesPreview post={post} imagesUrls={imagesUrls} />
 			{(post || videoUrl) && (
 				<video src={post?.video || videoUrl} controls />
 			)}
@@ -155,9 +110,7 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 								<FormItem className='flex-1'>
 									<FormControl>
 										<Textarea
-											disabled={
-												isCreatePending || isEditPending
-											}
+											disabled={isPending}
 											{...field}
 											placeholder='Рассказать что-то...'
 											className='h-full w-full resize-none border-none shadow-none disabled:pointer-events-none disabled:opacity-50'
@@ -170,7 +123,7 @@ export const AddPostForm = ({ post = null, onSuccess, groupId }: Props) => {
 					</div>
 					<AddPostControls
 						setVideoUrl={setVideoUrl}
-						isPending={isCreatePending || isEditPending}
+						isPending={isPending}
 						setImages={setImages}
 					/>
 				</form>

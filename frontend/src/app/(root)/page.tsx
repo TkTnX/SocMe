@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 
 import { AddPostForm } from '@/features';
 import { PostsList, RightMenu, StoriesList } from '@/widgets';
+import { Suspense } from 'react';
 
 
 
@@ -21,7 +22,9 @@ export default function Home() {
 			<div className='flex-1'>
 				<StoriesList />
 				<AddPostForm />
-				<PostsList />
+				<Suspense>
+					<PostsList />
+				</Suspense>
 			</div>
 			<RightMenu />
 		</>

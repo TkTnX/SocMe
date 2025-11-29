@@ -1,6 +1,7 @@
 import Image from 'next/image'
 
 import { INotification } from '@/api/types'
+import { DeleteNotificationButton } from '@/features'
 import { cn } from '@/shared/lib'
 
 interface Props {
@@ -11,7 +12,7 @@ export const Notification = ({ notification }: Props) => {
 	return (
 		<div
 			className={cn(
-				'border-main text-main flex items-center gap-3 rounded-2xl border px-4 py-2',
+				'border-main text-main relative flex w-full items-center gap-3 rounded-2xl border py-2 pr-6 pl-4',
 				{ 'bg-main text-white': !notification.isRead }
 			)}
 		>
@@ -24,17 +25,25 @@ export const Notification = ({ notification }: Props) => {
 					<Image
 						src={notification.icon}
 						alt={notification.title}
-						className='rounded-full object-cover'
+						className={cn('w-fit rounded-full object-cover', {
+							'invert-100': notification.isRead
+						})}
 						width={18}
 						height={18}
 					/>
 				</div>
 			)}
-			<div>
+			<div className='w-full'>
 				<h6 className='font-bold'>{notification.title}</h6>
 				{notification.content && (
 					<p className='text-xs'>{notification.content}</p>
 				)}
+				<p className='text-right text-xs text-gray-500'>
+					{new Date(notification.createdAt).toLocaleDateString(
+						'ru-RU'
+					)}
+				</p>
+				<DeleteNotificationButton notificationId={notification.id} />
 			</div>
 		</div>
 	)

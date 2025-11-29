@@ -12,7 +12,8 @@ export class NotificationService {
 
 	public async getNotifications(userId: string) {
 		const notifications = await this.prismaService.notification.findMany({
-			where: { userId }
+			where: { userId },
+			
 		})
 
 		if (!notifications) return { message: 'Уведомелний нет!' }
@@ -33,11 +34,24 @@ export class NotificationService {
 		return newNotification
 	}
 
-	public async updateNotificationStatus(notificationId: string) {
-		const notification = await this.getNotificationById(notificationId)
+	public async updateNotificationStatus(userId: string) {
+		const user = await this.userService.findUserById(userId)
 
-		return await this.prismaService.notification.update({
-			where: { id: notification.id },
+		const unreadNotifications =
+			await this.prismaService.notification.findMany({
+				where: {
+					AND: [
+						{
+							userId: user.id
+						},
+						{
+							isRead: false
+						}
+					]
+				}
+			})
+		return await this.prismaService.notification.updateMany({
+			where: { id: { in: unreadNotifications.map(notif => notif.id) } },
 			data: { isRead: true }
 		})
 	}

@@ -3,6 +3,7 @@
 import { Briefcase, LinkIcon, Settings } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 import { ProfileControls, ProfileNumbers } from './components'
 import { useUser } from '@/api/hooks'
@@ -105,7 +106,11 @@ export const Profile = ({ userId }: Props) => {
 					<ProfileControls profile={profile!} />
 				)}
 			</div>
-			{!isUserPending && <PostsList userPosts={profile?.posts} />}
+			{!isUserPending && (
+				<Suspense>
+					<PostsList userPosts={profile?.posts} />
+				</Suspense>
+			)}
 		</div>
 	)
 }

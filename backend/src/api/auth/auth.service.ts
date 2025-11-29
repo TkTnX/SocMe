@@ -81,7 +81,7 @@ export class AuthService {
 						status: 'ACTIVE'
 					}
 				},
-				notifications: true,
+				notifications: { orderBy: { createdAt: 'desc' }, take: 15 }
 			},
 			omit: {
 				password: true

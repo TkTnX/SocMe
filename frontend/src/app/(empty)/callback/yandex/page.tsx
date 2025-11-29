@@ -1,25 +1,15 @@
-'use client';
+'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-
-
-
-import { saveToken } from '@/shared/lib';
-
-
-
+import { AuthCallback } from '@/shared/components'
+import { Suspense } from 'react'
 
 
 const YandexCallbackPage = () => {
-	const searchParams = useSearchParams()
-	const router = useRouter()
-	useEffect(() => {
-		saveToken(searchParams.get('token') || '')
-		router.push('/profile')
-	}, [])
-
-	return
+	return (
+		<Suspense>
+			<AuthCallback />
+		</Suspense>
+	)
 }
 
 export default YandexCallbackPage

@@ -1,5 +1,6 @@
 import { PeopleList } from '@/widgets';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 
 
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
 const PeoplePage = () => {
 	return (
 		<div className='flex-1'>
-			<PeopleList />
+			<Suspense>
+				<PeopleList />
+			</Suspense>
 		</div>
 	)
 }

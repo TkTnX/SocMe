@@ -2,6 +2,7 @@
 
 import { MoreHorizontal } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 import { useChats, useConnectSocket, useUser } from '@/api/hooks'
 import { Message, UserTitle } from '@/entities'
@@ -12,7 +13,6 @@ interface Props {
 	chatId: string
 }
 
-
 export const Chat = ({ chatId }: Props) => {
 	const { getChatQuery } = useChats()
 	const { user } = useUser()
@@ -20,10 +20,16 @@ export const Chat = ({ chatId }: Props) => {
 	const router = useRouter()
 	useConnectSocket(chatId)
 
+	useEffect(() => {
+		if (!isPending && (!data || error)) {
+			router.replace('/')
+		}
+	}, [data, error, isPending, router])
+
 	const interlocutor =
 		user?.id === data?.userOneId ? data?.userTwo : data?.userOne
 
-	if (error) return router.push('/profile')
+	if (!data) return null
 	return (
 		<div className='flex h-full flex-col'>
 			<div className='bg-main/70 flex items-center justify-between p-4'>

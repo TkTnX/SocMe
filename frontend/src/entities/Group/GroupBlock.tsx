@@ -3,8 +3,8 @@ import Link from 'next/link'
 
 import { IGroup } from '@/api/types'
 import { Button } from '@/shared/components'
-import { getDeclensions } from '@/shared/helpers'
 import { SUBSCIPTION_DECLENSIONS } from '@/shared/constants'
+import { getDeclensions } from '@/shared/helpers'
 
 interface Props {
 	group: IGroup
@@ -14,7 +14,7 @@ export const GroupBlock = ({ group }: Props) => {
 	return (
 		<Link
 			href={`/groups/${group.id}`}
-			className='flex flex-col justify-between overflow-hidden rounded-2xl bg-gray-50'
+			className='flex flex-col justify-between overflow-hidden rounded-2xl bg-gray-50 dark:bg-black'
 		>
 			<div className='relative h-[160px] w-full'>
 				<Image
@@ -26,7 +26,7 @@ export const GroupBlock = ({ group }: Props) => {
 			</div>
 			<div className='p-4'>
 				<h4>{group.name}</h4>
-				<p className='text-sm font-bold text-main'>
+				<p className='text-main text-sm font-bold'>
 					{group.followers?.length}{' '}
 					{getDeclensions(
 						SUBSCIPTION_DECLENSIONS,

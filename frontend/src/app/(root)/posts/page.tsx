@@ -1,21 +1,20 @@
-import { PostsList, RightMenu } from '@/widgets';
-import { Metadata } from 'next';
+import { Metadata } from 'next'
+import { Suspense } from 'react'
 
-
-
-
+import { PostsList, RightMenu } from '@/widgets'
 
 export const metadata: Metadata = {
 	title: 'Лента | SocMe',
 	description: 'SocMe - делитесь новостями, общайтесь и находите друзей!'
 }
 
-
 const PostsPage = () => {
 	return (
 		<>
 			<div className='flex-1'>
-				<PostsList />
+				<Suspense>
+					<PostsList />
+				</Suspense>
 			</div>
 			<RightMenu />
 		</>

@@ -1,20 +1,13 @@
-'use client';
+'use client'
 
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
-
-
-
-import { useGroups } from '@/api/hooks';
-import { IGroup } from '@/api/types';
-import { GroupBlock } from '@/entities';
-import { Block, ErrorMessage, Skeleton } from '@/shared/components';
-import { ErrorType } from '@/shared/types';
-
-
-
-
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { useGroups } from '@/api/hooks'
+import { IGroup } from '@/api/types'
+import { GroupBlock } from '@/entities'
+import { Block, ErrorMessage, Skeleton } from '@/shared/components'
+import { ErrorType } from '@/shared/types'
 
 export const GroupsList = () => {
 	const [groupsList, setGroupsList] = useState<IGroup[]>([])
@@ -48,7 +41,6 @@ export const GroupsList = () => {
 			setGroupsList(data.groups)
 		}
 	}, [name])
-
 
 	return (
 		<Block>

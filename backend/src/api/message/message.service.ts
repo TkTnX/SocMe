@@ -36,7 +36,7 @@ export class MessageService {
 
 			await this.prismaService.chat.update({
 				where: { id: chat.id },
-				data: { lastMessage: message.text }
+				data: { lastMessage: message.text, lastMessageSent: new Date() }
 			})
 
 			await this.notificationService.createNotification({

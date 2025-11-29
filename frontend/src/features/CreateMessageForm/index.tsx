@@ -37,7 +37,6 @@ export const CreateMessageForm = ({ chatId, message, setOpenEdit }: Props) => {
 		if (values.text.length === 0) return
 		const socket = getSocket()
 
-		// TODO: Разобраться, почему edit-message не срабатывает в реальном времени
 		if (message) {
 			socket.emit('edit-message', {
 				...values,

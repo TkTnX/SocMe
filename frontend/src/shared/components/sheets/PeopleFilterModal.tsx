@@ -1,7 +1,7 @@
 'use client'
 
 import { Filter } from 'lucide-react'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import {
 	Button,
@@ -24,10 +24,12 @@ export const PeopleFilterSheet = () => {
 			</SheetTrigger>
 			<SheetContent className='w-full !max-w-full' side='left'>
 				<SheetTitle />
-				<PeopleFilterMenu
+				<Suspense>
+					<PeopleFilterMenu
 					onClose={() => setOpen(false)}
 					isMobile={true}
 				/>
+				</Suspense>
 			</SheetContent>
 		</Sheet>
 	)

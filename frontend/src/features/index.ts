@@ -24,3 +24,4 @@ export * from "./ChatsSearch"
 export * from "./CreateChatButton"
 export * from "./CreateMessageForm"
 export * from './DeleteMessageButton'
+export * from "./DeleteNotificationButton"

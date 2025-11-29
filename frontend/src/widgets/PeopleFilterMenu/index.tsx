@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { PeopleSearchBy } from './components'
@@ -66,7 +66,10 @@ export const PeopleFilterMenu = ({ isMobile = false, onClose }: Props) => {
 				{ 'hidden max-w-[200px]': !isMobile }
 			)}
 		>
+			<Suspense>
+
 			<PeopleSearchBy />
+			</Suspense>
 			{pathname === '/people' ? (
 				<Block>
 					<h4 className='text-main font-bold'>Параметры поиска</h4>

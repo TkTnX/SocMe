@@ -3,7 +3,6 @@ import {
 	NotFoundException,
 	UnauthorizedException
 } from '@nestjs/common'
-import { Response } from 'express'
 import { PrismaService } from 'src/api/prisma/prisma.service'
 import { UserService } from 'src/api/user/user.service'
 
@@ -31,6 +30,9 @@ export class ChatService {
 			include: {
 				userOne: true,
 				userTwo: true
+			},
+			orderBy: {
+				lastMessageSent: 'desc'
 			}
 		})
 

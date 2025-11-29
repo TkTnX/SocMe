@@ -232,7 +232,8 @@ model Chat {
   userTwoId String
   messages  Message[]
 
-  createdAt DateTime @default(now())
+  createdAt       DateTime  @default(now())
+  lastMessageSent DateTime?
 }
 
 model Message {

@@ -16,17 +16,17 @@ export class NotificationController {
 
 	public async createNotifictation(@Body() dto: NotificationDto) {
 		return await this.notificationService.createNotification(dto)
-  }
-  
-  // TODO: Создавать уведомления, сообщении мб
+	}
+
 
 	@Protected()
-	@Patch(':notificationId')
-	public async updateNotificationStatus(
-		@Param('notificationId') notificationId: string
-  ) {
-    return await this.notificationService.updateNotificationStatus(notificationId)
-  }
+	@Patch()
+	public async updateNotificationStatus(@Authorized('userId') userId:string
+	) {
+		return await this.notificationService.updateNotificationStatus(
+			userId
+		)
+	}
 
 	@Protected()
 	@Delete(':notificationId')

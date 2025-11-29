@@ -1,4 +1,5 @@
 import { LeftMenu, PeopleFilterMenu} from '@/widgets'
+import { Suspense } from 'react'
 
 export default function FindPeopleLayout({
     children
@@ -9,7 +10,9 @@ export default function FindPeopleLayout({
         <div className='container mt-10 flex min-h-screen items-start gap-4'>
             <LeftMenu />
             <main className='flex flex-1 items-start gap-4'>{children}</main>
-			<PeopleFilterMenu />
+            <Suspense>
+                <PeopleFilterMenu />
+            </Suspense>
 
         </div>
     )
